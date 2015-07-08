@@ -1,0 +1,26 @@
+//add hardcoded polygon to show that labeling a polygon works	
+
+	L.polyline([
+	            [
+	              48.516106869522055,
+	              9.051039218902588
+	            ],
+	            [
+	              48.517407412359994,
+	              9.051039218902588
+	            ],
+	            [
+	              48.517407412359994,
+	              9.054901599884033
+	            ],
+	            [
+	              48.516106869522055,
+	              9.054901599884033
+	            ],
+	            [
+	              48.516106869522055,
+	              9.051039218902588
+	            ]
+	]).bindLabel('Ich bin ein Rechteck und habe ein Label').addTo(map);
+	
+	

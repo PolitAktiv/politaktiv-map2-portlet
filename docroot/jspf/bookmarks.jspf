@@ -1,0 +1,2 @@
+    //add default bookmark control
+	var bookmarkControl = new L.Control.Bookmarks().addTo(map);

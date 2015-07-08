@@ -1,0 +1,11 @@
+    //leaflet.viewcenter options
+    var viewCenterOptions = {
+    		position: 'topleft',
+    		title: 'Springe zum Tübinger Bahnhof',
+    		forceSeparateButton: false,
+    		vcLatLng: [48.51562359919455, 9.05516982078552],
+    		vcZoom: 16
+    };
+    
+    var viewCenter = new L.Control.ViewCenter(viewCenterOptions);   
+    map.addControl(viewCenter);

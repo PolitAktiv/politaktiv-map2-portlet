@@ -17,10 +17,7 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
 
-
 <portlet:defineObjects />
-
-
 
 This is the <b>leaflet-test</b> portlet.
 
@@ -28,74 +25,69 @@ This is the <b>leaflet-test</b> portlet.
  <div id="map"></div>
 
 
- 
 <script type="text/javascript">
 
- 
     window.onload = function () {
-
+    	
+    	
+	/*---------------------*/
+    /*--------BASICS-------*/	
+    /*---------------------*/
+    
 	//define map
         var map = L.map('map').setView([40.712216, -74.22655], 10);
-
-	//add image layers
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    
+	//add image layer
+        var firstLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+	
+	
+    /*---------------------*/	
+    /*-----ORDERLAYERS-----*/
+    /*---------------------*/
+    
+    <%@include file="jspf/orderlayers.jspf" %>
+       
+    
+    
+    /*---------------------*/	
+    /*--------LABEL--------*/
+    /*---------------------*/
 
-    //add layers for leaflet.draw drawings    
-    var editableLayers = new L.FeatureGroup();
-    map.addLayer(editableLayers);
+	<%@include file="jspf/label.jspf" %>
+    
+    
+    
+    /*---------------------*/	
+    /*------BOOKMARKS------*/
+    /*---------------------*/
+    
+    
+    <%@include file="jspf/bookmarks.jspf" %>
 
-    //leaflet.draw options
-    var options = {
-        draw: {
-            polyline: {
-                shapeOptions: {
-                    color: '#f357a1',
-                    weight: 10
-                }
-            },
-            polygon: {
-                allowIntersection: false, // Restricts shapes to simple polygons
-                drawError: {
-                    color: '#e1e100', // Color the shape will turn when intersects
-                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-                },
-                shapeOptions: {
-                    color: '#bada55'
-                }
-            },
-            circle: false, // Turns off this drawing tool
-            rectangle: {
-                shapeOptions: {
-                    clickable: false
-                }
-            }
-        },
-        edit: {
-            featureGroup: editableLayers, //REQUIRED!!
-            remove: false
-        }
-    };
+	
+    
+    /*---------------------*/	
+    /*--------DRAW---------*/
+    /*---------------------*/
 
-    //add leaflet.draw options to map
-    var drawControl = new L.Control.Draw(options);
-    map.addControl(drawControl);
+    <%@include file="jspf/draw.jspf" %>
+    
+    
+    /*---------------------*/	
+    /*-------INDOOR--------*/
+    /*---------------------*/
 
-    //event functions
-    map.on('draw:created', function (e) {
-        var type = e.layerType,
-            layer = e.layer;
-
-        if (type === 'marker') {
-            layer.bindPopup('A popup!');
-            alert("Sie haben gerade einen heiligen Marker gesetzt. Am markierten Ort ertönt just in diesem Augenblick ein schallendes Halleluja. Eventuell... (Dies ist ein Klick-Event-Test)");
-        }
-
-        editableLayers.addLayer(layer);
-    });
-
-
+    <%@include file="jspf/indoor.jspf" %>
+    
+    
+    /*---------------------*/	
+    /*------VIEWCENTER-----*/
+    /*---------------------*/
+    
+    <%@include file="jspf/viewcenter.jspf" %>
     
     };
+      
 </script>
