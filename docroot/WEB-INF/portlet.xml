@@ -2,8 +2,8 @@
 
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
 	<portlet>
-		<portlet-name>leaflet-test</portlet-name>
-		<display-name>leaflet-test</display-name>
+		<portlet-name>politaktiv-map2-portlet</portlet-name>
+		<display-name>PolitAktiv Map2 Portlet</display-name>
 		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
@@ -14,9 +14,9 @@
 			<mime-type>text/html</mime-type>
 		</supports>
 		<portlet-info>
-			<title>leaflet-test</title>
-			<short-title>leaflet-test</short-title>
-			<keywords>leaflet-test</keywords>
+			<title>PolitAktiv Map2 Portlet</title>
+			<short-title>PolitAktiv Map2 Portlet</short-title>
+			<keywords>PolitAktiv Map2 Portlet</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>

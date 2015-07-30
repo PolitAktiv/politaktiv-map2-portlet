@@ -19,7 +19,7 @@
 
 <portlet:defineObjects />
 
-This is the <b>leaflet-test</b> portlet.
+This is the <b>PolitAktive Map2</b> portlet.
 
 <% // div contains map %>
  <div id="map"></div>

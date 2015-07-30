@@ -3,7 +3,7 @@
 
 <liferay-portlet-app>
 	<portlet>
-		<portlet-name>leaflet-test</portlet-name>
+		<portlet-name>politaktiv-map2-portlet</portlet-name>
 		<icon>/icon.png</icon>
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<header-portlet-css>/css/leaflet-basis.css</header-portlet-css>
@@ -21,7 +21,7 @@
 		<footer-portlet-javascript>/plugins/leaflet.control.orderlayers-0.2.0/leaflet.control.orderlayers.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/plugins/Leaflet.Bookmarks-0.2.5/dist/Leaflet.Bookmarks.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/js/definitions_geoJSON.js</footer-portlet-javascript>
-		<css-class-wrapper>leaflet-test-portlet</css-class-wrapper>	
+		<css-class-wrapper>politaktiv-map2-portlet</css-class-wrapper>	
 	</portlet>
 	<role-mapper>
 		<role-name>administrator</role-name>
