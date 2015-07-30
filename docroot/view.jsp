@@ -14,10 +14,8 @@
  */
 %>
 
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ include file="/init.jsp" %>
 
-
-<portlet:defineObjects />
 
 This is the <b>PolitAktive Map2</b> portlet.
 
@@ -29,13 +27,12 @@ This is the <b>PolitAktive Map2</b> portlet.
 
     window.onload = function () {
     	
-    	
 	/*---------------------*/
     /*--------BASICS-------*/	
     /*---------------------*/
     
 	//define map
-        var map = L.map('map').setView([40.712216, -74.22655], 10);
+        var map = L.map('map').setView([centerLongtitude, centerLatitude], zoomLevel);
     
 	//add image layer
         var firstLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {

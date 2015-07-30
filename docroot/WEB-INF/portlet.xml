@@ -13,6 +13,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>PolitAktiv Map2 Portlet</title>
 			<short-title>PolitAktiv Map2 Portlet</short-title>

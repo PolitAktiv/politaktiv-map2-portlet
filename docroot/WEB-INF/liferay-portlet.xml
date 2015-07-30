@@ -5,6 +5,9 @@
 	<portlet>
 		<portlet-name>politaktiv-map2-portlet</portlet-name>
 		<icon>/icon.png</icon>
+		<configuration-action-class>org.politaktiv.map.action.ConfigurationActionImpl</configuration-action-class>
+		<instanceable>true</instanceable>
+		
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<header-portlet-css>/css/leaflet-basis.css</header-portlet-css>
 		<header-portlet-css>/plugins/Leaflet.draw-0.2.4/dist/leaflet.draw.css</header-portlet-css>
@@ -12,6 +15,7 @@
 		<header-portlet-css>/plugins/leaflet.viewcenter-master/leaflet.viewcenter.css</header-portlet-css>
 		<header-portlet-css>/plugins/leaflet.control.orderlayers-0.2.0/leaflet.control.orderlayers.css</header-portlet-css>
 		<header-portlet-css>/plugins/Leaflet.Bookmarks-0.2.5/dist/leaflet.bookmarks.css</header-portlet-css>
+		
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/js/leaflet-basis.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/plugins/Leaflet.draw-0.2.4/dist/leaflet.draw.js</footer-portlet-javascript>
@@ -21,6 +25,7 @@
 		<footer-portlet-javascript>/plugins/leaflet.control.orderlayers-0.2.0/leaflet.control.orderlayers.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/plugins/Leaflet.Bookmarks-0.2.5/dist/Leaflet.Bookmarks.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/js/definitions_geoJSON.js</footer-portlet-javascript>
+		
 		<css-class-wrapper>politaktiv-map2-portlet</css-class-wrapper>	
 	</portlet>
 	<role-mapper>

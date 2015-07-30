@@ -22,4 +22,4 @@
         var orderLayerControls = L.control.orderlayers(baseLayers, overlayLayers, {collapsed: false});
         orderLayerControls.addTo(map);
         
-		map.setView([40.712216, -74.22655], 10);
+		map.setView([centerLongtitude, centerLatitude], zoomLevel);
