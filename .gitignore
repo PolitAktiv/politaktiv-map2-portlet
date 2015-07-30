@@ -3,3 +3,13 @@
 *.ear
 .gradle/
 .settings/
+/docroot/css/.sass-cache
+/docroot/plugins/Leaflet.Bookmarks-0.2.5/dist/.sass-cache
+/docroot/plugins/Leaflet.Bookmarks-0.2.5/examples/.sass-cache
+/docroot/plugins/leaflet.control.orderlayers-0.2.0/.sass-cache
+/docroot/plugins/Leaflet.draw-0.2.4/dist/.sass-cache
+/docroot/plugins/Leaflet.draw-0.2.4/examples/libs/.sass-cache
+/docroot/plugins/Leaflet.label-0.2.1/dist/.sass-cache
+/docroot/plugins/Leaflet.label-0.2.1/libs/leaflet/.sass-cache
+/docroot/plugins/leaflet.viewcenter-master/.sass-cache
+/docroot/plugins/leaflet-indoor-master/examples/.sass-cache
