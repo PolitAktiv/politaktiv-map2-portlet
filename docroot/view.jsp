@@ -19,6 +19,27 @@
 
 This is the <b>PolitAktive Map2</b> portlet.
 
+<p/>
+<b>Example of the get-all-markers-call</b>
+
+<p/>
+<div id="result"></div>
+<p/>
+Rest of the calls can be found <a target="blank" href="/api/jsonws?contextPath=/politaktiv-map2-portlet">here</a>
+
+<aui:script use="aui-base">
+Liferay.Service(
+		  '/politaktiv-map2-portlet.marker/get-all-markers',
+		  successCallback = function(res) {
+			  A.one('#result').html('Success: ' + JSON.stringify(res));
+		  },
+		  exceptionCallback = function(res) {
+				A.one('#result').html('Exception: ' + res);
+		  }
+);
+</aui:script>
+
+
 <% // div contains map %>
  <div id="map"></div>
 

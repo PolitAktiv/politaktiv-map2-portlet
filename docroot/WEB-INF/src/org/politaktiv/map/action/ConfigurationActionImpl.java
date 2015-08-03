@@ -14,20 +14,21 @@
 
 package org.politaktiv.map.action;
 
+import static org.politaktiv.map.Constants.CENTER_LATITUDE;
+import static org.politaktiv.map.Constants.CENTER_LONGTITUDE;
+import static org.politaktiv.map.Constants.ZOOM_LEVEL;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
+
+import org.politaktiv.map.MapValidator;
 
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import static org.politaktiv.map.Constants.CENTER_LONGTITUDE;
-import static org.politaktiv.map.Constants.CENTER_LATITUDE;
-import static org.politaktiv.map.Constants.ZOOM_LEVEL;
 
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -38,34 +39,28 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		if (Validator.isNotNull(cmd)) {
-			validateCenterZoom(actionRequest);
+			validateMapPreferences(actionRequest);
 		}
 
 		super.processAction(portletConfig, actionRequest, actionResponse);
 	}
 
-	protected void validateCenterZoom(ActionRequest actionRequest) throws Exception {
+	protected void validateMapPreferences(ActionRequest actionRequest) throws Exception {
 
 		String centerLongtitude = getParameter(actionRequest, CENTER_LONGTITUDE);
 		String centerLatitude = getParameter(actionRequest, CENTER_LATITUDE);
 		String zoomLevel = getParameter(actionRequest, ZOOM_LEVEL);
 
-		if (Validator.isNull(centerLongtitude) 
-				|| !Validator.isNumber(StringUtil.replaceFirst(centerLongtitude, ".", ""))
-				|| centerLongtitude.length() > 10) {
-			
+		if (MapValidator.isNotValidCoordinate(centerLongtitude)) {
+
 			SessionErrors.add(actionRequest, CENTER_LONGTITUDE);
-			
-		} else if (Validator.isNull(centerLatitude) 
-				|| !Validator.isNumber(StringUtil.replaceFirst(centerLatitude, ".", ""))
-				|| centerLatitude.length() > 10) {
-			
+
+		} else if (MapValidator.isNotValidCoordinate(centerLatitude)) {
+
 			SessionErrors.add(actionRequest, CENTER_LATITUDE);
-			
-		} else if (Validator.isNull(zoomLevel) 
-				|| !Validator.isNumber(zoomLevel) 
-				|| Integer.parseInt(zoomLevel) > 18) {
-			
+
+		} else if (Validator.isNull(zoomLevel) || !Validator.isNumber(zoomLevel) || Integer.parseInt(zoomLevel) > 18) {
+
 			SessionErrors.add(actionRequest, ZOOM_LEVEL);
 		}
 	}

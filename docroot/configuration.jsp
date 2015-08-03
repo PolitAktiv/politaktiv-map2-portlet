@@ -15,14 +15,14 @@
 			<aui:input cssClass="lfr-input-text-container" label="center-longtitude" name="preferences--centerLongtitude--" value="<%= centerLongtitude %>" >
 				<aui:validator name="number"></aui:validator>
 				<aui:validator name="required"/>
-				<aui:validator name="maxLength">10</aui:validator>
+				<aui:validator name="maxLength">11</aui:validator>
 			</aui:input>
 			
 			<liferay-ui:error key="centerLongtitude" message="please-enter-a-valid-latitude" />
 			<aui:input cssClass="lfr-input-text-container" label="center-latitude" name="preferences--centerLatitude--" value="<%= centerLatitude %>" >
 				<aui:validator name="number"></aui:validator>
 				<aui:validator name="required"/>
-				<aui:validator name="maxLength">10</aui:validator>
+				<aui:validator name="maxLength">11</aui:validator>
 			</aui:input>
 			
 			<liferay-ui:error key="centerLongtitude" message="please-enter-a-valid-zoom-level" />
