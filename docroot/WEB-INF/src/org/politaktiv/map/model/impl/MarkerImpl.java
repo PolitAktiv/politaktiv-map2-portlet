@@ -64,6 +64,9 @@ public class MarkerImpl extends MarkerBaseImpl {
 		this.validateUser(userId);
 		this.validateLongtitude();
 		this.validateLatitude();
+		
+		this.validateContent();
+		this.validateTitle();
 	}
 	
 	private void validateUser(long userId) throws ValidatorException {
@@ -81,6 +84,22 @@ public class MarkerImpl extends MarkerBaseImpl {
 	private void validateLatitude() throws ValidatorException {
 		if (MapValidator.isNotValidCoordinate(getLatitude())) {
 			throw new ValidatorException("Latitude is not valid", null);
+		}
+	}
+	
+	private void validateContent() throws ValidatorException {
+		if (Validator.isNotNull(getContent()) && getContent().length() > 1024) {
+			throw new ValidatorException("Content length is not valid", null);
+		}
+	}
+	
+	private void validateTitle() throws ValidatorException {
+		if (Validator.isNull(getTitle())) {
+			throw new ValidatorException("Title is mandatory", null);
+		}
+		
+		if (getTitle().length() > 75) {
+			throw new ValidatorException("Title length is not valid", null);
 		}
 	}
 
