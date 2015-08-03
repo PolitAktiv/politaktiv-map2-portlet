@@ -86,6 +86,13 @@ public class MarkerServiceUtil {
 		return getService().getAllMarkers();
 	}
 
+	public static java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
+		long userId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		return getService().getMarkersByUserId(userId);
+	}
+
 	public static void clearService() {
 		_service = null;
 	}

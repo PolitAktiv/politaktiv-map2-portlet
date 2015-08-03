@@ -81,4 +81,10 @@ public interface MarkerService extends BaseService, InvokableService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public java.util.List<org.politaktiv.map.model.Marker> getAllMarkers()
 		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
+		long userId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException;
 }

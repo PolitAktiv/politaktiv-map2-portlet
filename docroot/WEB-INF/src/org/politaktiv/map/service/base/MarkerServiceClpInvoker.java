@@ -49,6 +49,10 @@ public class MarkerServiceClpInvoker {
 		_methodName26 = "getAllMarkers";
 
 		_methodParameterTypes26 = new String[] {  };
+
+		_methodName27 = "getMarkersByUserId";
+
+		_methodParameterTypes27 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -89,6 +93,11 @@ public class MarkerServiceClpInvoker {
 			return MarkerServiceUtil.getAllMarkers();
 		}
 
+		if (_methodName27.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes27, parameterTypes)) {
+			return MarkerServiceUtil.getMarkersByUserId(((Long)arguments[0]).longValue());
+		}
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -102,4 +111,6 @@ public class MarkerServiceClpInvoker {
 	private String[] _methodParameterTypes25;
 	private String _methodName26;
 	private String[] _methodParameterTypes26;
+	private String _methodName27;
+	private String[] _methodParameterTypes27;
 }

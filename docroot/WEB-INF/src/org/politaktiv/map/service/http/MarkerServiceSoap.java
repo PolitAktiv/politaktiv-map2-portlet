@@ -105,5 +105,19 @@ public class MarkerServiceSoap {
 		}
 	}
 
+	public static org.politaktiv.map.model.MarkerSoap[] getMarkersByUserId(
+		long userId) throws RemoteException {
+		try {
+			java.util.List<org.politaktiv.map.model.Marker> returnValue = MarkerServiceUtil.getMarkersByUserId(userId);
+
+			return org.politaktiv.map.model.MarkerSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(MarkerServiceSoap.class);
 }

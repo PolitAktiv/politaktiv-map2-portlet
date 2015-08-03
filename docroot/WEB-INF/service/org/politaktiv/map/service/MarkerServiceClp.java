@@ -49,6 +49,10 @@ public class MarkerServiceClp implements MarkerService {
 		_methodName5 = "getAllMarkers";
 
 		_methodParameterTypes5 = new String[] {  };
+
+		_methodName6 = "getMarkersByUserId";
+
+		_methodParameterTypes6 = new String[] { "long" };
 	}
 
 	@Override
@@ -220,6 +224,40 @@ public class MarkerServiceClp implements MarkerService {
 		return (java.util.List<org.politaktiv.map.model.Marker>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
+	public java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
+		long userId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableService.invokeMethod(_methodName6,
+					_methodParameterTypes6, new Object[] { userId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof javax.portlet.ValidatorException) {
+				throw (javax.portlet.ValidatorException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<org.politaktiv.map.model.Marker>)ClpSerializer.translateOutput(returnObj);
+	}
+
 	private InvokableService _invokableService;
 	private String _methodName0;
 	private String[] _methodParameterTypes0;
@@ -231,4 +269,6 @@ public class MarkerServiceClp implements MarkerService {
 	private String[] _methodParameterTypes4;
 	private String _methodName5;
 	private String[] _methodParameterTypes5;
+	private String _methodName6;
+	private String[] _methodParameterTypes6;
 }

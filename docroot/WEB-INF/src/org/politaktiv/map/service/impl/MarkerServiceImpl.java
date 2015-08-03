@@ -127,7 +127,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 	}
 
-	@AccessControlled(guestAccessEnabled = true, hostAllowedValidationEnabled = false)
+	@AccessControlled(guestAccessEnabled = true)
 	public List<Marker> getAllMarkers() throws SystemException {
 
 		List<Marker> markers = MarkerUtil.findAll();
@@ -147,4 +147,30 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		return markers;
 	}
+	
+	public List<Marker> getMarkersByUserId(long userId) throws SystemException, ValidatorException {
+
+		List<Marker> markers = MarkerUtil.findByUserId(userId);
+
+		try {
+			long currentUserId = getPermissionChecker().getUserId();
+			
+			if (userId != getUserId()) {
+				throw new ValidatorException("You can't get markers for another user", null);
+			}
+
+			for (Marker marker : markers) {
+				marker.setOwner(currentUserId);
+				marker.setContent(HtmlUtil.escape(marker.getContent()));
+				marker.setTitle(HtmlUtil.escape(marker.getTitle()));
+			}
+
+		} catch (PrincipalException e) {
+			LOGGER.info("Can't get permission checker " + e.getMessage());
+		}
+
+		return markers;
+	}
+	
+	
 }
