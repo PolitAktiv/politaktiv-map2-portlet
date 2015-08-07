@@ -1,1 +1,20 @@
 #map { height: 600px; }
+
+.leaflet-draw-section {
+	display: inline-block;
+}
+
+.leaflet-draw-toolbar {
+	margin: 0 12px 0 0;
+}
+
+.leaflet-marker-edit-descr {/*
+	position: absolute;
+	top: 0;
+	right: 20px;
+	width: 18px;
+	height: 14px;
+	background: #888;*/
+	cursor: pointer;
+}
+

@@ -37,13 +37,52 @@ Liferay.Service(
 				A.one('#result').html('Exception: ' + res);
 		  }
 );
+Liferay.Service(
+		  '/politaktiv-map2-portlet.marker/get-markers-by-user-id',
+      data = {userId: 10201},
+		  successCallback = function(res) {
+        console.log('ok:');
+        console.log(res);
+		  },
+		  exceptionCallback = function(res) {
+				console.log('fail: ' + res);
+		  }
+);/*
+Liferay.Service(
+	'/politaktiv-map2-portlet.marker/add-marker',
+	data = {
+		groupId: <%= portletGroupId %>,
+		companyId: <%= company.getCompanyId() %>,
+		title: 'test title',
+		content: 'some text',
+		longitude: '48.8919221',
+		latitude: '9.0039218'
+	},
+	successCallback = function(res) {
+		console.log('add ok: ' + res);
+	},
+	exceptionCallback = function(res) {
+		console.log('add fail: ' + res);
+	}
+);*/
 </aui:script>
 
 
 <% // div contains map %>
  <div id="map"></div>
 
+<aui:script use="aui-base">
+    var map2 = createMap2({
+        wrapperSelector: '#<portlet:namespace />',
+        groupId: <%= portletGroupId %>,
+        companyId: <%= company.getCompanyId() %>,
+        userId: 0,
+        center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
+        zoomLevel: <%= zoomLevel %>
+    });
+</aui:script>
 
+<%--
 <script type="text/javascript">
 
     window.onload = function () {
@@ -109,3 +148,4 @@ Liferay.Service(
     };
       
 </script>
+--%>
