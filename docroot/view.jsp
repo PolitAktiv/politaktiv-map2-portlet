@@ -26,6 +26,13 @@
         companyId: <%= company.getCompanyId() %>,
         isSignedIn: <%= themeDisplay.isSignedIn() %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
-        zoomLevel: <%= zoomLevel %>
+        zoomLevel: <%= zoomLevel %>,
+        translations: {
+            yourMarkers: 'Your markers:',
+            allMarkers: 'All markers:',
+            addedBy: 'Added by: ',
+            addTitleMessage: 'Please enter title:',
+            editTitleMessage: 'Please enter new title:'
+        }
     });
 </aui:script>

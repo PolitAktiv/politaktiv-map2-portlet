@@ -11,6 +11,7 @@
 .leaflet-marker-custom-title-wrap {
 	position:relative;
 	padding-right: 25px;
+	color: #222;
 }
 
 .leaflet-marker-edit-descr {
@@ -21,7 +22,39 @@
 	width: 20px;
 	height: 20px;
 	margin-top: -10px;
-	background: #ddd url(../images/edit-button.png) center center no-repeat;
+	background: #eee url(../images/edit-button.png) center center no-repeat;
+	border-radius: 3px;
 	cursor: pointer;
 }
+.leaflet-marker-edit-descr:hover {
+	background-color: #ddd;
+}
 
+.leaflet-marker-author {
+	border-top: 1px solid #ddd;
+	margin-top: 5px;
+	padding-top: 5px;
+}
+
+.leaflet-markers-list {
+	width: 130px;
+	padding: 12px;
+	max-height: 500px;
+	overflow: auto;
+}
+
+.leaflet-markers-list-header {
+	font-size: 14px;
+}
+
+.leaflet-markers-list-item {
+	max-height: 54px;
+	overflow: hidden;
+	margin-top: 3px;
+	word-wrap: break-word;
+	color: #444;
+	cursor: pointer;
+}
+.leaflet-markers-list-item:hover {
+	color: #027;
+}

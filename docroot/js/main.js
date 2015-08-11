@@ -4,6 +4,8 @@ function createMap2 (prop) {
         markerTitleClass: 'leaflet-marker-custom-title',
         markerTitleWrapClass: 'leaflet-marker-custom-title-wrap',
         editButtonClass: 'leaflet-marker-edit-descr',
+        markerTextClass: 'leaflet-marker-text',
+        markerAuthorClass: 'leaflet-marker-author',
 
         init: function(prop) {
             if (console) console.log(prop);
@@ -19,8 +21,6 @@ function createMap2 (prop) {
             _Map2.getMarkers();
 
             _Map2.map.setView([prop.center.lng, prop.center.lat], prop.zoomLevel);
-
-            _Map2.bindUI();
         },
 
         initViewCenter: function() {
@@ -112,32 +112,36 @@ function createMap2 (prop) {
                 popupTitleWrap.appendChild(editTitle);
 
                 L.DomEvent.on(editTitle, 'click', function() {
-                    var markerTitle = prompt('Please enter new title:', marker.options.markerData.title);
+                    var markerTitle = prompt(prop.translations.editTitleMessage, marker.options.markerData.title);
 
                     if (markerTitle != null) {
                         marker.options.markerData.title = markerTitle;
-                        popupTitle.innerHTML = markerTitle;
-                        popupObj.update();
-                        _Map2.updateMarkerData(marker);
-                        _Map2.markersList.update();
+                        _Map2.updateMarkerData(marker, function(){
+                            popupTitle.innerHTML = markerTitle;
+                            popupObj.update();
+                            _Map2.markersList.update();
+                        },
+                        function(){
+                            marker.options.markerData.title = popupTitle.innerHTML;
+                        });
                     }
                     // update marker
                 });
             }
 
-            var popupText = L.DomUtil.create('div', 'text');
+            var popupText = L.DomUtil.create('div', _Map2.markerTextClass);
             popupText.innerHTML = marker.options.markerData.content;
             popupContent.appendChild(popupText);
 
-            var popupAuthor = L.DomUtil.create('div', 'author');
-            popupAuthor.innerHTML = ('Added by: ' + marker.options.markerData.userName);
+            var popupAuthor = L.DomUtil.create('div', _Map2.markerAuthorClass);
+            popupAuthor.innerHTML = (prop.translations.addedBy + marker.options.markerData.userName);
             popupContent.appendChild(popupAuthor);
 
             popupObj.setContent(popupContent);
             marker.bindPopup(popupObj);
         },
 
-        updateMarkerData: function(marker) {
+        updateMarkerData: function(marker, success, onError) {
             Liferay.Service(
                 '/politaktiv-map2-portlet.marker/update-marker',
                 data = {
@@ -150,10 +154,13 @@ function createMap2 (prop) {
                 successCallback = function(res) {
                     console.log('edit ok: ' + res);
                     if (console) console.log(arguments);
+                    if (typeof success === 'function') success();
                 },
                 exceptionCallback = function(res) {
                     console.log('edit fail: ' + res);
                     if (console) console.log(arguments);
+                    alert(res);
+                    if (typeof onError === 'function') onError();
                 }
             );
         },
@@ -162,7 +169,8 @@ function createMap2 (prop) {
             _Map2.markersList = new L.Control.MarkersList({
                 titleClass: _Map2.markerTitleClass,
                 fixedLayers: _Map2.fixedLayers,
-                editableLayers: _Map2.editableLayers
+                editableLayers: _Map2.editableLayers,
+                translations: prop.translations
             });
             _Map2.map.addControl(_Map2.markersList);
         },
@@ -196,7 +204,7 @@ function createMap2 (prop) {
                     layer = e.layer;
 
                 if (type === 'marker') {
-                    var markerTitle = prompt('Please enter title:');
+                    var markerTitle = prompt(prop.translations.addTitleMessage);
 
                     if (markerTitle != null) {
                         var markerData = {
@@ -213,8 +221,8 @@ function createMap2 (prop) {
                             successCallback = function(res) {
                                 if (console) console.log('add ok:');
                                 if (console) console.log(res);
-                                markerData.isOwner = true;
-                                layer.options.markerData = markerData;
+                                //markerData.isOwner = true;
+                                layer.options.markerData = res;
                                 _Map2.editableLayers.addLayer(layer);
                                 _Map2.initPopup(layer);
                                 _Map2.markersList.update();
@@ -246,20 +254,16 @@ function createMap2 (prop) {
 
             _Map2.editableLayers.on('dblclick', function() { console.log('double click'); });
         },
-
+/*
         addMarker: function(lat,lng) {
-        },
-
-        bindUI: function() {
-            //marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
-        }
+        }*/
     }
 
     _Map2.init(prop);
-
+/*
     return {
         addMarker: function (lat,lng) {
             return _Map2.addMarker(lat,lng);
         }
-    }
+    }*/
 };
