@@ -16,16 +16,15 @@
 
 <%@ include file="/init.jsp" %>
 
-
 <% // div contains map %>
-<div id="map"></div>
+<div id="<portlet:namespace />map" class="map"></div>
 
 <aui:script use="aui-base">
     var map2 = createMap2({
-        wrapperSelector: '#<portlet:namespace />',
+        wrapperId: '<portlet:namespace />map',
         groupId: <%= portletGroupId %>,
         companyId: <%= company.getCompanyId() %>,
-        userId: 0,
+        isSignedIn: <%= themeDisplay.isSignedIn() %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>
     });

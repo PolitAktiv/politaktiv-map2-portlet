@@ -1,4 +1,4 @@
-#map { height: 600px; }
+.map { height: 600px; }
 
 .leaflet-draw-section {
 	display: inline-block;
@@ -8,13 +8,20 @@
 	margin: 0 12px 0 0;
 }
 
-.leaflet-marker-edit-descr {/*
+.leaflet-marker-custom-title-wrap {
+	position:relative;
+	padding-right: 25px;
+}
+
+.leaflet-marker-edit-descr {
+	display: block;
 	position: absolute;
-	top: 0;
-	right: 20px;
-	width: 18px;
-	height: 14px;
-	background: #888;*/
+	top: 50%;
+	right: 0;
+	width: 20px;
+	height: 20px;
+	margin-top: -10px;
+	background: #ddd url(../images/edit-button.png) center center no-repeat;
 	cursor: pointer;
 }
 
