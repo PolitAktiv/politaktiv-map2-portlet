@@ -45,12 +45,14 @@
 
 .leaflet-markers-list-header {
 	font-size: 14px;
+	font-weight: bold;
+	color: #777;
 }
 
 .leaflet-markers-list-item {
 	max-height: 54px;
 	overflow: hidden;
-	margin-top: 3px;
+	margin: 3px 0 0 10px;
 	word-wrap: break-word;
 	color: #444;
 	cursor: pointer;
