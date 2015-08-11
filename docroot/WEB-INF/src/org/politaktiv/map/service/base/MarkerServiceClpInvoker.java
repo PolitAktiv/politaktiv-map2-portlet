@@ -71,12 +71,10 @@ public class MarkerServiceClpInvoker {
 
 		if (_methodName24.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes24, parameterTypes)) {
-			MarkerServiceUtil.addMarker(((Long)arguments[0]).longValue(),
+			return MarkerServiceUtil.addMarker(((Long)arguments[0]).longValue(),
 				((Long)arguments[1]).longValue(),
 				(java.lang.String)arguments[2], (java.lang.String)arguments[3],
 				(java.lang.String)arguments[4], (java.lang.String)arguments[5]);
-
-			return null;
 		}
 
 		if (_methodName25.equals(name) &&

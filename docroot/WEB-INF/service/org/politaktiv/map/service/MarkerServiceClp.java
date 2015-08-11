@@ -106,33 +106,40 @@ public class MarkerServiceClp implements MarkerService {
 	}
 
 	@Override
-	public void addMarker(long groupId, long companyId, java.lang.String title,
-		java.lang.String content, java.lang.String longitude,
-		java.lang.String latitude)
+	public org.politaktiv.map.model.Marker addMarker(long groupId,
+		long companyId, java.lang.String title, java.lang.String content,
+		java.lang.String longitude, java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.security.auth.PrincipalException,
 			javax.portlet.ValidatorException {
+		Object returnObj = null;
+
 		try {
-			_invokableService.invokeMethod(_methodName3,
-				_methodParameterTypes3,
-				new Object[] {
-					groupId,
-					
-				companyId,
-					
-				ClpSerializer.translateInput(title),
-					
-				ClpSerializer.translateInput(content),
-					
-				ClpSerializer.translateInput(longitude),
-					
-				ClpSerializer.translateInput(latitude)
-				});
+			returnObj = _invokableService.invokeMethod(_methodName3,
+					_methodParameterTypes3,
+					new Object[] {
+						groupId,
+						
+					companyId,
+						
+					ClpSerializer.translateInput(title),
+						
+					ClpSerializer.translateInput(content),
+						
+					ClpSerializer.translateInput(longitude),
+						
+					ClpSerializer.translateInput(latitude)
+					});
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
 
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof com.liferay.portal.security.auth.PrincipalException) {
+				throw (com.liferay.portal.security.auth.PrincipalException)t;
 			}
 
 			if (t instanceof javax.portlet.ValidatorException) {
@@ -147,6 +154,8 @@ public class MarkerServiceClp implements MarkerService {
 					" is not a valid exception");
 			}
 		}
+
+		return (org.politaktiv.map.model.Marker)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override

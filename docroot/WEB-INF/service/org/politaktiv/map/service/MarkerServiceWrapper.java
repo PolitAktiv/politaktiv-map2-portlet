@@ -57,13 +57,14 @@ public class MarkerServiceWrapper implements MarkerService,
 	}
 
 	@Override
-	public void addMarker(long groupId, long companyId, java.lang.String title,
-		java.lang.String content, java.lang.String longitude,
-		java.lang.String latitude)
+	public org.politaktiv.map.model.Marker addMarker(long groupId,
+		long companyId, java.lang.String title, java.lang.String content,
+		java.lang.String longitude, java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.security.auth.PrincipalException,
 			javax.portlet.ValidatorException {
-		_markerService.addMarker(groupId, companyId, title, content, longitude,
-			latitude);
+		return _markerService.addMarker(groupId, companyId, title, content,
+			longitude, latitude);
 	}
 
 	@Override

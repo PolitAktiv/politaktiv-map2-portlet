@@ -62,40 +62,39 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 	 * service.
 	 */
 
-	public void addMarker(long groupId, long companyId, String title, String content, String longitude, String latitude)
-			throws SystemException, ValidatorException {
+	public Marker addMarker(long groupId, long companyId, String title, String content, String longitude,
+			String latitude) throws SystemException, ValidatorException, PrincipalException {
 
-		try {
-			User user = getPermissionChecker().getUser();
-			long userId = user.getUserId();
+		User user = getPermissionChecker().getUser();
+		long userId = user.getUserId();
 
-			Date currentDate = new Date();
+		Date currentDate = new Date();
 
-			long markerId = CounterLocalServiceUtil.increment(Marker.class.getName());
-			Marker marker = MarkerLocalServiceUtil.createMarker(markerId);
+		long markerId = CounterLocalServiceUtil.increment(Marker.class.getName());
+		Marker marker = MarkerLocalServiceUtil.createMarker(markerId);
 
-			marker.setGroupId(groupId);
-			marker.setCompanyId(companyId);
+		marker.setGroupId(groupId);
+		marker.setCompanyId(companyId);
 
-			marker.setUserId(userId);
-			marker.setUserName(user.getFullName());
-			marker.setCreateDate(currentDate);
-			marker.setModifiedDate(currentDate);
+		marker.setUserId(userId);
+		marker.setUserName(user.getFullName());
+		marker.setCreateDate(currentDate);
+		marker.setModifiedDate(currentDate);
 
-			marker.setTitle(title);
-			marker.setContent(content);
-			marker.setLongitude(longitude);
-			marker.setLatitude(latitude);
+		marker.setTitle(title);
+		marker.setContent(content);
+		marker.setLongitude(longitude);
+		marker.setLatitude(latitude);
 
-			marker.validate(userId);
+		marker.validate(userId);
 
-			MarkerLocalServiceUtil.addMarker(marker);
+		marker = MarkerLocalServiceUtil.addMarker(marker);
+		
+		marker.setOwner(userId);
 
-			LOGGER.info("Marker: " + title + " for user: " + userId + " has been created.");
-		} catch (PrincipalException e) {
-			LOGGER.info("Can't get permission checker " + e.getMessage());
-		}
+		LOGGER.info("Marker: " + title + " for user: " + userId + " has been created.");
 
+		return marker;
 	}
 
 	public void updateMarker(long markerId, String title, String content, String longitude, String latitude)
@@ -147,14 +146,14 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		return markers;
 	}
-	
+
 	public List<Marker> getMarkersByUserId(long userId) throws SystemException, ValidatorException {
 
 		List<Marker> markers = MarkerUtil.findByUserId(userId);
 
 		try {
 			long currentUserId = getPermissionChecker().getUserId();
-			
+
 			if (userId != getUserId()) {
 				throw new ValidatorException("You can't get markers for another user", null);
 			}
@@ -171,6 +170,5 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		return markers;
 	}
-	
-	
+
 }

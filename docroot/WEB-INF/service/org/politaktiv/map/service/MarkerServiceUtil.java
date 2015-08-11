@@ -63,13 +63,15 @@ public class MarkerServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static void addMarker(long groupId, long companyId,
-		java.lang.String title, java.lang.String content,
+	public static org.politaktiv.map.model.Marker addMarker(long groupId,
+		long companyId, java.lang.String title, java.lang.String content,
 		java.lang.String longitude, java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.security.auth.PrincipalException,
 			javax.portlet.ValidatorException {
-		getService()
-			.addMarker(groupId, companyId, title, content, longitude, latitude);
+		return getService()
+				   .addMarker(groupId, companyId, title, content, longitude,
+			latitude);
 	}
 
 	public static void updateMarker(long markerId, java.lang.String title,

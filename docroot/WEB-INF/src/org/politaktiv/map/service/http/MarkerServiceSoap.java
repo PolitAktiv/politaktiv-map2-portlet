@@ -62,13 +62,15 @@ import java.rmi.RemoteException;
  * @generated
  */
 public class MarkerServiceSoap {
-	public static void addMarker(long groupId, long companyId,
-		java.lang.String title, java.lang.String content,
+	public static org.politaktiv.map.model.MarkerSoap addMarker(long groupId,
+		long companyId, java.lang.String title, java.lang.String content,
 		java.lang.String longitude, java.lang.String latitude)
 		throws RemoteException {
 		try {
-			MarkerServiceUtil.addMarker(groupId, companyId, title, content,
-				longitude, latitude);
+			org.politaktiv.map.model.Marker returnValue = MarkerServiceUtil.addMarker(groupId,
+					companyId, title, content, longitude, latitude);
+
+			return org.politaktiv.map.model.MarkerSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

@@ -65,10 +65,11 @@ public interface MarkerService extends BaseService, InvokableService {
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public void addMarker(long groupId, long companyId, java.lang.String title,
-		java.lang.String content, java.lang.String longitude,
-		java.lang.String latitude)
+	public org.politaktiv.map.model.Marker addMarker(long groupId,
+		long companyId, java.lang.String title, java.lang.String content,
+		java.lang.String longitude, java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.security.auth.PrincipalException,
 			javax.portlet.ValidatorException;
 
 	public void updateMarker(long markerId, java.lang.String title,
