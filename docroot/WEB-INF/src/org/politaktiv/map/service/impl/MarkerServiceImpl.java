@@ -82,6 +82,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		marker.setModifiedDate(currentDate);
 
 		marker.setTitle(title);
+		// review mje 12.08.: where happens html escaping? which data are comming from http client side?
 		marker.setContent(content);
 		marker.setLongitude(longitude);
 		marker.setLatitude(latitude);
@@ -101,6 +102,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 			throws SystemException, ValidatorException, PortalException {
 
 		try {
+			// review mje 12.08.: where is the check, wheter only owners can update?
 			User user = getPermissionChecker().getUser();
 			long userId = user.getUserId();
 
@@ -134,6 +136,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		try {
 			long currentUserId = getPermissionChecker().getUserId();
 
+			// review mje 12.08.: why the setting here current userId? & why excape content here?
 			for (Marker marker : markers) {
 				marker.setOwner(currentUserId);
 				marker.setContent(HtmlUtil.escape(marker.getContent()));
