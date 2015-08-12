@@ -152,13 +152,13 @@ function createMap2 (prop) {
                         latitude: marker.options.markerData.latitude
                 },
                 successCallback = function(res) {
-                    console.log('edit ok: ' + res);
-                    if (console) console.log(arguments);
+                    if (console) console.log('edit ok:');
+                    if (console) console.log(res);
                     if (typeof success === 'function') success();
                 },
                 exceptionCallback = function(res) {
-                    console.log('edit fail: ' + res);
-                    if (console) console.log(arguments);
+                    if (console) console.log('edit fail:');
+                    if (console) console.log(res);
                     alert(res);
                     if (typeof onError === 'function') onError();
                 }
@@ -229,8 +229,8 @@ function createMap2 (prop) {
                                 layer.openPopup();
                             },
                             exceptionCallback = function(res) {
-                                console.log('add fail:');
-                                console.log(res);
+                                if (console) console.log('add fail:');
+                                if (console) console.log(res);
                                 _Map2.map.removeLayer(layer);
                             }
                         );
@@ -251,8 +251,6 @@ function createMap2 (prop) {
                     _Map2.updateMarkerData(markers[i]);
                 }
             });
-
-            _Map2.editableLayers.on('dblclick', function() { console.log('double click'); });
         },
 /*
         addMarker: function(lat,lng) {
