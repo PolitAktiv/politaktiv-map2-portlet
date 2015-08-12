@@ -26,7 +26,7 @@ function createMap2 (prop) {
         initViewCenter: function() {
             var viewCenterOptions = {
                     position: 'topleft',
-                    title: 'Springe zum Tübinger Bahnhof',
+                    title: prop.translations.resetZoom,
                     forceSeparateButton: false,
                     vcLatLng: [prop.center.lng, prop.center.lat],
                     vcZoom: prop.zoomLevel
