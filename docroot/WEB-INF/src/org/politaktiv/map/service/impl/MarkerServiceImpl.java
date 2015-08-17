@@ -89,7 +89,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		marker.validate();
 
 		marker = MarkerLocalServiceUtil.addMarker(marker);
-		
+
 		marker.setOwner(userId);
 
 		LOGGER.info("Marker: " + title + " for user: " + userId + " has been created.");
@@ -100,34 +100,29 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 	public void updateMarker(long markerId, String title, String content, String longitude, String latitude)
 			throws SystemException, ValidatorException, PortalException {
 
-		try {
-			Marker marker = MarkerLocalServiceUtil.getMarker(markerId);
+		Marker marker = MarkerLocalServiceUtil.getMarker(markerId);
 
-			User user = getPermissionChecker().getUser();
-			long currentUserId = user.getUserId();
-			
-			if (marker.getUserId() != currentUserId) {
-				throw new PrincipalException("User has no permission to edit this marker");
-			}
-			
+		User user = getPermissionChecker().getUser();
+		long currentUserId = user.getUserId();
 
-			Date currentDate = new Date();
-
-			marker.setModifiedDate(currentDate);
-
-			marker.setTitle(title);
-			marker.setContent(content);
-			marker.setLongitude(longitude);
-			marker.setLatitude(latitude);
-
-			marker.validate();
-
-			MarkerLocalServiceUtil.updateMarker(marker);
-
-			LOGGER.info("Marker: " + marker.getMarkerId() + " for user: " + currentUserId + " has been updated.");
-		} catch (PrincipalException e) {
-			LOGGER.info("Can't get permission checker " + e.getMessage());
+		if (marker.getUserId() != currentUserId) {
+			throw new PrincipalException("User has no permission to edit this marker");
 		}
+
+		Date currentDate = new Date();
+
+		marker.setModifiedDate(currentDate);
+
+		marker.setTitle(title);
+		marker.setContent(content);
+		marker.setLongitude(longitude);
+		marker.setLatitude(latitude);
+
+		marker.validate();
+
+		MarkerLocalServiceUtil.updateMarker(marker);
+
+		LOGGER.info("Marker: " + marker.getMarkerId() + " for user: " + currentUserId + " has been updated.");
 
 	}
 
