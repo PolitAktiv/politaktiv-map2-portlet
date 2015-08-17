@@ -88,7 +88,7 @@ public class MarkerServiceWrapper implements MarkerService,
 	public java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
 		long userId)
 		throws com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException {
+			com.liferay.portal.security.auth.PrincipalException {
 		return _markerService.getMarkersByUserId(userId);
 	}
 

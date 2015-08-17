@@ -237,7 +237,7 @@ public class MarkerServiceClp implements MarkerService {
 	public java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
 		long userId)
 		throws com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException {
+			com.liferay.portal.security.auth.PrincipalException {
 		Object returnObj = null;
 
 		try {
@@ -251,8 +251,8 @@ public class MarkerServiceClp implements MarkerService {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
 
-			if (t instanceof javax.portlet.ValidatorException) {
-				throw (javax.portlet.ValidatorException)t;
+			if (t instanceof com.liferay.portal.security.auth.PrincipalException) {
+				throw (com.liferay.portal.security.auth.PrincipalException)t;
 			}
 
 			if (t instanceof RuntimeException) {

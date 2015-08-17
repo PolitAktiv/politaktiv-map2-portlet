@@ -147,26 +147,21 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		return markers;
 	}
 
-	public List<Marker> getMarkersByUserId(long userId) throws SystemException, ValidatorException {
+	public List<Marker> getMarkersByUserId(long userId) throws SystemException, PrincipalException {
 
 		List<Marker> markers = MarkerUtil.findByUserId(userId);
 
-		try {
-			User user = getPermissionChecker().getUser();
-			long currentUserId = user.getUserId();
+		User user = getPermissionChecker().getUser();
+		long currentUserId = user.getUserId();
 
-			if (userId != currentUserId) {
-				throw new ValidatorException("You can't get markers for another user", null);
-			}
+		if (userId != currentUserId) {
+			throw new PrincipalException("User can't get markers for another user", null);
+		}
 
-			for (Marker marker : markers) {
-				marker.setOwner(currentUserId);
-				marker.setContent(HtmlUtil.escape(marker.getContent()));
-				marker.setTitle(HtmlUtil.escape(marker.getTitle()));
-			}
-
-		} catch (PrincipalException e) {
-			LOGGER.info("Can't get permission checker " + e.getMessage());
+		for (Marker marker : markers) {
+			marker.setOwner(currentUserId);
+			marker.setContent(HtmlUtil.escape(marker.getContent()));
+			marker.setTitle(HtmlUtil.escape(marker.getTitle()));
 		}
 
 		return markers;
