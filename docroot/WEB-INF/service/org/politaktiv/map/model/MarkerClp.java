@@ -439,22 +439,6 @@ public class MarkerClp extends BaseModelImpl<Marker> implements Marker {
 	}
 
 	@Override
-	public void validate(long userId) {
-		try {
-			String methodName = "validate";
-
-			Class<?>[] parameterTypes = new Class<?>[] { long.class };
-
-			Object[] parameterValues = new Object[] { userId };
-
-			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
-		}
-		catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
-
-	@Override
 	public boolean isOwner() {
 		try {
 			String methodName = "isOwner";
@@ -467,6 +451,22 @@ public class MarkerClp extends BaseModelImpl<Marker> implements Marker {
 					parameterTypes, parameterValues);
 
 			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
+	public void validate() {
+		try {
+			String methodName = "validate";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
 		}
 		catch (Exception e) {
 			throw new UnsupportedOperationException(e);

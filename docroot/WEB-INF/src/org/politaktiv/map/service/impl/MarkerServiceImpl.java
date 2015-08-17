@@ -82,12 +82,11 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		marker.setModifiedDate(currentDate);
 
 		marker.setTitle(title);
-		// review mje 12.08.: where happens html escaping? which data are comming from http client side?
 		marker.setContent(content);
 		marker.setLongitude(longitude);
 		marker.setLatitude(latitude);
 
-		marker.validate(userId);
+		marker.validate();
 
 		marker = MarkerLocalServiceUtil.addMarker(marker);
 		
@@ -102,11 +101,15 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 			throws SystemException, ValidatorException, PortalException {
 
 		try {
-			// review mje 12.08.: where is the check, wheter only owners can update?
-			User user = getPermissionChecker().getUser();
-			long userId = user.getUserId();
-
 			Marker marker = MarkerLocalServiceUtil.getMarker(markerId);
+
+			User user = getPermissionChecker().getUser();
+			long currentUserId = user.getUserId();
+			
+			if (marker.getUserId() != currentUserId) {
+				throw new PrincipalException("User has no permission to edit this marker");
+			}
+			
 
 			Date currentDate = new Date();
 
@@ -117,11 +120,11 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 			marker.setLongitude(longitude);
 			marker.setLatitude(latitude);
 
-			marker.validate(userId);
+			marker.validate();
 
 			MarkerLocalServiceUtil.updateMarker(marker);
 
-			LOGGER.info("Marker: " + marker.getMarkerId() + " for user: " + userId + " has been updated.");
+			LOGGER.info("Marker: " + marker.getMarkerId() + " for user: " + currentUserId + " has been updated.");
 		} catch (PrincipalException e) {
 			LOGGER.info("Can't get permission checker " + e.getMessage());
 		}
@@ -136,7 +139,6 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		try {
 			long currentUserId = getPermissionChecker().getUserId();
 
-			// review mje 12.08.: why the setting here current userId? & why excape content here?
 			for (Marker marker : markers) {
 				marker.setOwner(currentUserId);
 				marker.setContent(HtmlUtil.escape(marker.getContent()));
@@ -155,9 +157,10 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		List<Marker> markers = MarkerUtil.findByUserId(userId);
 
 		try {
-			long currentUserId = getPermissionChecker().getUserId();
+			User user = getPermissionChecker().getUser();
+			long currentUserId = user.getUserId();
 
-			if (userId != getUserId()) {
+			if (userId != currentUserId) {
 				throw new ValidatorException("You can't get markers for another user", null);
 			}
 

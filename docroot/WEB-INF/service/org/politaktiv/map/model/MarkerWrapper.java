@@ -510,8 +510,8 @@ public class MarkerWrapper implements Marker, ModelWrapper<Marker> {
 	}
 
 	@Override
-	public void validate(long userId) throws javax.portlet.ValidatorException {
-		_marker.validate(userId);
+	public void validate() throws javax.portlet.ValidatorException {
+		_marker.validate();
 	}
 
 	@Override

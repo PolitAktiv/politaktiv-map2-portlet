@@ -154,8 +154,6 @@ public class MarkerPersistenceImpl extends BasePersistenceImpl<Marker>
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
-		
-		// review mje 12.08.: how do we prevent sql injection here?! 
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {

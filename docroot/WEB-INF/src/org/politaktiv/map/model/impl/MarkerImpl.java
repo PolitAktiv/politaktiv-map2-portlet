@@ -60,19 +60,12 @@ public class MarkerImpl extends MarkerBaseImpl {
 		isOwner = (getUserId() == invokerId);
 	}
 
-	public void validate(long userId) throws ValidatorException {
-		this.validateUser(userId);
+	public void validate() throws ValidatorException {
 		this.validateLongtitude();
 		this.validateLatitude();
-		
+
 		this.validateContent();
 		this.validateTitle();
-	}
-	
-	private void validateUser(long userId) throws ValidatorException {
-		if (userId != getUserId()) {
-			throw new ValidatorException("You can't edit this marker", null);
-		}
 	}
 
 	private void validateLongtitude() throws ValidatorException {
@@ -86,18 +79,18 @@ public class MarkerImpl extends MarkerBaseImpl {
 			throw new ValidatorException("Latitude is not valid", null);
 		}
 	}
-	
+
 	private void validateContent() throws ValidatorException {
 		if (Validator.isNotNull(getContent()) && getContent().length() > 1024) {
 			throw new ValidatorException("Content length is not valid", null);
 		}
 	}
-	
+
 	private void validateTitle() throws ValidatorException {
 		if (Validator.isNull(getTitle())) {
 			throw new ValidatorException("Title is mandatory", null);
 		}
-		
+
 		if (getTitle().length() > 75) {
 			throw new ValidatorException("Title length is not valid", null);
 		}

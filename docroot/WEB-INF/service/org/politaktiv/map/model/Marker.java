@@ -35,5 +35,5 @@ public interface Marker extends MarkerModel, PersistedModel {
 
 	public void setOwner(long invokerId);
 
-	public void validate(long userId) throws javax.portlet.ValidatorException;
+	public void validate() throws javax.portlet.ValidatorException;
 }
