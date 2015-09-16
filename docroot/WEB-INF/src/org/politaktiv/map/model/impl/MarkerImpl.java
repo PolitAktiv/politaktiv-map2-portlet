@@ -40,7 +40,7 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 public class MarkerImpl extends MarkerBaseImpl {
 
 	@JSON
-	public boolean isOwner;
+	public boolean updatableByCurrentUser;
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -52,13 +52,15 @@ public class MarkerImpl extends MarkerBaseImpl {
 	public MarkerImpl() {
 	}
 
-	public boolean isOwner() {
-		return isOwner;
+	public boolean isUpdatableByCurrentUser() {
+		return updatableByCurrentUser;
 	}
 
-	public void setOwner(long invokerId) {
-		isOwner = (getUserId() == invokerId);
+	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser) {
+		this.updatableByCurrentUser = updatableByCurrentUser;
 	}
+
+
 
 	public void validate() throws ValidatorException {
 		this.validateLongtitude();

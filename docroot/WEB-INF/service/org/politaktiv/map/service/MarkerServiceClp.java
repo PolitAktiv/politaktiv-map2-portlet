@@ -35,24 +35,30 @@ public class MarkerServiceClp implements MarkerService {
 		_methodName3 = "addMarker";
 
 		_methodParameterTypes3 = new String[] {
-				"long", "long", "java.lang.String", "java.lang.String",
-				"java.lang.String", "java.lang.String"
+				"java.lang.String", "java.lang.String", "long", "long",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String"
 			};
 
 		_methodName4 = "updateMarker";
 
 		_methodParameterTypes4 = new String[] {
-				"long", "java.lang.String", "java.lang.String",
-				"java.lang.String", "java.lang.String"
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String"
 			};
 
 		_methodName5 = "getAllMarkers";
 
-		_methodParameterTypes5 = new String[] {  };
+		_methodParameterTypes5 = new String[] {
+				"java.lang.String", "java.lang.String"
+			};
 
 		_methodName6 = "getMarkersByUserId";
 
-		_methodParameterTypes6 = new String[] { "long" };
+		_methodParameterTypes6 = new String[] {
+				"java.lang.String", "java.lang.String", "long"
+			};
 	}
 
 	@Override
@@ -106,11 +112,12 @@ public class MarkerServiceClp implements MarkerService {
 	}
 
 	@Override
-	public org.politaktiv.map.model.Marker addMarker(long groupId,
+	public org.politaktiv.map.model.Marker addMarker(
+		java.lang.String portletId, java.lang.String primKey, long groupId,
 		long companyId, java.lang.String title, java.lang.String content,
 		java.lang.String longitude, java.lang.String latitude)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.security.auth.PrincipalException,
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
 		Object returnObj = null;
 
@@ -118,7 +125,11 @@ public class MarkerServiceClp implements MarkerService {
 			returnObj = _invokableService.invokeMethod(_methodName3,
 					_methodParameterTypes3,
 					new Object[] {
-						groupId,
+						ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					groupId,
 						
 					companyId,
 						
@@ -134,12 +145,12 @@ public class MarkerServiceClp implements MarkerService {
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
 
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
 
-			if (t instanceof com.liferay.portal.security.auth.PrincipalException) {
-				throw (com.liferay.portal.security.auth.PrincipalException)t;
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
 
 			if (t instanceof javax.portlet.ValidatorException) {
@@ -159,7 +170,8 @@ public class MarkerServiceClp implements MarkerService {
 	}
 
 	@Override
-	public void updateMarker(long markerId, java.lang.String title,
+	public void updateMarker(java.lang.String portletId,
+		java.lang.String primKey, long markerId, java.lang.String title,
 		java.lang.String content, java.lang.String longitude,
 		java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -169,7 +181,11 @@ public class MarkerServiceClp implements MarkerService {
 			_invokableService.invokeMethod(_methodName4,
 				_methodParameterTypes4,
 				new Object[] {
-					markerId,
+					ClpSerializer.translateInput(portletId),
+					
+				ClpSerializer.translateInput(primKey),
+					
+				markerId,
 					
 				ClpSerializer.translateInput(title),
 					
@@ -206,13 +222,19 @@ public class MarkerServiceClp implements MarkerService {
 	}
 
 	@Override
-	public java.util.List<org.politaktiv.map.model.Marker> getAllMarkers()
+	public java.util.List<org.politaktiv.map.model.Marker> getAllMarkers(
+		java.lang.String portletId, java.lang.String primKey)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableService.invokeMethod(_methodName5,
-					_methodParameterTypes5, new Object[] {  });
+					_methodParameterTypes5,
+					new Object[] {
+						ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey)
+					});
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -235,14 +257,21 @@ public class MarkerServiceClp implements MarkerService {
 
 	@Override
 	public java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
-		long userId)
+		java.lang.String portletId, java.lang.String primKey, long userId)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.security.auth.PrincipalException {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableService.invokeMethod(_methodName6,
-					_methodParameterTypes6, new Object[] { userId });
+					_methodParameterTypes6,
+					new Object[] {
+						ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					userId
+					});
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);

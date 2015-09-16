@@ -423,34 +423,15 @@ public class MarkerClp extends BaseModelImpl<Marker> implements Marker {
 	}
 
 	@Override
-	public void setOwner(long invokerId) {
+	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser) {
 		try {
-			String methodName = "setOwner";
+			String methodName = "setUpdatableByCurrentUser";
 
-			Class<?>[] parameterTypes = new Class<?>[] { long.class };
+			Class<?>[] parameterTypes = new Class<?>[] { boolean.class };
 
-			Object[] parameterValues = new Object[] { invokerId };
+			Object[] parameterValues = new Object[] { updatableByCurrentUser };
 
 			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
-		}
-		catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
-
-	@Override
-	public boolean isOwner() {
-		try {
-			String methodName = "isOwner";
-
-			Class<?>[] parameterTypes = new Class<?>[] {  };
-
-			Object[] parameterValues = new Object[] {  };
-
-			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
-					parameterTypes, parameterValues);
-
-			return returnObj;
 		}
 		catch (Exception e) {
 			throw new UnsupportedOperationException(e);
@@ -467,6 +448,25 @@ public class MarkerClp extends BaseModelImpl<Marker> implements Marker {
 			Object[] parameterValues = new Object[] {  };
 
 			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
+	public boolean isUpdatableByCurrentUser() {
+		try {
+			String methodName = "isUpdatableByCurrentUser";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
 		}
 		catch (Exception e) {
 			throw new UnsupportedOperationException(e);

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<resource-action-mapping>
+	<portlet-resource>
+		<portlet-name>politaktiv-map2-portlet</portlet-name>
+		<permissions>
+			<supports>
+				<action-key>ADD_TO_PAGE</action-key>
+				<action-key>VIEW</action-key>
+				<action-key>EDIT</action-key>
+				<action-key>CONFIGURATION</action-key>
+
+				<action-key>UPDATE_MARKER</action-key>
+				<action-key>ADD_MARKER</action-key>
+			</supports>
+			<site-member-defaults>
+				<action-key>VIEW</action-key>
+				<action-key>ADD_MARKER</action-key>
+			</site-member-defaults>
+			<guest-defaults>
+				<action-key>VIEW</action-key>
+			</guest-defaults>
+			<guest-unsupported>
+				<action-key>ADD_TO_PAGE</action-key>
+				<action-key>CONFIGURATION</action-key>
+				<action-key>EDIT</action-key>
+
+				<action-key>UPDATE_MARKER</action-key>
+				<action-key>ADD_MARKER</action-key>
+			</guest-unsupported>
+		</permissions>
+	</portlet-resource>
+</resource-action-mapping>

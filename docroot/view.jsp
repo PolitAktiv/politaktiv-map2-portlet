@@ -16,8 +16,22 @@
 
 <%@ include file="/init.jsp" %>
 
+
+<%
+String portletId = portletDisplay.getRootPortletId();
+String primKey = portletDisplay.getResourcePK();
+
+boolean canAddMarkers = MarkerPermission.canAddMarkers(permissionChecker, portletGroupId, portletId, primKey);
+
+%>
+
+Can add marker: <%=canAddMarkers %>
+
 <% // div contains map %>
 <div id="<portlet:namespace />map" class="map"></div>
+
+
+<br/>
 
 <aui:script use="aui-base">
 L.drawLocal.draw.toolbar.actions.title = '<liferay-ui:message key="drawLocal.draw.toolbar.actions.title" />';

@@ -35,24 +35,30 @@ public class MarkerServiceClpInvoker {
 		_methodName24 = "addMarker";
 
 		_methodParameterTypes24 = new String[] {
-				"long", "long", "java.lang.String", "java.lang.String",
-				"java.lang.String", "java.lang.String"
+				"java.lang.String", "java.lang.String", "long", "long",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String"
 			};
 
 		_methodName25 = "updateMarker";
 
 		_methodParameterTypes25 = new String[] {
-				"long", "java.lang.String", "java.lang.String",
-				"java.lang.String", "java.lang.String"
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String"
 			};
 
 		_methodName26 = "getAllMarkers";
 
-		_methodParameterTypes26 = new String[] {  };
+		_methodParameterTypes26 = new String[] {
+				"java.lang.String", "java.lang.String"
+			};
 
 		_methodName27 = "getMarkersByUserId";
 
-		_methodParameterTypes27 = new String[] { "long" };
+		_methodParameterTypes27 = new String[] {
+				"java.lang.String", "java.lang.String", "long"
+			};
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -71,29 +77,35 @@ public class MarkerServiceClpInvoker {
 
 		if (_methodName24.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes24, parameterTypes)) {
-			return MarkerServiceUtil.addMarker(((Long)arguments[0]).longValue(),
-				((Long)arguments[1]).longValue(),
-				(java.lang.String)arguments[2], (java.lang.String)arguments[3],
-				(java.lang.String)arguments[4], (java.lang.String)arguments[5]);
+			return MarkerServiceUtil.addMarker((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1],
+				((Long)arguments[2]).longValue(),
+				((Long)arguments[3]).longValue(),
+				(java.lang.String)arguments[4], (java.lang.String)arguments[5],
+				(java.lang.String)arguments[6], (java.lang.String)arguments[7]);
 		}
 
 		if (_methodName25.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes25, parameterTypes)) {
-			MarkerServiceUtil.updateMarker(((Long)arguments[0]).longValue(),
-				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
-				(java.lang.String)arguments[3], (java.lang.String)arguments[4]);
+			MarkerServiceUtil.updateMarker((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1],
+				((Long)arguments[2]).longValue(),
+				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
+				(java.lang.String)arguments[5], (java.lang.String)arguments[6]);
 
 			return null;
 		}
 
 		if (_methodName26.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes26, parameterTypes)) {
-			return MarkerServiceUtil.getAllMarkers();
+			return MarkerServiceUtil.getAllMarkers((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1]);
 		}
 
 		if (_methodName27.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes27, parameterTypes)) {
-			return MarkerServiceUtil.getMarkersByUserId(((Long)arguments[0]).longValue());
+			return MarkerServiceUtil.getMarkersByUserId((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1], ((Long)arguments[2]).longValue());
 		}
 
 		throw new UnsupportedOperationException();

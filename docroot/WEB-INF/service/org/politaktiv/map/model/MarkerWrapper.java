@@ -500,13 +500,13 @@ public class MarkerWrapper implements Marker, ModelWrapper<Marker> {
 	}
 
 	@Override
-	public boolean isOwner() {
-		return _marker.isOwner();
+	public boolean isUpdatableByCurrentUser() {
+		return _marker.isUpdatableByCurrentUser();
 	}
 
 	@Override
-	public void setOwner(long invokerId) {
-		_marker.setOwner(invokerId);
+	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser) {
+		_marker.setUpdatableByCurrentUser(updatableByCurrentUser);
 	}
 
 	@Override

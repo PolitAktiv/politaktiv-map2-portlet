@@ -31,9 +31,9 @@ public interface Marker extends MarkerModel, PersistedModel {
 	 *
 	 * Never modify this interface directly. Add methods to {@link org.politaktiv.map.model.impl.MarkerImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public boolean isOwner();
+	public boolean isUpdatableByCurrentUser();
 
-	public void setOwner(long invokerId);
+	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser);
 
 	public void validate() throws javax.portlet.ValidatorException;
 }

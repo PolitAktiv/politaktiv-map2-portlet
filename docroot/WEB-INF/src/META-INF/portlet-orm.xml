@@ -33,7 +33,7 @@
 	<entity class="org.politaktiv.map.model.impl.MarkerImpl" name="Marker">
 		<table name="politaktivmaptwo_Marker" />
 		<attributes>
-			<transient name="owner" />
+			<transient name="updatableByCurrentUser" />
 		</attributes>
 	</entity>
 </entity-mappings>

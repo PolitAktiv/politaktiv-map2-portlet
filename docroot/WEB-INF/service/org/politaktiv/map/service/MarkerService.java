@@ -65,14 +65,16 @@ public interface MarkerService extends BaseService, InvokableService {
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public org.politaktiv.map.model.Marker addMarker(long groupId,
+	public org.politaktiv.map.model.Marker addMarker(
+		java.lang.String portletId, java.lang.String primKey, long groupId,
 		long companyId, java.lang.String title, java.lang.String content,
 		java.lang.String longitude, java.lang.String latitude)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.security.auth.PrincipalException,
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;
 
-	public void updateMarker(long markerId, java.lang.String title,
+	public void updateMarker(java.lang.String portletId,
+		java.lang.String primKey, long markerId, java.lang.String title,
 		java.lang.String content, java.lang.String longitude,
 		java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -80,12 +82,13 @@ public interface MarkerService extends BaseService, InvokableService {
 			javax.portlet.ValidatorException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<org.politaktiv.map.model.Marker> getAllMarkers()
+	public java.util.List<org.politaktiv.map.model.Marker> getAllMarkers(
+		java.lang.String portletId, java.lang.String primKey)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
-		long userId)
+		java.lang.String portletId, java.lang.String primKey, long userId)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.security.auth.PrincipalException;
 }

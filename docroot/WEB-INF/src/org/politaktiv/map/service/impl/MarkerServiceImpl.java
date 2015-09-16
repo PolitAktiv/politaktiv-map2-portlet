@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.politaktiv.map.model.Marker;
 import org.politaktiv.map.service.MarkerLocalServiceUtil;
 import org.politaktiv.map.service.base.MarkerServiceBaseImpl;
+import org.politaktiv.map.service.permission.MarkerPermission;
 import org.politaktiv.map.service.persistence.MarkerUtil;
 
 import com.liferay.counter.service.CounterLocalServiceUtil;
@@ -52,6 +53,7 @@ import com.liferay.portal.security.auth.PrincipalException;
  * @see org.politaktiv.map.service.MarkerServiceUtil
  */
 public class MarkerServiceImpl extends MarkerServiceBaseImpl {
+	
 	private static final Logger LOGGER = Logger.getLogger(MarkerServiceImpl.class);
 
 	/*
@@ -62,11 +64,13 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 	 * service.
 	 */
 
-	public Marker addMarker(long groupId, long companyId, String title, String content, String longitude,
-			String latitude) throws SystemException, ValidatorException, PrincipalException {
+	public Marker addMarker(String portletId, String primKey, long groupId, long companyId, String title, String content, String longitude,
+			String latitude) throws SystemException, ValidatorException, PortalException {
 
 		User user = getPermissionChecker().getUser();
-		long userId = user.getUserId();
+		long currentUserId = user.getUserId();
+		
+		MarkerPermission.check(getPermissionChecker(), groupId, portletId, primKey, MarkerPermission.ADD_MARKER_ACTION, currentUserId);
 
 		Date currentDate = new Date();
 
@@ -76,7 +80,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		marker.setGroupId(groupId);
 		marker.setCompanyId(companyId);
 
-		marker.setUserId(userId);
+		marker.setUserId(currentUserId);
 		marker.setUserName(user.getFullName());
 		marker.setCreateDate(currentDate);
 		marker.setModifiedDate(currentDate);
@@ -90,24 +94,21 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		marker = MarkerLocalServiceUtil.addMarker(marker);
 
-		marker.setOwner(userId);
+		boolean canUserUpdateMarker = MarkerPermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
+		
+		marker.setUpdatableByCurrentUser(canUserUpdateMarker);
 
-		LOGGER.info("Marker: " + title + " for user: " + userId + " has been created.");
+		LOGGER.info("Marker: " + title + " for user: " + currentUserId + " has been created.");
 
 		return marker;
 	}
 
-	public void updateMarker(long markerId, String title, String content, String longitude, String latitude)
+	public void updateMarker(String portletId, String primKey, long markerId, String title, String content, String longitude, String latitude)
 			throws SystemException, ValidatorException, PortalException {
 
 		Marker marker = MarkerLocalServiceUtil.getMarker(markerId);
-
-		User user = getPermissionChecker().getUser();
-		long currentUserId = user.getUserId();
-
-		if (marker.getUserId() != currentUserId) {
-			throw new PrincipalException("User has no permission to edit this marker");
-		}
+		
+		MarkerPermission.check(getPermissionChecker(), marker.getGroupId(), portletId, primKey, MarkerPermission.UPDATE_MARKER_ACTION, marker.getUserId());
 
 		Date currentDate = new Date();
 
@@ -122,20 +123,20 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		MarkerLocalServiceUtil.updateMarker(marker);
 
-		LOGGER.info("Marker: " + marker.getMarkerId() + " for user: " + currentUserId + " has been updated.");
+		LOGGER.info("Marker: " + marker.getMarkerId() + " for user: " + getPermissionChecker().getUserId() + " has been updated.");
 
 	}
 
 	@AccessControlled(guestAccessEnabled = true)
-	public List<Marker> getAllMarkers() throws SystemException {
+	public List<Marker> getAllMarkers(String portletId, String primKey) throws SystemException {
 
 		List<Marker> markers = MarkerUtil.findAll();
 
 		try {
-			long currentUserId = getPermissionChecker().getUserId();
-
 			for (Marker marker : markers) {
-				marker.setOwner(currentUserId);
+				boolean canUserUpdateMarker = MarkerPermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
+				
+				marker.setUpdatableByCurrentUser(canUserUpdateMarker);
 				marker.setContent(HtmlUtil.escape(marker.getContent()));
 				marker.setTitle(HtmlUtil.escape(marker.getTitle()));
 			}
@@ -147,19 +148,16 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		return markers;
 	}
 
-	public List<Marker> getMarkersByUserId(long userId) throws SystemException, PrincipalException {
+	public List<Marker> getMarkersByUserId(String portletId, String primKey, long userId) throws SystemException, PrincipalException {
 
+		MarkerPermission.checkOwner(getPermissionChecker(), userId);
+		
 		List<Marker> markers = MarkerUtil.findByUserId(userId);
 
-		User user = getPermissionChecker().getUser();
-		long currentUserId = user.getUserId();
-
-		if (userId != currentUserId) {
-			throw new PrincipalException("User can't get markers for another user", null);
-		}
-
 		for (Marker marker : markers) {
-			marker.setOwner(currentUserId);
+			boolean canUserUpdateMarker = MarkerPermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
+			
+			marker.setUpdatableByCurrentUser(canUserUpdateMarker);
 			marker.setContent(HtmlUtil.escape(marker.getContent()));
 			marker.setTitle(HtmlUtil.escape(marker.getTitle()));
 		}

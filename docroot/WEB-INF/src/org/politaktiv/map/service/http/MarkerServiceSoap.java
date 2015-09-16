@@ -62,13 +62,15 @@ import java.rmi.RemoteException;
  * @generated
  */
 public class MarkerServiceSoap {
-	public static org.politaktiv.map.model.MarkerSoap addMarker(long groupId,
+	public static org.politaktiv.map.model.MarkerSoap addMarker(
+		java.lang.String portletId, java.lang.String primKey, long groupId,
 		long companyId, java.lang.String title, java.lang.String content,
 		java.lang.String longitude, java.lang.String latitude)
 		throws RemoteException {
 		try {
-			org.politaktiv.map.model.Marker returnValue = MarkerServiceUtil.addMarker(groupId,
-					companyId, title, content, longitude, latitude);
+			org.politaktiv.map.model.Marker returnValue = MarkerServiceUtil.addMarker(portletId,
+					primKey, groupId, companyId, title, content, longitude,
+					latitude);
 
 			return org.politaktiv.map.model.MarkerSoap.toSoapModel(returnValue);
 		}
@@ -79,12 +81,13 @@ public class MarkerServiceSoap {
 		}
 	}
 
-	public static void updateMarker(long markerId, java.lang.String title,
+	public static void updateMarker(java.lang.String portletId,
+		java.lang.String primKey, long markerId, java.lang.String title,
 		java.lang.String content, java.lang.String longitude,
 		java.lang.String latitude) throws RemoteException {
 		try {
-			MarkerServiceUtil.updateMarker(markerId, title, content, longitude,
-				latitude);
+			MarkerServiceUtil.updateMarker(portletId, primKey, markerId, title,
+				content, longitude, latitude);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -93,10 +96,12 @@ public class MarkerServiceSoap {
 		}
 	}
 
-	public static org.politaktiv.map.model.MarkerSoap[] getAllMarkers()
+	public static org.politaktiv.map.model.MarkerSoap[] getAllMarkers(
+		java.lang.String portletId, java.lang.String primKey)
 		throws RemoteException {
 		try {
-			java.util.List<org.politaktiv.map.model.Marker> returnValue = MarkerServiceUtil.getAllMarkers();
+			java.util.List<org.politaktiv.map.model.Marker> returnValue = MarkerServiceUtil.getAllMarkers(portletId,
+					primKey);
 
 			return org.politaktiv.map.model.MarkerSoap.toSoapModels(returnValue);
 		}
@@ -108,9 +113,11 @@ public class MarkerServiceSoap {
 	}
 
 	public static org.politaktiv.map.model.MarkerSoap[] getMarkersByUserId(
-		long userId) throws RemoteException {
+		java.lang.String portletId, java.lang.String primKey, long userId)
+		throws RemoteException {
 		try {
-			java.util.List<org.politaktiv.map.model.Marker> returnValue = MarkerServiceUtil.getMarkersByUserId(userId);
+			java.util.List<org.politaktiv.map.model.Marker> returnValue = MarkerServiceUtil.getMarkersByUserId(portletId,
+					primKey, userId);
 
 			return org.politaktiv.map.model.MarkerSoap.toSoapModels(returnValue);
 		}

@@ -63,36 +63,41 @@ public class MarkerServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static org.politaktiv.map.model.Marker addMarker(long groupId,
+	public static org.politaktiv.map.model.Marker addMarker(
+		java.lang.String portletId, java.lang.String primKey, long groupId,
 		long companyId, java.lang.String title, java.lang.String content,
 		java.lang.String longitude, java.lang.String latitude)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.security.auth.PrincipalException,
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
 		return getService()
-				   .addMarker(groupId, companyId, title, content, longitude,
-			latitude);
+				   .addMarker(portletId, primKey, groupId, companyId, title,
+			content, longitude, latitude);
 	}
 
-	public static void updateMarker(long markerId, java.lang.String title,
+	public static void updateMarker(java.lang.String portletId,
+		java.lang.String primKey, long markerId, java.lang.String title,
 		java.lang.String content, java.lang.String longitude,
 		java.lang.String latitude)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
-		getService().updateMarker(markerId, title, content, longitude, latitude);
+		getService()
+			.updateMarker(portletId, primKey, markerId, title, content,
+			longitude, latitude);
 	}
 
-	public static java.util.List<org.politaktiv.map.model.Marker> getAllMarkers()
+	public static java.util.List<org.politaktiv.map.model.Marker> getAllMarkers(
+		java.lang.String portletId, java.lang.String primKey)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getAllMarkers();
+		return getService().getAllMarkers(portletId, primKey);
 	}
 
 	public static java.util.List<org.politaktiv.map.model.Marker> getMarkersByUserId(
-		long userId)
+		java.lang.String portletId, java.lang.String primKey, long userId)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.security.auth.PrincipalException {
-		return getService().getMarkersByUserId(userId);
+		return getService().getMarkersByUserId(portletId, primKey, userId);
 	}
 
 	public static void clearService() {
