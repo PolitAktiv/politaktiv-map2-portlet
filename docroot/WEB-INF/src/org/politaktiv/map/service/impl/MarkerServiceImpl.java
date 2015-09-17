@@ -70,7 +70,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		User user = getPermissionChecker().getUser();
 		long currentUserId = user.getUserId();
 		
-		MarkerPermission.check(getPermissionChecker(), groupId, portletId, primKey, MarkerPermission.ADD_MARKER_ACTION, currentUserId);
+		MarkerPermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
 
 		Date currentDate = new Date();
 
@@ -108,7 +108,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		Marker marker = MarkerLocalServiceUtil.getMarker(markerId);
 		
-		MarkerPermission.check(getPermissionChecker(), marker.getGroupId(), portletId, primKey, MarkerPermission.UPDATE_MARKER_ACTION, marker.getUserId());
+		MarkerPermission.checkUpdate(getPermissionChecker(), marker.getGroupId(), portletId, primKey, marker.getUserId());
 
 		Date currentDate = new Date();
 

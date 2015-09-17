@@ -14,13 +14,19 @@ public class MarkerPermission {
 	private MarkerPermission() {
 	}
 
-	public static void check(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey,
-			String actionId, long userId) throws PortalException {
+	public static void checkUpdate(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey, long userId) throws PortalException {
+		if (isOwner(permissionChecker, userId)) {
+			return;
+		}
 
-		checkOwner(permissionChecker, userId);
-
-		if (!contains(permissionChecker, groupId, resourceName, primKey, actionId)) {
-			throw new PrincipalException("User " + userId + " has no permission to make action " + actionId);
+		if (!canUpdateMarkers(permissionChecker, groupId, resourceName, primKey)) {
+			throw new PrincipalException("User " + userId + " has no permission to make action " + UPDATE_MARKER_ACTION);
+		}
+	}
+	
+	public static void checkAdd(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) throws PortalException {
+		if (!canAddMarkers(permissionChecker, groupId, resourceName, primKey)) {
+			throw new PrincipalException("User " + permissionChecker.getUserId() + " has no permission to make action " + ADD_MARKER_ACTION);
 		}
 	}
 
@@ -40,8 +46,12 @@ public class MarkerPermission {
 		return contains(permissionChecker, groupId, resourceName, primKey, ADD_MARKER_ACTION);
 	}
 	
+	public static boolean canUpdateMarkers(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) {
+		return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_MARKER_ACTION);
+	}
+	
 	public static boolean canUpdateMarker(PermissionChecker permissionChecker, Marker marker, String resourceName, String primKey) {
-		return (isOwner(permissionChecker, marker.getUserId()) || contains(permissionChecker, marker.getGroupId(), resourceName, primKey, UPDATE_MARKER_ACTION));
+		return (isOwner(permissionChecker, marker.getUserId()) || canUpdateMarkers(permissionChecker, marker.getGroupId(), resourceName, primKey));
 	}
 
 	public static boolean contains(PermissionChecker permissionChecker, long groupId, String resourceName,
