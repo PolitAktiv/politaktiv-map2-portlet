@@ -75,11 +75,14 @@ function createMap2 (prop) {
                 popupAnchor: [1, -34]
             });
 
-            _Map2.fixedLayers = new L.FeatureGroup();
-            _Map2.map.addLayer(_Map2.fixedLayers);
+            _Map2.ownLayers = new L.FeatureGroup();
+            _Map2.map.addLayer(_Map2.ownLayers);
+
+            _Map2.otherLayers = new L.FeatureGroup();
+            _Map2.map.addLayer(_Map2.otherLayers);
 
             _Map2.editableLayers = new L.FeatureGroup();
-            _Map2.map.addLayer(_Map2.editableLayers);
+            //_Map2.map.addLayer(_Map2.editableLayers);
 
             for (i=0; i<len; i++) {
                 _Map2.initMarker(markersData[i]);
@@ -88,12 +91,15 @@ function createMap2 (prop) {
 
         initMarker: function(markerData) {
             var marker;
-            if (markerData.updatableByCurrentUser) {
+            if (markerData.userId === prop.userId) {
                 marker = L.marker([markerData.latitude, markerData.longitude], {icon: _Map2.ownIcon, markerData: markerData});
-                _Map2.editableLayers.addLayer(marker);
+                _Map2.ownLayers.addLayer(marker);
             } else {
                 marker = L.marker([markerData.latitude, markerData.longitude], {markerData: markerData});
-                _Map2.fixedLayers.addLayer(marker);
+                _Map2.otherLayers.addLayer(marker);
+            }
+            if (markerData.updatableByCurrentUser) {
+                _Map2.editableLayers.addLayer(marker);
             }
 
             _Map2.initPopup(marker);
@@ -174,8 +180,8 @@ function createMap2 (prop) {
         initMarkersList: function(markersData) {
             _Map2.markersList = new L.Control.MarkersList({
                 titleClass: _Map2.markerTitleClass,
-                fixedLayers: _Map2.fixedLayers,
-                editableLayers: _Map2.editableLayers,
+                otherLayers: _Map2.otherLayers,
+                ownLayers: _Map2.ownLayers,
                 translations: prop.translations
             });
             _Map2.map.addControl(_Map2.markersList);
@@ -231,6 +237,7 @@ function createMap2 (prop) {
                                 if (console) console.log(res);
                                 layer.options.markerData = res;
                                 _Map2.editableLayers.addLayer(layer);
+                                _Map2.ownLayers.addLayer(layer);
                                 _Map2.initPopup(layer);
                                 _Map2.markersList.update();
                                 layer.openPopup();

@@ -51,6 +51,7 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawL
         companyId: <%= company.getCompanyId() %>,
         portletId: '<%= portletId %>',
         primKey: '<%= primKey %>',
+        userId: <%= themeDisplay.getUserId() %>,
         canAddMarkers: <%= canAddMarkers %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,

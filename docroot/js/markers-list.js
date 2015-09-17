@@ -31,31 +31,31 @@ L.Control.MarkersList = L.Control.extend({
     update: function() {
         this._list.innerHTML = '';
 
-        var editable = this.options.editableLayers.getLayers();
-        var fixed = this.options.fixedLayers.getLayers();
+        var own = this.options.ownLayers.getLayers();
+        var other = this.options.otherLayers.getLayers();
 
-        if (editable.length) {
+        if (own.length) {
             var listHeader = L.DomUtil.create('div', this.options.headerClass);
             listHeader.innerHTML = this.options.translations.yourMarkers;
             this._list.appendChild(listHeader);
     
-            for (var i=0, len=editable.length; i<len; i++) {
-                this.addItem(editable[i]);
+            for (var i=0, len=own.length; i<len; i++) {
+                this.addItem(own[i]);
             }
         }
 
-        if (editable.length && fixed.length) {
+        if (own.length && other.length) {
             var hr = L.DomUtil.create('hr');
             this._list.appendChild(hr);
         }
 
-        if (fixed.length) {
+        if (other.length) {
             var list2Header = L.DomUtil.create('div', this.options.headerClass);
             list2Header.innerHTML = this.options.translations.allMarkers;
             this._list.appendChild(list2Header);
     
-            for (var i=0, len=fixed.length; i<len; i++) {
-                this.addItem(fixed[i]);
+            for (var i=0, len=other.length; i<len; i++) {
+                this.addItem(other[i]);
             }
         }
     },
