@@ -39,13 +39,17 @@ function createMap2 (prop) {
         getMarkers: function() {
             Liferay.Service(
                     '/politaktiv-map2-portlet.marker/get-all-markers',
+                    data = {
+                            portletId: prop.portletId,
+                            primKey: prop.primKey
+                    },
                     successCallback = function(res) {
                         if (console) console.log('ok:');
                         if (console) console.log(res);
 
                         _Map2.initMarkers(res);
                         _Map2.initMarkersList(res);
-                        if (prop.isSignedIn) {
+                        if (prop.canAddMarkers) {
                             _Map2.initMarkersControls();
                         }
                     },
@@ -84,7 +88,7 @@ function createMap2 (prop) {
 
         initMarker: function(markerData) {
             var marker;
-            if (markerData.isOwner) {
+            if (markerData.updatableByCurrentUser) {
                 marker = L.marker([markerData.latitude, markerData.longitude], {icon: _Map2.ownIcon, markerData: markerData});
                 _Map2.editableLayers.addLayer(marker);
             } else {
@@ -107,7 +111,7 @@ function createMap2 (prop) {
             popupTitleWrap.appendChild(popupTitle);
             popupContent.appendChild(popupTitleWrap);
 
-            if (marker.options.markerData.isOwner) { // add "edit button" if marker is editable
+            if (marker.options.markerData.updatableByCurrentUser) { // add "edit button" if marker is editable
                 var editTitle = L.DomUtil.create('span', _Map2.editButtonClass);
                 popupTitleWrap.appendChild(editTitle);
 
@@ -145,6 +149,8 @@ function createMap2 (prop) {
             Liferay.Service(
                 '/politaktiv-map2-portlet.marker/update-marker',
                 data = {
+                        portletId: prop.portletId,
+                        primKey: prop.primKey,
                         markerId: marker.options.markerData.markerId,
                         title: marker.options.markerData.title,
                         content: marker.options.markerData.content,
@@ -208,6 +214,8 @@ function createMap2 (prop) {
 
                     if (markerTitle != null) {
                         var markerData = {
+                            portletId: prop.portletId,
+                            primKey: prop.primKey,
                             groupId: prop.groupId,
                             companyId: prop.companyId,
                             title: markerTitle,
@@ -221,7 +229,6 @@ function createMap2 (prop) {
                             successCallback = function(res) {
                                 if (console) console.log('add ok:');
                                 if (console) console.log(res);
-                                //markerData.isOwner = true;
                                 layer.options.markerData = res;
                                 _Map2.editableLayers.addLayer(layer);
                                 _Map2.initPopup(layer);
@@ -237,6 +244,24 @@ function createMap2 (prop) {
                     } else {
                         _Map2.map.removeLayer(layer);
                     }
+                } else {/*
+                    if (console) console.log('!!!');
+                    if (console) console.log(e);
+
+                    polyline
+                    layer.getLatLngs()[ LatLng(48.62837, 8.68744), LatLng(48.53479, 8.70117), LatLng(48.48385, 8.76984), LatLng(48.57752, 8.97308), LatLng(48.68552, 8.99094) ]
+
+                    polygon
+                    layer.getLatLngs()[ LatLng(48.68189, 8.64212), LatLng(48.55116, 8.58719), LatLng(48.56207, 8.67096), LatLng(48.63472, 8.71902), LatLng(48.52479, 8.86871), LatLng(48.47929, 8.70392) ]
+
+                    rectangle
+                    layer.getLatLngs()[ LatLng(48.42464, 8.53638), LatLng(48.66376, 8.53638), LatLng(48.66376, 8.90442), LatLng(48.42464, 8.90442) ]
+
+                    circle
+                    layer.getLatLng() LatLng(48.55116, 8.58719)
+                    layer.getRadius() 10487.564304745216
+
+                    _Map2.editableLayers.addLayer(layer);*/
                 }
             });
 

@@ -25,8 +25,6 @@ boolean canAddMarkers = MarkerPermission.canAddMarkers(permissionChecker, portle
 
 %>
 
-Can add marker: <%=canAddMarkers %>
-
 <% // div contains map %>
 <div id="<portlet:namespace />map" class="map"></div>
 
@@ -46,11 +44,14 @@ L.drawLocal.edit.toolbar.buttons.edit = '<liferay-ui:message key="drawLocal.edit
 L.drawLocal.edit.handlers.edit.tooltip.text = '<liferay-ui:message key="drawLocal.edit.handlers.edit.tooltip.text" />';
 L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawLocal.edit.handlers.edit.tooltip.subtext" />';
 
+<%-- ajax calls details: /api/jsonws?contextPath=/politaktiv-map2-portlet --%>
     var map2 = createMap2({
         wrapperId: '<portlet:namespace />map',
         groupId: <%= portletGroupId %>,
         companyId: <%= company.getCompanyId() %>,
-        isSignedIn: <%= themeDisplay.isSignedIn() %>,
+        portletId: '<%= portletId %>',
+        primKey: '<%= primKey %>',
+        canAddMarkers: <%= canAddMarkers %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,
         translations: {

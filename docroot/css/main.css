@@ -6,6 +6,12 @@
 
 .leaflet-draw-toolbar {
 	margin: 0 12px 0 0;
+	font-size: 0;
+}
+
+.leaflet-draw-toolbar a,
+.leaflet-draw-toolbar a:hover {
+	display: inline-block;
 }
 
 .leaflet-marker-custom-title-wrap {
