@@ -22,7 +22,8 @@ String portletId = portletDisplay.getRootPortletId();
 String primKey = portletDisplay.getResourcePK();
 
 boolean canAddMarkers = MarkerPermission.canAddMarkers(permissionChecker, portletGroupId, portletId, primKey);
-
+boolean canUpdateMarkers = MarkerPermission.canUpdatePersonalMarkers(permissionChecker, portletGroupId, portletId, primKey) || 
+						   MarkerPermission.canUpdateAnyMarkers(permissionChecker, portletGroupId, portletId, primKey);
 %>
 
 <% // div contains map %>

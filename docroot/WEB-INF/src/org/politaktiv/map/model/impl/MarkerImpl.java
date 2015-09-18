@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+// TODO: review mje 18.09.: Wrong Copyright!
 
 package org.politaktiv.map.model.impl;
 
@@ -39,6 +40,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  */
 public class MarkerImpl extends MarkerBaseImpl {
 
+	/** The updatable by current user json property - used to detect if current user can update marker. 
+	 * Does not stored to DB, used at JSON frontend communication. */
 	@JSON
 	public boolean updatableByCurrentUser;
 

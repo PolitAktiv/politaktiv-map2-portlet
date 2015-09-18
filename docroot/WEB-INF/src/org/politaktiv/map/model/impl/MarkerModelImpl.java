@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+// TODO: review mje 18.09.: Wrong copyright. chec how to change copyright 
 
 package org.politaktiv.map.model.impl;
 
