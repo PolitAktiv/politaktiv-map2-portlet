@@ -49,9 +49,7 @@ function createMap2 (prop) {
 
                         _Map2.initMarkers(res);
                         _Map2.initMarkersList(res);
-                        if (prop.canAddMarkers) {
-                            _Map2.initMarkersControls();
-                        }
+                        _Map2.initMarkersControls();
                     },
                     exceptionCallback = function(res) {
                         if (console) console.log('fail:');
@@ -82,8 +80,6 @@ function createMap2 (prop) {
             _Map2.map.addLayer(_Map2.otherLayers);
 
             _Map2.editableLayers = new L.FeatureGroup();
-            // TODO: review mje 18.09.: pls. remove unused code
-            //_Map2.map.addLayer(_Map2.editableLayers);
 
             for (i=0; i<len; i++) {
                 _Map2.initMarker(markersData[i]);
@@ -189,9 +185,11 @@ function createMap2 (prop) {
         },
 
         initMarkersControls: function() {
-            //leaflet.draw options
-            var drawOptions = {
-                draw: {
+        	//leaflet.draw options
+        	var drawOptions = {};
+        	
+        	if (prop.canAddMarkers) {
+        		drawOptions.draw = {
                     polyline: false,
                     polygon: false,
                     circle: false,
@@ -199,13 +197,25 @@ function createMap2 (prop) {
                     marker: {
                         icon: _Map2.ownIcon
                     }
-                },
-                edit: {
-                    featureGroup: _Map2.editableLayers,
-                    remove: false
-                },
-                position: 'topright'
-            };
+                };
+        	} else {
+        		drawOptions.draw = {
+                        polyline: false,
+                        polygon: false,
+                        circle: false,
+                        rectangle: false,
+                        marker: false
+                };
+        	}
+        	
+        	if (prop.canUpdateMarkers) {
+        		drawOptions.edit = {
+                        featureGroup: _Map2.editableLayers,
+                        remove: false
+                };
+        	}
+        	
+        	drawOptions.position = 'topright';
 
             //add leaflet.draw options to map
             var drawControl = new L.Control.Draw(drawOptions);
@@ -284,18 +294,8 @@ function createMap2 (prop) {
                     _Map2.updateMarkerData(markers[i]);
                 }
             });
-        },
-/*
-        addMarker: function(lat,lng) {
-        }*/
+        }
     }
 
     _Map2.init(prop);
-// TODO: review mje 18.09.: Can we remove this code?
-/*
-    return {
-        addMarker: function (lat,lng) {
-            return _Map2.addMarker(lat,lng);
-        }
-    }*/
 };
