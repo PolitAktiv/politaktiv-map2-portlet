@@ -32,6 +32,8 @@ public class MarkerPermission {
 		}
 	}
 
+	// TODO: review mje 18.09.: If we've ambivalent semantics of owner, so let's give them differrent names.
+	// [Portlet-/Page-]Owner (if feasible in Liferay) and ResourceOwner (I think that's in our hand).
 	public static void checkOwner(PermissionChecker permissionChecker, long userId) throws PrincipalException {
 		if (!isOwner(permissionChecker, userId)) {
 			throw new PrincipalException("User " + userId + " can't make action for another user", null);

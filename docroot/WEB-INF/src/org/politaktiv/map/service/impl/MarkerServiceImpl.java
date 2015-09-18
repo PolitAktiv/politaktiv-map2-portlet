@@ -71,6 +71,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		User user = getPermissionChecker().getUser();
 		long currentUserId = user.getUserId();
 		
+		// TODO: review mje 18.09.: Do not use static services in here - we've spring - so let's use DI! 
 		MarkerPermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
 
 		Date currentDate = new Date();
