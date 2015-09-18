@@ -11,18 +11,19 @@ import com.liferay.portal.security.permission.PermissionChecker;
 public class MarkerPermission {
 
 	public static final String ADD_MARKER_ACTION = "ADD_MARKER";
-	public static final String UPDATE_MARKER_ACTION = "UPDATE_MARKER";
+	public static final String UPDATE_ANY_MARKER_ACTION = "UPDATE_ANY_MARKER";
+	public static final String UPDATE_PERSONAL_MARKER_ACTION = "UPDATE_PERSONAL_MARKER";
 	
 	private MarkerPermission() {
 	}
 
 	public static void checkUpdate(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey, long userId) throws PortalException {
-		if (isOwner(permissionChecker, userId)) {
+		if (isOwner(permissionChecker, userId) && canUpdatePersonalMarkers(permissionChecker, groupId, resourceName, primKey)) {
 			return;
 		}
 
-		if (!canUpdateMarkers(permissionChecker, groupId, resourceName, primKey)) {
-			throw new PrincipalException("User " + userId + " has no permission to make action " + UPDATE_MARKER_ACTION);
+		if (!canUpdateAnyMarkers(permissionChecker, groupId, resourceName, primKey)) {
+			throw new PrincipalException("User " + userId + " has no permission to make action " + UPDATE_ANY_MARKER_ACTION);
 		}
 	}
 	
@@ -50,12 +51,27 @@ public class MarkerPermission {
 		return contains(permissionChecker, groupId, resourceName, primKey, ADD_MARKER_ACTION);
 	}
 	
-	public static boolean canUpdateMarkers(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) {
-		return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_MARKER_ACTION);
+	public static boolean canUpdatePersonalMarkers(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) {
+		return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_PERSONAL_MARKER_ACTION);
 	}
 	
+	public static boolean canUpdateAnyMarkers(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) {
+		return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_ANY_MARKER_ACTION);
+	}
+	
+	/**
+	 * Can user update marker.
+	 * User can update marker if he is owner of the marker and has permission UPDATE_PERSONAL_MARKER or has permission UPDATE_ANY_MARKER
+	 *
+	 * @param permissionChecker the permission checker
+	 * @param marker the marker
+	 * @param resourceName the resource name
+	 * @param primKey the prim key
+	 * @return true, if successful
+	 */
 	public static boolean canUpdateMarker(PermissionChecker permissionChecker, Marker marker, String resourceName, String primKey) {
-		return (isOwner(permissionChecker, marker.getUserId()) || canUpdateMarkers(permissionChecker, marker.getGroupId(), resourceName, primKey));
+		return ((isOwner(permissionChecker, marker.getUserId()) && canUpdatePersonalMarkers(permissionChecker, marker.getGroupId(), resourceName, primKey)) || 
+				canUpdateAnyMarkers(permissionChecker, marker.getGroupId(), resourceName, primKey));
 	}
 
 	public static boolean contains(PermissionChecker permissionChecker, long groupId, String resourceName,

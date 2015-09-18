@@ -41,6 +41,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 //TODO: review mje 18.09.: This model is used to comunicate to UI?
 public class MarkerImpl extends MarkerBaseImpl {
 
+	/** The updatable by current user json property - used to detect if current user can update marker. 
+	 * Does not stored to DB, used at JSON frontend communication. */
 	@JSON
 	public boolean updatableByCurrentUser;
 

@@ -22,7 +22,8 @@ String portletId = portletDisplay.getRootPortletId();
 String primKey = portletDisplay.getResourcePK();
 
 boolean canAddMarkers = MarkerPermission.canAddMarkers(permissionChecker, portletGroupId, portletId, primKey);
-
+boolean canUpdateMarkers = MarkerPermission.canUpdatePersonalMarkers(permissionChecker, portletGroupId, portletId, primKey) || 
+						   MarkerPermission.canUpdateAnyMarkers(permissionChecker, portletGroupId, portletId, primKey);
 %>
 
 <% // div contains map %>
@@ -53,6 +54,7 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawL
         primKey: '<%= primKey %>',
         userId: <%= themeDisplay.getUserId() %>,
         canAddMarkers: <%= canAddMarkers %>,
+        canUpdateMarkers: <%= canUpdateMarkers %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,
         translations: {
