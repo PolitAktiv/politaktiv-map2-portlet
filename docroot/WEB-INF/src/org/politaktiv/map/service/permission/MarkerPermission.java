@@ -1,3 +1,5 @@
+// TODO: review mje 18.09.: Pls add Apache2 License
+
 package org.politaktiv.map.service.permission;
 
 import org.politaktiv.map.model.Marker;

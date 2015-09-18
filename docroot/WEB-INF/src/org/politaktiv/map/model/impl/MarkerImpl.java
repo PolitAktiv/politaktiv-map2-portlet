@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+// TODO: review mje 18.09.: Wrong Copyright!
 
 package org.politaktiv.map.model.impl;
 
@@ -37,6 +38,7 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Paul Butenko
  */
+//TODO: review mje 18.09.: This model is used to comunicate to UI?
 public class MarkerImpl extends MarkerBaseImpl {
 
 	@JSON

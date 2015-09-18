@@ -3,6 +3,7 @@
 	<portlet-resource>
 		<portlet-name>politaktiv-map2-portlet</portlet-name>
 		<permissions>
+			<!-- TODO: review mje 18.09.: Can we set default for owner? -->
 			<supports>
 				<action-key>ADD_TO_PAGE</action-key>
 				<action-key>VIEW</action-key>

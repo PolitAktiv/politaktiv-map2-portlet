@@ -82,6 +82,7 @@ function createMap2 (prop) {
             _Map2.map.addLayer(_Map2.otherLayers);
 
             _Map2.editableLayers = new L.FeatureGroup();
+            // TODO: review mje 18.09.: pls. remove unused code
             //_Map2.map.addLayer(_Map2.editableLayers);
 
             for (i=0; i<len; i++) {
@@ -290,6 +291,7 @@ function createMap2 (prop) {
     }
 
     _Map2.init(prop);
+// TODO: review mje 18.09.: Can we remove this code?
 /*
     return {
         addMarker: function (lat,lng) {
