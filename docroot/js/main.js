@@ -20,7 +20,7 @@ function createMap2 (prop) {
 
             _Map2.getMarkers();
 
-            _Map2.map.setView([prop.center.lng, prop.center.lat], prop.zoomLevel);
+            _Map2.map.setView([prop.center.lat, prop.center.lng], prop.zoomLevel);
         },
 
         initViewCenter: function() {
