@@ -1,3 +1,4 @@
+<%@ page import="org.politaktiv.map.service.permission.ShapePermission" %>
 <%
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
@@ -21,9 +22,9 @@
 String portletId = portletDisplay.getRootPortletId();
 String primKey = portletDisplay.getResourcePK();
 
-boolean canAddMarkers = MarkerPermission.canAddMarkers(permissionChecker, portletGroupId, portletId, primKey);
-boolean canUpdateMarkers = MarkerPermission.canUpdatePersonalMarkers(permissionChecker, portletGroupId, portletId, primKey) || 
-						   MarkerPermission.canUpdateAnyMarkers(permissionChecker, portletGroupId, portletId, primKey);
+boolean canAddMarkers = ShapePermission.canAddMarkers(permissionChecker, portletGroupId, portletId, primKey);
+boolean canUpdateMarkers = ShapePermission.canUpdatePersonalMarkers(permissionChecker, portletGroupId, portletId, primKey) ||
+						   ShapePermission.canUpdateAnyMarkers(permissionChecker, portletGroupId, portletId, primKey);
 %>
 
 <% // div contains map %>

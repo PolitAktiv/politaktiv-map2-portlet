@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
 
 import org.politaktiv.map.service.ClpSerializer;
-import org.politaktiv.map.service.MarkerLocalServiceUtil;
-import org.politaktiv.map.service.MarkerServiceUtil;
+import org.politaktiv.map.service.CoordinateLocalServiceUtil;
+import org.politaktiv.map.service.CoordinateServiceUtil;
+import org.politaktiv.map.service.ShapeLocalServiceUtil;
+import org.politaktiv.map.service.ShapeServiceUtil;
 
 /**
  * @author Paul Butenko
@@ -36,9 +38,12 @@ public class ClpMessageListener extends BaseMessageListener {
 
 		if (command.equals("undeploy") &&
 				servletContextName.equals(getServletContextName())) {
-			MarkerLocalServiceUtil.clearService();
+			CoordinateLocalServiceUtil.clearService();
 
-			MarkerServiceUtil.clearService();
+			CoordinateServiceUtil.clearService();
+			ShapeLocalServiceUtil.clearService();
+
+			ShapeServiceUtil.clearService();
 		}
 	}
 }

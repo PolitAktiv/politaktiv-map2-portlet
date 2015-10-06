@@ -2,19 +2,18 @@
 
 package org.politaktiv.map.service.permission;
 
-import org.politaktiv.map.model.Marker;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.PermissionChecker;
+import org.politaktiv.map.model.Shape;
 
-public class MarkerPermission {
+public class ShapePermission {
 
 	public static final String ADD_MARKER_ACTION = "ADD_MARKER";
 	public static final String UPDATE_ANY_MARKER_ACTION = "UPDATE_ANY_MARKER";
 	public static final String UPDATE_PERSONAL_MARKER_ACTION = "UPDATE_PERSONAL_MARKER";
 	
-	private MarkerPermission() {
+	private ShapePermission() {
 	}
 
 	public static void checkUpdate(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey, long userId) throws PortalException {
@@ -64,14 +63,14 @@ public class MarkerPermission {
 	 * User can update marker if he is owner of the marker and has permission UPDATE_PERSONAL_MARKER or has permission UPDATE_ANY_MARKER
 	 *
 	 * @param permissionChecker the permission checker
-	 * @param marker the marker
+	 * @param shape the marker
 	 * @param resourceName the resource name
 	 * @param primKey the prim key
 	 * @return true, if successful
 	 */
-	public static boolean canUpdateMarker(PermissionChecker permissionChecker, Marker marker, String resourceName, String primKey) {
-		return ((isOwner(permissionChecker, marker.getUserId()) && canUpdatePersonalMarkers(permissionChecker, marker.getGroupId(), resourceName, primKey)) || 
-				canUpdateAnyMarkers(permissionChecker, marker.getGroupId(), resourceName, primKey));
+	public static boolean canUpdateMarker(PermissionChecker permissionChecker, Shape shape, String resourceName, String primKey) {
+		return ((isOwner(permissionChecker, shape.getUserId()) && canUpdatePersonalMarkers(permissionChecker, shape.getGroupId(), resourceName, primKey)) ||
+				canUpdateAnyMarkers(permissionChecker, shape.getGroupId(), resourceName, primKey));
 	}
 
 	public static boolean contains(PermissionChecker permissionChecker, long groupId, String resourceName,

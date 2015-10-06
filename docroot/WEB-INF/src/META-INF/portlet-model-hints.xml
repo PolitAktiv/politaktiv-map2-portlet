@@ -1,8 +1,14 @@
 <?xml version="1.0"?>
 
 <model-hints>
-	<model name="org.politaktiv.map.model.Marker">
-		<field name="markerId" type="long" />
+	<model name="org.politaktiv.map.model.Coordinate">
+		<field name="coordinateId" type="long" />
+		<field name="shapeId" type="long" />
+		<field name="longitude" type="String" />
+		<field name="latitude" type="String" />
+	</model>
+	<model name="org.politaktiv.map.model.Shape">
+		<field name="shapeId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
@@ -10,14 +16,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="title" type="String" />
-		<field name="content" type="String">
-			<hint name="max-length">1024</hint>
-		</field>
-		<field name="longitude" type="String">
-			<hint name="max-length">11</hint>
-		</field>
-		<field name="latitude" type="String">
-			<hint name="max-length">11</hint>
-		</field>
+		<field name="abstractDescription" type="String" />
+		<field name="url" type="String" />
+		<field name="shapeType" type="String" />
+		<field name="radius" type="long" />
 	</model>
 </model-hints>

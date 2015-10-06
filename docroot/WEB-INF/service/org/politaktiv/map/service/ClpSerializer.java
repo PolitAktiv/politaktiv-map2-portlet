@@ -25,7 +25,8 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BaseModel;
 
-import org.politaktiv.map.model.MarkerClp;
+import org.politaktiv.map.model.CoordinateClp;
+import org.politaktiv.map.model.ShapeClp;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -102,8 +103,12 @@ public class ClpSerializer {
 
 		String oldModelClassName = oldModelClass.getName();
 
-		if (oldModelClassName.equals(MarkerClp.class.getName())) {
-			return translateInputMarker(oldModel);
+		if (oldModelClassName.equals(CoordinateClp.class.getName())) {
+			return translateInputCoordinate(oldModel);
+		}
+
+		if (oldModelClassName.equals(ShapeClp.class.getName())) {
+			return translateInputShape(oldModel);
 		}
 
 		return oldModel;
@@ -121,10 +126,20 @@ public class ClpSerializer {
 		return newList;
 	}
 
-	public static Object translateInputMarker(BaseModel<?> oldModel) {
-		MarkerClp oldClpModel = (MarkerClp)oldModel;
+	public static Object translateInputCoordinate(BaseModel<?> oldModel) {
+		CoordinateClp oldClpModel = (CoordinateClp)oldModel;
 
-		BaseModel<?> newModel = oldClpModel.getMarkerRemoteModel();
+		BaseModel<?> newModel = oldClpModel.getCoordinateRemoteModel();
+
+		newModel.setModelAttributes(oldClpModel.getModelAttributes());
+
+		return newModel;
+	}
+
+	public static Object translateInputShape(BaseModel<?> oldModel) {
+		ShapeClp oldClpModel = (ShapeClp)oldModel;
+
+		BaseModel<?> newModel = oldClpModel.getShapeRemoteModel();
 
 		newModel.setModelAttributes(oldClpModel.getModelAttributes());
 
@@ -148,8 +163,13 @@ public class ClpSerializer {
 
 		String oldModelClassName = oldModelClass.getName();
 
-		if (oldModelClassName.equals("org.politaktiv.map.model.impl.MarkerImpl")) {
-			return translateOutputMarker(oldModel);
+		if (oldModelClassName.equals(
+					"org.politaktiv.map.model.impl.CoordinateImpl")) {
+			return translateOutputCoordinate(oldModel);
+		}
+
+		if (oldModelClassName.equals("org.politaktiv.map.model.impl.ShapeImpl")) {
+			return translateOutputShape(oldModel);
 		}
 
 		return oldModel;
@@ -232,19 +252,33 @@ public class ClpSerializer {
 			return new SystemException();
 		}
 
-		if (className.equals("org.politaktiv.map.NoSuchMarkerException")) {
-			return new org.politaktiv.map.NoSuchMarkerException();
+		if (className.equals("org.politaktiv.map.NoSuchCoordinateException")) {
+			return new org.politaktiv.map.NoSuchCoordinateException();
+		}
+
+		if (className.equals("org.politaktiv.map.NoSuchShapeException")) {
+			return new org.politaktiv.map.NoSuchShapeException();
 		}
 
 		return throwable;
 	}
 
-	public static Object translateOutputMarker(BaseModel<?> oldModel) {
-		MarkerClp newModel = new MarkerClp();
+	public static Object translateOutputCoordinate(BaseModel<?> oldModel) {
+		CoordinateClp newModel = new CoordinateClp();
 
 		newModel.setModelAttributes(oldModel.getModelAttributes());
 
-		newModel.setMarkerRemoteModel(oldModel);
+		newModel.setCoordinateRemoteModel(oldModel);
+
+		return newModel;
+	}
+
+	public static Object translateOutputShape(BaseModel<?> oldModel) {
+		ShapeClp newModel = new ShapeClp();
+
+		newModel.setModelAttributes(oldModel.getModelAttributes());
+
+		newModel.setShapeRemoteModel(oldModel);
 
 		return newModel;
 	}

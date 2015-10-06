@@ -4,10 +4,30 @@
 	<author>Paul Butenko</author>
 	<namespace>politaktivmaptwo</namespace>
 
-	<entity name="Marker" local-service="true" remote-service="true">
+    <entity name="Coordinate" local-service="true">
+
+        <!-- PK fields -->
+        <column name="coordinateId" type="long" primary="true"/>
+
+        <column name="shapeId" type="long"/>
+
+
+        <!-- Data fields -->
+        <column name="longitude" type="String" />
+        <column name="latitude" type="String" />
+
+        <!-- Finder methods -->
+        <finder name="ShapeId" return-type="Collection">
+            <finder-column name="shapeId"/>
+        </finder>
+    </entity>
+
+
+
+    <entity name="Shape" local-service="true" remote-service="true">
 
 		<!-- PK fields -->
-		<column name="markerId" type="long" primary="true" />
+		<column name="shapeId" type="long" primary="true" />
 
 		<!-- Group instance -->
 		<column name="groupId" type="long" />
@@ -21,9 +41,11 @@
 
 		<!-- Data fields -->
 		<column name="title" type="String" />
-		<column name="content" type="String" />
-		<column name="longitude" type="String" />
-		<column name="latitude" type="String" />
+		<column name="abstractDescription" type="String" />
+		<column name="url" type="String" />
+
+		<column name="shapeType" type="String" />
+		<column name="radius" type="long" />
 
 		<!-- Order -->
 		<order by="asc">

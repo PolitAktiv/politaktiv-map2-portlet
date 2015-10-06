@@ -15,18 +15,6 @@
 
 package org.politaktiv.map.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.portlet.ValidatorException;
-
-import org.apache.log4j.Logger;
-import org.politaktiv.map.model.Marker;
-import org.politaktiv.map.service.MarkerLocalServiceUtil;
-import org.politaktiv.map.service.base.MarkerServiceBaseImpl;
-import org.politaktiv.map.service.permission.MarkerPermission;
-import org.politaktiv.map.service.persistence.MarkerUtil;
-
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -34,6 +22,16 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.ac.AccessControlled;
 import com.liferay.portal.security.auth.PrincipalException;
+import org.apache.log4j.Logger;
+import org.politaktiv.map.model.Marker;
+import org.politaktiv.map.service.MarkerLocalServiceUtil;
+import org.politaktiv.map.service.base.MarkerServiceBaseImpl;
+import org.politaktiv.map.service.permission.ShapePermission;
+import org.politaktiv.map.service.persistence.MarkerUtil;
+
+import javax.portlet.ValidatorException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The implementation of the marker remote service.
@@ -72,7 +70,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		long currentUserId = user.getUserId();
 		
 		// TODO: review mje 18.09.: Do not use static services in here - we've spring - so let's use DI! 
-		MarkerPermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
+		ShapePermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
 
 		Date currentDate = new Date();
 
@@ -96,9 +94,9 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		marker = MarkerLocalServiceUtil.addMarker(marker);
 
-		boolean canUserUpdateMarker = MarkerPermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
+//		boolean canUserUpdateMarker = ShapePermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
 		
-		marker.setUpdatableByCurrentUser(canUserUpdateMarker);
+//		marker.setUpdatableByCurrentUser(canUserUpdateMarker);
 
 		LOGGER.info("Marker: " + title + " for user: " + currentUserId + " has been created.");
 
@@ -110,7 +108,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		Marker marker = MarkerLocalServiceUtil.getMarker(markerId);
 		
-		MarkerPermission.checkUpdate(getPermissionChecker(), marker.getGroupId(), portletId, primKey, marker.getUserId());
+		ShapePermission.checkUpdate(getPermissionChecker(), marker.getGroupId(), portletId, primKey, marker.getUserId());
 
 		Date currentDate = new Date();
 
@@ -134,32 +132,32 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 		List<Marker> markers = MarkerUtil.findAll();
 
-		try {
+//		try {
 			for (Marker marker : markers) {
-				boolean canUserUpdateMarker = MarkerPermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
+//				boolean canUserUpdateMarker = ShapePermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
 				
-				marker.setUpdatableByCurrentUser(canUserUpdateMarker);
+//				marker.setUpdatableByCurrentUser(canUserUpdateMarker);
 				marker.setContent(HtmlUtil.escape(marker.getContent()));
 				marker.setTitle(HtmlUtil.escape(marker.getTitle()));
 			}
 
-		} catch (PrincipalException e) {
-			LOGGER.info("Can't get permission checker " + e.getMessage());
-		}
+//		} catch (PrincipalException e) {
+//			LOGGER.info("Can't get permission checker " + e.getMessage());
+//		}
 
 		return markers;
 	}
 
 	public List<Marker> getMarkersByUserId(String portletId, String primKey, long userId) throws SystemException, PrincipalException {
 
-		MarkerPermission.checkOwner(getPermissionChecker(), userId);
+		ShapePermission.checkOwner(getPermissionChecker(), userId);
 		
 		List<Marker> markers = MarkerUtil.findByUserId(userId);
 
 		for (Marker marker : markers) {
-			boolean canUserUpdateMarker = MarkerPermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
+//			boolean canUserUpdateMarker = ShapePermission.canUpdateMarker(getPermissionChecker(), marker, portletId, primKey);
 			
-			marker.setUpdatableByCurrentUser(canUserUpdateMarker);
+//			marker.setUpdatableByCurrentUser(canUserUpdateMarker);
 			marker.setContent(HtmlUtil.escape(marker.getContent()));
 			marker.setTitle(HtmlUtil.escape(marker.getTitle()));
 		}

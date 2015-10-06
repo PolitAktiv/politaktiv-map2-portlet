@@ -35,7 +35,7 @@
 <%@ page import="javax.portlet.ActionRequest" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
 
-<%@ page import="org.politaktiv.map.service.permission.MarkerPermission" %>
+<%@ page import="org.politaktiv.map.service.permission.ShapePermission" %>
 
 <%@ page import="static org.politaktiv.map.Constants.CENTER_LONGTITUDE" %>
 <%@ page import="static org.politaktiv.map.Constants.CENTER_LATITUDE" %>

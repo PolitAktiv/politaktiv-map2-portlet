@@ -7,9 +7,20 @@
 			<access>PROPERTY</access>
 		</persistence-unit-defaults>
 	</persistence-unit-metadata>
-	<mapped-superclass class="org.politaktiv.map.model.impl.MarkerModelImpl">
+	<mapped-superclass class="org.politaktiv.map.model.impl.CoordinateModelImpl">
 		<attributes>
-			<id name="markerId" />
+			<id name="coordinateId" />
+			<basic name="shapeId" />
+			<basic name="longitude" />
+			<basic name="latitude" />
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+		</attributes>
+	</mapped-superclass>
+	<mapped-superclass class="org.politaktiv.map.model.impl.ShapeModelImpl">
+		<attributes>
+			<id name="shapeId" />
 			<basic name="groupId" />
 			<basic name="companyId" />
 			<basic name="userId" />
@@ -21,17 +32,22 @@
 				<temporal>TIMESTAMP</temporal>
 			</basic>
 			<basic name="title" />
-			<basic name="content" />
-			<basic name="longitude" />
-			<basic name="latitude" />
+			<basic name="abstractDescription" />
+			<basic name="url" />
+			<basic name="shapeType" />
+			<basic name="radius" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
-	<entity class="org.politaktiv.map.model.impl.MarkerImpl" name="Marker">
-		<table name="politaktivmaptwo_Marker" />
+	<entity class="org.politaktiv.map.model.impl.CoordinateImpl" name="Coordinate">
+		<table name="politaktivmaptwo_Coordinate" />
+		<attributes />
+	</entity>
+	<entity class="org.politaktiv.map.model.impl.ShapeImpl" name="Shape">
+		<table name="politaktivmaptwo_Shape" />
 		<attributes>
 			<transient name="updatableByCurrentUser" />
 		</attributes>
