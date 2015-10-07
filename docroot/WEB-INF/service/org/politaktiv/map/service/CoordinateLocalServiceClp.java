@@ -125,9 +125,13 @@ public class CoordinateLocalServiceClp implements CoordinateLocalService {
 
 		_methodParameterTypes20 = new String[] { "long", "java.util.List" };
 
-		_methodName21 = "removeCoordinatesByShapeId";
+		_methodName21 = "getAllCoordinatesByShapeId";
 
 		_methodParameterTypes21 = new String[] { "long" };
+
+		_methodName22 = "removeCoordinatesByShapeId";
+
+		_methodParameterTypes22 = new String[] { "long" };
 	}
 
 	@Override
@@ -761,11 +765,40 @@ public class CoordinateLocalServiceClp implements CoordinateLocalService {
 	}
 
 	@Override
+	public java.util.List<org.politaktiv.map.model.Coordinate> getAllCoordinatesByShapeId(
+		long shapeId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName21,
+					_methodParameterTypes21, new Object[] { shapeId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<org.politaktiv.map.model.Coordinate>)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
 	public void removeCoordinatesByShapeId(long shapeId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		try {
-			_invokableLocalService.invokeMethod(_methodName21,
-				_methodParameterTypes21, new Object[] { shapeId });
+			_invokableLocalService.invokeMethod(_methodName22,
+				_methodParameterTypes22, new Object[] { shapeId });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -827,4 +860,6 @@ public class CoordinateLocalServiceClp implements CoordinateLocalService {
 	private String[] _methodParameterTypes20;
 	private String _methodName21;
 	private String[] _methodParameterTypes21;
+	private String _methodName22;
+	private String[] _methodParameterTypes22;
 }

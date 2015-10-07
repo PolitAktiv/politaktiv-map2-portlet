@@ -48,6 +48,9 @@ public class CoordinateLocalServiceImpl extends CoordinateLocalServiceBaseImpl {
 	 */
 
     private static final Logger LOGGER = Logger.getLogger(CoordinateLocalServiceImpl.class);
+    public static final int POINT_SIZE = 2;
+    public static final int COORDINATE_LONGITUDE = 0;
+    public static final int COORDINATE_LATITUDE = 1;
 
     public Coordinate addCoordinate(long shapeId, String longitude, String latitude) throws SystemException, ValidatorException {
 
@@ -70,15 +73,20 @@ public class CoordinateLocalServiceImpl extends CoordinateLocalServiceBaseImpl {
         List<Coordinate> coordinates = new ArrayList<Coordinate>();
 
         for (List<String> points:coordinatesList){
-            if (points.size()<2){
-                throw new ValidatorException("Coordinate must have two points", null);
+            if (points.size() < POINT_SIZE){
+                throw new ValidatorException("Coordinate must have longitude and latitude", null);
             }
-            Coordinate coordinate = addCoordinate(shapeId, points.get(0), points.get(1));
+            Coordinate coordinate = addCoordinate(shapeId, points.get(COORDINATE_LONGITUDE), points.get(COORDINATE_LATITUDE));
             coordinates.add(coordinate);
         }
 
         return coordinates;
     }
+
+    public List<Coordinate> getAllCoordinatesByShapeId(long shapeId) throws SystemException {
+        return coordinatePersistence.findByShapeId(shapeId);
+    }
+
 
     public void removeCoordinatesByShapeId(long shapeId) throws SystemException {
 

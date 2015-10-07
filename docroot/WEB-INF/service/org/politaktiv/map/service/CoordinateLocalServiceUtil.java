@@ -290,6 +290,12 @@ public class CoordinateLocalServiceUtil {
 		return getService().addCoordinates(shapeId, coordinatesList);
 	}
 
+	public static java.util.List<org.politaktiv.map.model.Coordinate> getAllCoordinatesByShapeId(
+		long shapeId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getAllCoordinatesByShapeId(shapeId);
+	}
+
 	public static void removeCoordinatesByShapeId(long shapeId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		getService().removeCoordinatesByShapeId(shapeId);

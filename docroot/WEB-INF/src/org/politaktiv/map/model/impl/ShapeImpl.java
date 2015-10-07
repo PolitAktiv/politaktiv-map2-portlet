@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.util.Validator;
 import org.politaktiv.map.model.Coordinate;
-import org.politaktiv.map.service.persistence.CoordinateUtil;
+import org.politaktiv.map.service.CoordinateLocalServiceUtil;
 
 import javax.portlet.ValidatorException;
 import java.util.List;
@@ -61,7 +61,7 @@ public class ShapeImpl extends ShapeBaseImpl {
     @JSON
     @Override
     public List<Coordinate> getCoordinates() throws SystemException {
-        return CoordinateUtil.findByShapeId(getShapeId());
+        return CoordinateLocalServiceUtil.getAllCoordinatesByShapeId(getShapeId());
     }
 
     @Override

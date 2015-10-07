@@ -4,8 +4,12 @@
 	<model name="org.politaktiv.map.model.Coordinate">
 		<field name="coordinateId" type="long" />
 		<field name="shapeId" type="long" />
-		<field name="longitude" type="String" />
-		<field name="latitude" type="String" />
+		<field name="longitude" type="String">
+			<hint name="max-length">11</hint>
+		</field>
+		<field name="latitude" type="String">
+			<hint name="max-length">11</hint>
+		</field>
 	</model>
 	<model name="org.politaktiv.map.model.Shape">
 		<field name="shapeId" type="long" />
@@ -16,8 +20,12 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="title" type="String" />
-		<field name="abstractDescription" type="String" />
-		<field name="url" type="String" />
+		<field name="abstractDescription" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="url" type="String">
+			<hint name="max-length">256</hint>
+		</field>
 		<field name="shapeType" type="String" />
 		<field name="radius" type="long" />
 	</model>

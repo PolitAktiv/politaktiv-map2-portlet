@@ -305,6 +305,13 @@ public class CoordinateLocalServiceWrapper implements CoordinateLocalService,
 	}
 
 	@Override
+	public java.util.List<org.politaktiv.map.model.Coordinate> getAllCoordinatesByShapeId(
+		long shapeId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _coordinateLocalService.getAllCoordinatesByShapeId(shapeId);
+	}
+
+	@Override
 	public void removeCoordinatesByShapeId(long shapeId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_coordinateLocalService.removeCoordinatesByShapeId(shapeId);

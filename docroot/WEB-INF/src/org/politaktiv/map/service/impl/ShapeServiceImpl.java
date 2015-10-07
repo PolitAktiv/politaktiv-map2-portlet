@@ -85,10 +85,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setShapeType(shapeType);
         shape.setRadius(radius);
 
-
-
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
-//        shape.setCoordinates(points);
 
         shape.validate();
 
@@ -117,12 +114,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setUrl(url);
         shape.setRadius(radius);
 
-
-//        shape.setCoordinates(points);
-
-
         CoordinateLocalServiceUtil.removeCoordinatesByShapeId(shapeId);
-
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
 
         shape.validate();

@@ -259,6 +259,11 @@ public interface CoordinateLocalService extends BaseLocalService,
 		throws com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<org.politaktiv.map.model.Coordinate> getAllCoordinatesByShapeId(
+		long shapeId)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
 	public void removeCoordinatesByShapeId(long shapeId)
 		throws com.liferay.portal.kernel.exception.SystemException;
 }

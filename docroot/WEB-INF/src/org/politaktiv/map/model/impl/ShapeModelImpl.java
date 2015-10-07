@@ -79,7 +79,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			{ "shapeType", Types.VARCHAR },
 			{ "radius", Types.BIGINT }
 		};
-	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(75) null,url VARCHAR(75) null,shapeType VARCHAR(75) null,radius LONG)";
+	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,url VARCHAR(256) null,shapeType VARCHAR(75) null,radius LONG)";
 	public static final String TABLE_SQL_DROP = "drop table politaktivmaptwo_Shape";
 	public static final String ORDER_BY_JPQL = " ORDER BY shape.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Shape.createDate ASC";

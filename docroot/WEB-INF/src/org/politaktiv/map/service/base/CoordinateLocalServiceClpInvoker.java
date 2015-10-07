@@ -124,9 +124,13 @@ public class CoordinateLocalServiceClpInvoker {
 
 		_methodParameterTypes47 = new String[] { "long", "java.util.List" };
 
-		_methodName48 = "removeCoordinatesByShapeId";
+		_methodName48 = "getAllCoordinatesByShapeId";
 
 		_methodParameterTypes48 = new String[] { "long" };
+
+		_methodName49 = "removeCoordinatesByShapeId";
+
+		_methodParameterTypes49 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -244,6 +248,11 @@ public class CoordinateLocalServiceClpInvoker {
 
 		if (_methodName48.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes48, parameterTypes)) {
+			return CoordinateLocalServiceUtil.getAllCoordinatesByShapeId(((Long)arguments[0]).longValue());
+		}
+
+		if (_methodName49.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes49, parameterTypes)) {
 			CoordinateLocalServiceUtil.removeCoordinatesByShapeId(((Long)arguments[0]).longValue());
 
 			return null;
@@ -294,4 +303,6 @@ public class CoordinateLocalServiceClpInvoker {
 	private String[] _methodParameterTypes47;
 	private String _methodName48;
 	private String[] _methodParameterTypes48;
+	private String _methodName49;
+	private String[] _methodParameterTypes49;
 }
