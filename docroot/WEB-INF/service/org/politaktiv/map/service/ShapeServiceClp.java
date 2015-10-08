@@ -112,38 +112,40 @@ public class ShapeServiceClp implements ShapeService {
 	}
 
 	@Override
-	public void addShape(java.lang.String portletId, java.lang.String primKey,
-		long groupId, long companyId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius,
+	public org.politaktiv.map.model.Shape addShape(java.lang.String portletId,
+		java.lang.String primKey, long groupId, long companyId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String url, java.lang.String shapeType, long radius,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
+		Object returnObj = null;
+
 		try {
-			_invokableService.invokeMethod(_methodName3,
-				_methodParameterTypes3,
-				new Object[] {
-					ClpSerializer.translateInput(portletId),
-					
-				ClpSerializer.translateInput(primKey),
-					
-				groupId,
-					
-				companyId,
-					
-				ClpSerializer.translateInput(title),
-					
-				ClpSerializer.translateInput(abstractDescription),
-					
-				ClpSerializer.translateInput(url),
-					
-				ClpSerializer.translateInput(shapeType),
-					
-				radius,
-					
-				ClpSerializer.translateInput(points)
-				});
+			returnObj = _invokableService.invokeMethod(_methodName3,
+					_methodParameterTypes3,
+					new Object[] {
+						ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					groupId,
+						
+					companyId,
+						
+					ClpSerializer.translateInput(title),
+						
+					ClpSerializer.translateInput(abstractDescription),
+						
+					ClpSerializer.translateInput(url),
+						
+					ClpSerializer.translateInput(shapeType),
+						
+					radius,
+						
+					ClpSerializer.translateInput(points)
+					});
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -168,39 +170,43 @@ public class ShapeServiceClp implements ShapeService {
 					" is not a valid exception");
 			}
 		}
+
+		return (org.politaktiv.map.model.Shape)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override
-	public void updateShape(java.lang.String portletId,
-		java.lang.String primKey, long shapeId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius,
+	public org.politaktiv.map.model.Shape updateShape(
+		java.lang.String portletId, java.lang.String primKey, long shapeId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String url, java.lang.String shapeType, long radius,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
+		Object returnObj = null;
+
 		try {
-			_invokableService.invokeMethod(_methodName4,
-				_methodParameterTypes4,
-				new Object[] {
-					ClpSerializer.translateInput(portletId),
-					
-				ClpSerializer.translateInput(primKey),
-					
-				shapeId,
-					
-				ClpSerializer.translateInput(title),
-					
-				ClpSerializer.translateInput(abstractDescription),
-					
-				ClpSerializer.translateInput(url),
-					
-				ClpSerializer.translateInput(shapeType),
-					
-				radius,
-					
-				ClpSerializer.translateInput(points)
-				});
+			returnObj = _invokableService.invokeMethod(_methodName4,
+					_methodParameterTypes4,
+					new Object[] {
+						ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					shapeId,
+						
+					ClpSerializer.translateInput(title),
+						
+					ClpSerializer.translateInput(abstractDescription),
+						
+					ClpSerializer.translateInput(url),
+						
+					ClpSerializer.translateInput(shapeType),
+						
+					radius,
+						
+					ClpSerializer.translateInput(points)
+					});
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -225,6 +231,8 @@ public class ShapeServiceClp implements ShapeService {
 					" is not a valid exception");
 			}
 		}
+
+		return (org.politaktiv.map.model.Shape)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override

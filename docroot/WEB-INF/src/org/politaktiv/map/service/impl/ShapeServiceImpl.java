@@ -58,7 +58,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
     private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
 
 
-    public void addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String url, String shapeType, long radius, List<List<String>> points)
+    public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String url, String shapeType, long radius, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
         User user = getPermissionChecker().getUser();
@@ -87,18 +87,18 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
 
-        shape.validate();
+        shape.validate(points);
 
         ShapeLocalServiceUtil.updateShape(shape);
 
         LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been created.");
 
-
+        return shape;
     }
 
 
 
-    public void updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String url, String shapeType, long radius, List<List<String>> points)
+    public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String url, String shapeType, long radius, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
@@ -117,12 +117,13 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         CoordinateLocalServiceUtil.removeCoordinatesByShapeId(shapeId);
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
 
-        shape.validate();
+        shape.validate(points);
 
         ShapeLocalServiceUtil.updateShape(shape);
 
         LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been updated.");
 
+        return shape;
     }
 
 

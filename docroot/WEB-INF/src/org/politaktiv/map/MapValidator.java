@@ -1,8 +1,11 @@
 package org.politaktiv.map;
 
 // review mje 12.08.: buildpath is not working in eclipse - we have to fix this as soon as default vm is available ...
+
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.List;
 
 public final class MapValidator {
 
@@ -17,4 +20,15 @@ public final class MapValidator {
 				|| !Validator.isNumber(replacedCoordinate)
 				|| coordinate.length() > 11;
 	}
+
+    public static boolean isNotValidCoordinate(final List<String> coordinates){
+
+        if (coordinates.size()!=2){
+            return true;
+        }
+
+        return isNotValidCoordinate(coordinates.get(0))
+                && isNotValidCoordinate(coordinates.get(1));
+
+    }
 }

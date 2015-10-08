@@ -65,19 +65,19 @@ public interface ShapeService extends BaseService, InvokableService {
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public void addShape(java.lang.String portletId, java.lang.String primKey,
-		long groupId, long companyId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius,
+	public org.politaktiv.map.model.Shape addShape(java.lang.String portletId,
+		java.lang.String primKey, long groupId, long companyId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String url, java.lang.String shapeType, long radius,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;
 
-	public void updateShape(java.lang.String portletId,
-		java.lang.String primKey, long shapeId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius,
+	public org.politaktiv.map.model.Shape updateShape(
+		java.lang.String portletId, java.lang.String primKey, long shapeId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String url, java.lang.String shapeType, long radius,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,

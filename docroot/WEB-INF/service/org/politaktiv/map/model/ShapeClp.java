@@ -490,22 +490,6 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	}
 
 	@Override
-	public void validate() {
-		try {
-			String methodName = "validate";
-
-			Class<?>[] parameterTypes = new Class<?>[] {  };
-
-			Object[] parameterValues = new Object[] {  };
-
-			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
-		}
-		catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
-
-	@Override
 	public boolean isUpdatableByCurrentUser() {
 		try {
 			String methodName = "isUpdatableByCurrentUser";
@@ -518,6 +502,23 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 					parameterTypes, parameterValues);
 
 			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
+	public void validate(
+		java.util.List<java.util.List<java.lang.String>> points) {
+		try {
+			String methodName = "validate";
+
+			Class<?>[] parameterTypes = new Class<?>[] { java.util.List.class };
+
+			Object[] parameterValues = new Object[] { points };
+
+			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
 		}
 		catch (Exception e) {
 			throw new UnsupportedOperationException(e);

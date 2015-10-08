@@ -77,7 +77,7 @@ public class ShapeServiceClpInvoker {
 
 		if (_methodName30.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes30, parameterTypes)) {
-			ShapeServiceUtil.addShape((java.lang.String)arguments[0],
+			return ShapeServiceUtil.addShape((java.lang.String)arguments[0],
 				(java.lang.String)arguments[1],
 				((Long)arguments[2]).longValue(),
 				((Long)arguments[3]).longValue(),
@@ -85,21 +85,17 @@ public class ShapeServiceClpInvoker {
 				(java.lang.String)arguments[6], (java.lang.String)arguments[7],
 				((Long)arguments[8]).longValue(),
 				(java.util.List<java.util.List<java.lang.String>>)arguments[9]);
-
-			return null;
 		}
 
 		if (_methodName31.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes31, parameterTypes)) {
-			ShapeServiceUtil.updateShape((java.lang.String)arguments[0],
+			return ShapeServiceUtil.updateShape((java.lang.String)arguments[0],
 				(java.lang.String)arguments[1],
 				((Long)arguments[2]).longValue(),
 				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
 				(java.lang.String)arguments[5], (java.lang.String)arguments[6],
 				((Long)arguments[7]).longValue(),
 				(java.util.List<java.util.List<java.lang.String>>)arguments[8]);
-
-			return null;
 		}
 
 		if (_methodName32.equals(name) &&

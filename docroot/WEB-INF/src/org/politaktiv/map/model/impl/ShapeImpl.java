@@ -17,6 +17,8 @@ package org.politaktiv.map.model.impl;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.util.Validator;
+import org.politaktiv.map.MapValidator;
+import org.politaktiv.map.ShapeType;
 import org.politaktiv.map.model.Coordinate;
 import org.politaktiv.map.service.CoordinateLocalServiceUtil;
 
@@ -33,7 +35,9 @@ import java.util.List;
  * @author Paul Butenko
  */
 public class ShapeImpl extends ShapeBaseImpl {
-	/*
+    public static final int POINT_COORDINATE_SIZE = 1;
+    public static final int RECTANGLE_COORDINATE_SIZE = 4;
+    /*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. All methods that expect a shape model instance should use the {@link org.politaktiv.map.model.Shape} interface instead.
@@ -65,19 +69,61 @@ public class ShapeImpl extends ShapeBaseImpl {
     }
 
     @Override
-    public void validate() throws ValidatorException, SystemException {
+    public void validate(List<List<String>> points) throws ValidatorException, SystemException {
 
         this.validateAbstractDescription();
         this.validateTitle();
-        this.validateCoordinates();
+        this.validateCoordinates(points);
 
     }
 
-    private void validateCoordinates() throws SystemException, ValidatorException {
-        for (Coordinate coordinate:getCoordinates()){
-            coordinate.validate();
+    private void validateCoordinates(List<List<String>> points) throws SystemException, ValidatorException {
+
+        if (Validator.isNull(points)||points.isEmpty()){
+            throw new ValidatorException("Coordinates is mandatory ",null);
+        }
+        for (List<String> point:points){
+            if (MapValidator.isNotValidCoordinate(point)){
+                throw new ValidatorException("Coordinate is not valid", null);
+            }
         }
 
+        switch (ShapeType.valueOf(getShapeType())) {
+            case POINT:
+                validatePoint(points);
+                break;
+            case CIRCLE:
+                validateCircle(points);
+                break;
+            case RECTANGLE:
+                validateRectangle(points);
+                break;
+        }
+    }
+
+    private void validateRectangle(List<List<String>> points) throws ValidatorException {
+        if (points.size() != RECTANGLE_COORDINATE_SIZE){
+            throw new ValidatorException("Rectangle must have only "+RECTANGLE_COORDINATE_SIZE+" coordinate", null);
+        }
+
+    }
+
+    private void validatePoint(List<List<String>> points) throws ValidatorException {
+        if (points.size() != POINT_COORDINATE_SIZE) {
+            throw new ValidatorException("POINT must have only "+POINT_COORDINATE_SIZE+" coordinate", null);
+        }
+    }
+
+    private void validateCircle(List<List<String>> points) throws ValidatorException {
+        if (points.size() != POINT_COORDINATE_SIZE){
+            throw new ValidatorException("CIRCLE must have only one center", null);
+        }
+        if (Validator.isNull(getRadius())){
+            throw new ValidatorException("Radius is mandatory", null);
+        }
+        if (getRadius()<0){
+            throw new ValidatorException("Radius cannot be negative", null);
+        }
     }
 
     private void validateAbstractDescription() throws ValidatorException {

@@ -544,10 +544,11 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 	}
 
 	@Override
-	public void validate()
+	public void validate(
+		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
-		_shape.validate();
+		_shape.validate(points);
 	}
 
 	@Override

@@ -62,15 +62,19 @@ import java.rmi.RemoteException;
  * @generated
  */
 public class ShapeServiceSoap {
-	public static void addShape(java.lang.String portletId,
-		java.lang.String primKey, long groupId, long companyId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String url, java.lang.String shapeType, long radius,
+	public static org.politaktiv.map.model.ShapeSoap addShape(
+		java.lang.String portletId, java.lang.String primKey, long groupId,
+		long companyId, java.lang.String title,
+		java.lang.String abstractDescription, java.lang.String url,
+		java.lang.String shapeType, long radius,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws RemoteException {
 		try {
-			ShapeServiceUtil.addShape(portletId, primKey, groupId, companyId,
-				title, abstractDescription, url, shapeType, radius, points);
+			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.addShape(portletId,
+					primKey, groupId, companyId, title, abstractDescription,
+					url, shapeType, radius, points);
+
+			return org.politaktiv.map.model.ShapeSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -79,15 +83,18 @@ public class ShapeServiceSoap {
 		}
 	}
 
-	public static void updateShape(java.lang.String portletId,
-		java.lang.String primKey, long shapeId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius,
+	public static org.politaktiv.map.model.ShapeSoap updateShape(
+		java.lang.String portletId, java.lang.String primKey, long shapeId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String url, java.lang.String shapeType, long radius,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws RemoteException {
 		try {
-			ShapeServiceUtil.updateShape(portletId, primKey, shapeId, title,
-				abstractDescription, url, shapeType, radius, points);
+			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.updateShape(portletId,
+					primKey, shapeId, title, abstractDescription, url,
+					shapeType, radius, points);
+
+			return org.politaktiv.map.model.ShapeSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

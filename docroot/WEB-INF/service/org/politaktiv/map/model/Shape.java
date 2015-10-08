@@ -39,7 +39,8 @@ public interface Shape extends ShapeModel, PersistedModel {
 	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates()
 		throws com.liferay.portal.kernel.exception.SystemException;
 
-	public void validate()
+	public void validate(
+		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;
 }
