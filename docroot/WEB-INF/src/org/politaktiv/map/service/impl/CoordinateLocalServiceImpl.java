@@ -76,7 +76,7 @@ public class CoordinateLocalServiceImpl extends CoordinateLocalServiceBaseImpl {
             if (points.size() < POINT_SIZE){
                 throw new ValidatorException("Coordinate must have longitude and latitude", null);
             }
-            Coordinate coordinate = addCoordinate(shapeId, points.get(COORDINATE_LONGITUDE), points.get(COORDINATE_LATITUDE));
+            Coordinate coordinate = addCoordinate(shapeId, points.get(COORDINATE_LATITUDE), points.get(COORDINATE_LONGITUDE));
             coordinates.add(coordinate);
         }
 

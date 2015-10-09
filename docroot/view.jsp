@@ -30,6 +30,27 @@ boolean canUpdateMarkers = ShapePermission.canUpdatePersonalMarkers(permissionCh
 <% // div contains map %>
 <div id="<portlet:namespace />map" class="map"></div>
 
+<div id="<portlet:namespace />PopupTemplate" class="map-popup-wrapper hide">
+	<div class="leaflet-custom-popup-content">
+		<div class="leaflet-marker-custom-title-wrap">
+			<span class="leaflet-marker-custom-title">asdfg222222222222222222</span>
+			<span class="leaflet-marker-edit-descr hide"></span>
+		</div>
+		<div class="leaflet-marker-url-wrap hide">
+			<span class="">http://</span>
+			<span class="leaflet-marker-edit-descr"></span>
+		</div>
+		<div class="leaflet-marker-text-wrap">
+			<div class="leaflet-marker-text">descr</div>
+			<span class="leaflet-marker-edit-descr hide"></span>
+		</div>
+		<div class="leaflet-marker-author">
+			Added by:
+			<span>Joe Bloggs</span>
+		</div>
+	</div>
+</div>
+
 
 <br/>
 
@@ -49,6 +70,7 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawL
 <%-- ajax calls details: /api/jsonws?contextPath=/politaktiv-map2-portlet --%>
     var map2 = createMap2({
         wrapperId: '<portlet:namespace />map',
+        popupTemplateId: '<portlet:namespace />PopupTemplate',
         groupId: <%= portletGroupId %>,
         companyId: <%= company.getCompanyId() %>,
         portletId: '<%= portletId %>',

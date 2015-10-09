@@ -69,9 +69,16 @@ L.Control.MarkersList = L.Control.extend({
         this._list.appendChild(item);
 
         L.DomEvent.on(item, 'click', function() {
-            if (console) console.log(marker.getLatLng());
-            self._map.setView(marker.getLatLng());
+        	var center;
+        	if (typeof marker.getLatLng === 'function'){
+        		center = marker.getLatLng();
+            } else {
+            	center = marker.getBounds().getCenter();
+            }
+    		if (console) console.log(center);
+            self._map.setView(center);
             marker.openPopup();
+            marker._popup.setLatLng(center);
         });
     }
 

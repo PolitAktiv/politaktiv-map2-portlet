@@ -28,7 +28,7 @@ function createMap2 (prop) {
                     position: 'topleft',
                     title: prop.translations.resetZoom,
                     forceSeparateButton: false,
-                    vcLatLng: [prop.center.lng, prop.center.lat],
+                    vcLatLng: [prop.center.lat, prop.center.lng],
                     vcZoom: prop.zoomLevel
             };
 
@@ -38,7 +38,7 @@ function createMap2 (prop) {
 
         getMarkers: function() {
             Liferay.Service(
-                    '/politaktiv-map2-portlet.marker/get-all-markers',
+                    '/politaktiv-map2-portlet.shape/get-all-shapes',
                     data = {
                             portletId: prop.portletId,
                             primKey: prop.primKey
@@ -47,9 +47,9 @@ function createMap2 (prop) {
                         if (console) console.log('ok:');
                         if (console) console.log(res);
 
-                        _Map2.initMarkers(res);
-                        _Map2.initMarkersList(res);
-                        _Map2.initMarkersControls();
+                        _Map2.initShapes(res);
+                        _Map2.initShapesList(res);
+                        _Map2.initShapesControls();
                     },
                     exceptionCallback = function(res) {
                         if (console) console.log('fail:');
@@ -58,8 +58,8 @@ function createMap2 (prop) {
             );
         },
 
-        initMarkers: function(markersData) {
-            var i, len = markersData.length;
+        initShapes: function(shapesData) {
+            var i, len = shapesData.length;
 
             _Map2.ownIcon = L.icon({
                 iconUrl: '/politaktiv-map2-portlet/images/marker-icon-red.png',
@@ -82,83 +82,181 @@ function createMap2 (prop) {
             _Map2.editableLayers = new L.FeatureGroup();
 
             for (i=0; i<len; i++) {
-                _Map2.initMarker(markersData[i]);
+                _Map2.initShape(shapesData[i]);
             }
         },
 
-        initMarker: function(markerData) {
-            var marker;
-            if (markerData.userId === prop.userId) {
-                marker = L.marker([markerData.latitude, markerData.longitude], {icon: _Map2.ownIcon, markerData: markerData});
-                _Map2.ownLayers.addLayer(marker);
-            } else {
-                marker = L.marker([markerData.latitude, markerData.longitude], {markerData: markerData});
-                _Map2.otherLayers.addLayer(marker);
-            }
-            if (markerData.updatableByCurrentUser) {
-                _Map2.editableLayers.addLayer(marker);
+        initShape: function(shapeData) {
+            var shape;
+    		var points = [];
+    		var coordsFormatted = [];
+    		for (var i=0; i<shapeData.coordinates.length; i++) {
+    			points.push([	Number(shapeData.coordinates[i].latitude).toString(),
+    			                Number(shapeData.coordinates[i].longitude).toString()  ]);
+    			coordsFormatted.push([	Number(shapeData.coordinates[i].latitude),
+    			                      	Number(shapeData.coordinates[i].longitude)  ]);
+    		}
+    		shapeData.coordinates = null;
+    		shapeData.points = points;
+
+    		var properties = { markerData: shapeData };
+    		if (shapeData.userId === prop.userId) {
+    			if(shapeData.shapeType === 'POINT') {
+	    			properties.icon = _Map2.ownIcon;
+	    		} else {
+	    			properties.color = '#d11';
+	    		}
+			}
+
+            switch (shapeData.shapeType) {
+	        	case 'POINT':
+        			shape = L.marker(coordsFormatted[0], properties);
+	        		break;
+	        	case 'POLYLINE':
+        			shape = L.polyline(coordsFormatted, properties);
+	        		break;
+	        	case 'CIRCLE':
+        			shape = L.circle(coordsFormatted[0], shapeData.radius, properties);
+	        		break;
+	        	case 'POLYGON':
+        			shape = L.polygon(coordsFormatted, properties);
+	        		break;
+	        	case 'RECTANGLE':
+        			shape = L.rectangle(coordsFormatted, properties);
+	        		break;
             }
 
-            _Map2.initPopup(marker);
+            if (shapeData.userId === prop.userId) {
+                _Map2.ownLayers.addLayer(shape);
+            } else {
+                _Map2.otherLayers.addLayer(shape);
+            }
+            if (shapeData.updatableByCurrentUser) {
+                _Map2.editableLayers.addLayer(shape);
+            }
+
+            _Map2.initPopup(shape);
         },
         
-        initPopup: function(marker) {
+        initPopup: function(shape) {
 
             // create a popup
+        	/*var template = L.DomUtil.get(prop.popupTemplateId);
+        	var popupContent = template.cloneNode();
+        	popupContent.removeClass('hide');*/
+
             var popupObj = new L.Popup();
             var popupContent = L.DomUtil.create('div', 'leaflet-custom-popup-content');
 
             var popupTitleWrap = L.DomUtil.create('div', _Map2.markerTitleWrapClass);
-            var popupTitle = L.DomUtil.create('span', _Map2.markerTitleClass);
-            popupTitle.innerHTML = marker.options.markerData.title;
+            var popupTitle;
+            if (shape.options.markerData.url) {
+	            popupTitle = L.DomUtil.create('a', _Map2.markerTitleClass);
+	            popupTitle.href = shape.options.markerData.url;
+	            popupTitle.target='_blank';
+            } else {
+	            popupTitle = L.DomUtil.create('span', _Map2.markerTitleClass);
+            }
+
+            popupTitle.innerHTML = shape.options.markerData.title;
             popupTitleWrap.appendChild(popupTitle);
             popupContent.appendChild(popupTitleWrap);
 
-            if (marker.options.markerData.updatableByCurrentUser) { // add "edit button" if marker is editable
+            if (shape.options.markerData.updatableByCurrentUser) { // add "edit button" if marker is editable
                 var editTitle = L.DomUtil.create('span', _Map2.editButtonClass);
                 popupTitleWrap.appendChild(editTitle);
 
                 L.DomEvent.on(editTitle, 'click', function() {
-                    var markerTitle = prompt(prop.translations.editTitleMessage, marker.options.markerData.title);
+                    var title = prompt(prop.translations.editTitleMessage, shape.options.markerData.title);
 
-                    if (markerTitle != null) {
-                        marker.options.markerData.title = markerTitle;
-                        _Map2.updateMarkerData(marker, function(){
-                            popupTitle.innerHTML = markerTitle;
+                    if (title != null) {
+                        // update marker
+                    	shape.options.markerData.title = title;
+                        _Map2.updateMarkerData(shape, function(){
+                            popupTitle.innerHTML = title;
                             popupObj.update();
                             _Map2.markersList.update();
                         },
                         function(){
-                            marker.options.markerData.title = popupTitle.innerHTML;
+                        	shape.options.markerData.title = popupTitle.innerHTML;
                         });
                     }
-                    // update marker
+                });
+
+            	var popupUrlWrap = L.DomUtil.create('div', 'leaflet-marker-url-wrap');
+            	var popupUrl = L.DomUtil.create('span');
+            	popupUrl.innerHTML = shape.options.markerData.url || 'http://';
+            	popupUrlWrap.appendChild(popupUrl);
+            	var editUrl = L.DomUtil.create('span', _Map2.editButtonClass);
+            	popupUrlWrap.appendChild(editUrl);
+            	popupContent.appendChild(popupUrlWrap);
+
+            	L.DomEvent.on(editUrl, 'click', function() {
+                    var url = prompt(prop.translations.editUrlMessage, shape.options.markerData.url);
+
+                    if (url != null) {
+                    	shape.options.markerData.url = url;
+                        _Map2.updateMarkerData(shape, function(){
+                            popupUrl.innerHTML = url;
+                            popupObj.update();
+                            _Map2.markersList.update();
+                        },
+                        function() {
+                        	shape.options.markerData.url = popupUrl.innerHTML;
+                        });
+                    }
                 });
             }
 
+            var popupTextWrap = L.DomUtil.create('div', 'leaflet-marker-text-wrap');
             var popupText = L.DomUtil.create('div', _Map2.markerTextClass);
-            popupText.innerHTML = marker.options.markerData.content;
-            popupContent.appendChild(popupText);
+            popupText.innerHTML = shape.options.markerData.abstractDescription;
+            popupTextWrap.appendChild(popupText);
+            popupContent.appendChild(popupTextWrap);
+
+            if (shape.options.markerData.updatableByCurrentUser) {    
+                var editText = L.DomUtil.create('span', _Map2.editButtonClass);
+                popupTextWrap.appendChild(editText);
+
+                L.DomEvent.on(editText, 'click', function() {
+                    var text = prompt(prop.translations.editTextMessage, shape.options.markerData.abstractDescription);
+
+                    if (text != null) {
+                    	shape.options.markerData.abstractDescription = text;
+                        _Map2.updateMarkerData(shape, function(){
+                            popupTitle.innerHTML = text;
+                            popupObj.update();
+                            _Map2.markersList.update();
+                        },
+                        function(){
+                        	shape.options.markerData.abstractDescription = popupText.innerHTML;
+                        });
+                    }
+                });
+            }
 
             var popupAuthor = L.DomUtil.create('div', _Map2.markerAuthorClass);
-            popupAuthor.innerHTML = (prop.translations.addedBy + marker.options.markerData.userName);
+            popupAuthor.innerHTML = (prop.translations.addedBy + shape.options.markerData.userName);
             popupContent.appendChild(popupAuthor);
 
             popupObj.setContent(popupContent);
-            marker.bindPopup(popupObj);
+            shape.bindPopup(popupObj);
         },
 
-        updateMarkerData: function(marker, success, onError) {
+        updateMarkerData: function(shape, success, onError) {
+        	var data = shape.options.markerData;
             Liferay.Service(
-                '/politaktiv-map2-portlet.marker/update-marker',
+                '/politaktiv-map2-portlet.shape/update-shape',
                 data = {
                         portletId: prop.portletId,
                         primKey: prop.primKey,
-                        markerId: marker.options.markerData.markerId,
-                        title: marker.options.markerData.title,
-                        content: marker.options.markerData.content,
-                        longitude: marker.options.markerData.longitude,
-                        latitude: marker.options.markerData.latitude
+                        shapeId: data.shapeId,
+                        title: data.title,
+                        abstractDescription: data.abstractDescription,
+                        url: data.url,
+                        shapeType: data.shapeType,
+                        radius: data.radius,
+                        points: data.points
                 },
                 successCallback = function(res) {
                     if (console) console.log('edit ok:');
@@ -174,7 +272,7 @@ function createMap2 (prop) {
             );
         },
 
-        initMarkersList: function(markersData) {
+        initShapesList: function(markersData) {
             _Map2.markersList = new L.Control.MarkersList({
                 titleClass: _Map2.markerTitleClass,
                 otherLayers: _Map2.otherLayers,
@@ -184,16 +282,18 @@ function createMap2 (prop) {
             _Map2.map.addControl(_Map2.markersList);
         },
 
-        initMarkersControls: function() {
+        initShapesControls: function() {
         	//leaflet.draw options
+        	var instance = this;
         	var drawOptions = {};
+        	var drawProp = { color: '#d11' };
         	
         	if (prop.canAddMarkers) {
         		drawOptions.draw = {
-                    polyline: false,
-                    polygon: false,
-                    circle: false,
-                    rectangle: false,
+                    polyline: drawProp,
+                    polygon: drawProp,
+                    circle: drawProp,
+                    rectangle: drawProp,
                     marker: {
                         icon: _Map2.ownIcon
                     }
@@ -226,74 +326,82 @@ function createMap2 (prop) {
                 var type = e.layerType,
                     layer = e.layer;
 
-                if (type === 'marker') {
-                    var markerTitle = prompt(prop.translations.addTitleMessage);
+                var shapeTitle = prompt(prop.translations.addTitleMessage),
+                	url, description;
 
-                    if (markerTitle != null) {
-                        var markerData = {
-                            portletId: prop.portletId,
-                            primKey: prop.primKey,
-                            groupId: prop.groupId,
-                            companyId: prop.companyId,
-                            title: markerTitle,
-                            content: '',
-                            longitude: layer.getLatLng().lng.toString().substr(0,10),
-                            latitude: layer.getLatLng().lat.toString().substr(0,10)
-                        }
-                        Liferay.Service(
-                            '/politaktiv-map2-portlet.marker/add-marker',
-                            data = markerData,
-                            successCallback = function(res) {
-                                if (console) console.log('add ok:');
-                                if (console) console.log(res);
-                                layer.options.markerData = res;
-                                _Map2.editableLayers.addLayer(layer);
-                                _Map2.ownLayers.addLayer(layer);
-                                _Map2.initPopup(layer);
-                                _Map2.markersList.update();
-                                layer.openPopup();
-                            },
-                            exceptionCallback = function(res) {
-                                if (console) console.log('add fail:');
-                                if (console) console.log(res);
-                                _Map2.map.removeLayer(layer);
-                            }
-                        );
-                    } else {
-                        _Map2.map.removeLayer(layer);
-                    }
-                } else {/*
-                    if (console) console.log('!!!');
-                    if (console) console.log(e);
-
-                    polyline
-                    layer.getLatLngs()[ LatLng(48.62837, 8.68744), LatLng(48.53479, 8.70117), LatLng(48.48385, 8.76984), LatLng(48.57752, 8.97308), LatLng(48.68552, 8.99094) ]
-
-                    polygon
-                    layer.getLatLngs()[ LatLng(48.68189, 8.64212), LatLng(48.55116, 8.58719), LatLng(48.56207, 8.67096), LatLng(48.63472, 8.71902), LatLng(48.52479, 8.86871), LatLng(48.47929, 8.70392) ]
-
-                    rectangle
-                    layer.getLatLngs()[ LatLng(48.42464, 8.53638), LatLng(48.66376, 8.53638), LatLng(48.66376, 8.90442), LatLng(48.42464, 8.90442) ]
-
-                    circle
-                    layer.getLatLng() LatLng(48.55116, 8.58719)
-                    layer.getRadius() 10487.564304745216
-
-                    _Map2.editableLayers.addLayer(layer);*/
+                if (shapeTitle != null) {
+                	url = prompt(prop.translations.addUrlMessage);
+                	url = url || '';
+                	description = prompt(prop.translations.addDescriptionMessage);
+                	description = description || '';
+                	instance.saveShape(layer, type, shapeTitle, url, description);
+                } else {
+                    _Map2.map.removeLayer(layer);
                 }
             });
 
             _Map2.map.on('draw:edited', function (e) {
                 if (console) console.log('edited');
-                var markers = e.layers.getLayers();
-                for (var i=0, len=markers.length; i<len; i++) {
-                    var newLatLng = markers[i].getLatLng();
-                    markers[i].options.markerData.longitude = newLatLng.lng.toString().substr(0,10);
-                    markers[i].options.markerData.latitude = newLatLng.lat.toString().substr(0,10);
+                var shapes = e.layers.getLayers();
 
-                    _Map2.updateMarkerData(markers[i]);
+                for (var i=0, len=shapes.length; i<len; i++) {
+                	shapes[i].options.markerData.points = instance.parsePoints(shapes[i]);
+                	if (typeof shapes[i].getRadius === 'function') {
+                		shapes[i].options.markerData.radius = shapes[i].getRadius();
+                	}
+                    _Map2.updateMarkerData(shapes[i]);
                 }
             });
+        },
+        
+        parsePoints: function(layer) {
+	    	var points = [];
+	    	if (typeof layer.getLatLng === 'function'){
+	    		points.push([  layer.getLatLng().lat.toString().substr(0,10),
+	                	       layer.getLatLng().lng.toString().substr(0,10)  ]);
+	        } else {
+	        	var latLngs = layer.getLatLngs();
+	        	for (var i=0; i<latLngs.length; i++) {
+	        		points.push([  latLngs[i].lat.toString().substr(0,10),
+	        		               latLngs[i].lng.toString().substr(0,10)  ]);
+	        	}
+	        }
+	    	return points;
+        },
+        
+        saveShape: function(layer, type, title, url, description) {
+        	var instance = this;
+	        var markerData = {
+	            portletId: prop.portletId,
+	            primKey: prop.primKey,
+	            groupId: prop.groupId,
+	            companyId: prop.companyId,
+	            title: title,
+	            abstractDescription: description,
+	            url: url,
+	            shapeType: (type==='marker')?'POINT':type.toUpperCase(),
+	            radius: (type==='circle')?layer.getRadius():0,
+	            points: instance.parsePoints(layer)
+	        }
+	        Liferay.Service(
+	            '/politaktiv-map2-portlet.shape/add-shape',
+	            data = markerData,
+	            successCallback = function(res) {
+	                if (console) console.log('add ok:');
+	                if (console) console.log(res);
+	                layer.options.markerData = res;
+	                _Map2.editableLayers.addLayer(layer);
+	                _Map2.ownLayers.addLayer(layer);
+	                _Map2.initPopup(layer);
+	                _Map2.markersList.update();
+	                layer.openPopup();
+	            },
+	            exceptionCallback = function(res) {
+	                if (console) console.log('add fail:');
+	                if (console) console.log(res);
+	                _Map2.map.removeLayer(layer);
+	            }
+	        );
         }
     }
 

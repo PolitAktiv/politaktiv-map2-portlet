@@ -1,23 +1,35 @@
 .map { height: 600px; }
 
 .leaflet-draw-section {
-	display: inline-block;
+	text-align: right;
 }
 
 .leaflet-draw-toolbar {
-	margin: 0 12px 0 0;
+	display: inline-block;
+	margin: 0;
 	font-size: 0;
 }
 
 .leaflet-draw-toolbar a,
 .leaflet-draw-toolbar a:hover {
 	display: inline-block;
+	border-bottom: none;
+}
+.leaflet-draw-toolbar a:first-child {
+	border-radius: 4px 0 0 4px;
+}
+.leaflet-draw-toolbar a:last-child {
+	border-radius: 0 4px 4px 0;
 }
 
 .leaflet-marker-custom-title-wrap {
 	position:relative;
 	padding-right: 25px;
 	color: #222;
+}
+.leaflet-marker-url-wrap,
+.leaflet-marker-text-wrap {
+	position: relative;
 }
 
 .leaflet-marker-edit-descr {
