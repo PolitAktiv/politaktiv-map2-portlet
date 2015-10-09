@@ -224,7 +224,7 @@ function createMap2 (prop) {
                     if (text != null) {
                     	shape.options.markerData.abstractDescription = text;
                         _Map2.updateMarkerData(shape, function(){
-                            popupTitle.innerHTML = text;
+                            popupText.innerHTML = text;
                             popupObj.update();
                             _Map2.markersList.update();
                         },
