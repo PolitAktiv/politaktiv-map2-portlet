@@ -64,7 +64,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         User user = getPermissionChecker().getUser();
         long currentUserId = user.getUserId();
 
-//        ShapePermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
+        ShapePermission.checkAddAndUpdatePersonalShape(getPermissionChecker(), groupId, portletId, primKey);
 
         Date currentDate = new Date();
 
@@ -103,7 +103,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
 
-//        ShapePermission.checkUpdate(getPermissionChecker(), shape.getGroupId(), portletId, primKey, shape.getUserId());
+        ShapePermission.checkUpdate(getPermissionChecker(), shape.getGroupId(), portletId, primKey, shape.getUserId());
 
         Date currentDate = new Date();
 
@@ -134,7 +134,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         try {
             for (Shape shape : shapes) {
-                boolean canUserUpdateMarker = ShapePermission.canUpdateMarker(getPermissionChecker(), shape, portletId, primKey);
+                boolean canUserUpdateMarker = ShapePermission.canUpdateShape(getPermissionChecker(), shape, portletId, primKey);
 
                 shape.setUpdatableByCurrentUser(canUserUpdateMarker);
                 shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
@@ -150,12 +150,11 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
     public List<Shape> getShapesByUserId(String portletId, String primKey, long userId) throws SystemException, PrincipalException {
 
-        ShapePermission.checkOwner(getPermissionChecker(), userId);
 
         List<Shape> shapes = ShapeUtil.findByUserId(userId);
 
         for (Shape shape : shapes) {
-            boolean canUserUpdateMarker = ShapePermission.canUpdateMarker(getPermissionChecker(), shape, portletId, primKey);
+            boolean canUserUpdateMarker = ShapePermission.canUpdateShape(getPermissionChecker(), shape, portletId, primKey);
 
             shape.setUpdatableByCurrentUser(canUserUpdateMarker);
             shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));

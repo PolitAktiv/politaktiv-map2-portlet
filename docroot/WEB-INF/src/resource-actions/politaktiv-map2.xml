@@ -11,9 +11,8 @@
 				<action-key>EDIT</action-key>
 				<action-key>CONFIGURATION</action-key>
 
-				<action-key>UPDATE_ANY_MARKER</action-key>
-				<action-key>UPDATE_PERSONAL_MARKER</action-key>
-				<action-key>ADD_MARKER</action-key>
+				<action-key>ADD_AND_UPDATE_PERSONAL_SHAPE</action-key>
+				<action-key>UPDATE_ANY_SHAPE</action-key>
 			</supports>
 			<site-member-defaults>
 				<action-key>VIEW</action-key>
@@ -27,9 +26,8 @@
 				<action-key>CONFIGURATION</action-key>
 				<action-key>EDIT</action-key>
 
-				<action-key>UPDATE_ANY_MARKER</action-key>
-				<action-key>UPDATE_PERSONAL_MARKER</action-key>
-				<action-key>ADD_MARKER</action-key>
+				<action-key>ADD_AND_UPDATE_PERSONAL_SHAPE</action-key>
+				<action-key>UPDATE_ANY_SHAPE</action-key>
 			</guest-unsupported>
 			<owner-defaults>
 				<action-key>ADD_TO_PAGE</action-key>
@@ -37,9 +35,8 @@
 				<action-key>EDIT</action-key>
 				<action-key>CONFIGURATION</action-key>
 
-				<action-key>UPDATE_ANY_MARKER</action-key>
-				<action-key>UPDATE_PERSONAL_MARKER</action-key>
-				<action-key>ADD_MARKER</action-key>
+				<action-key>ADD_AND_UPDATE_PERSONAL_SHAPE</action-key>
+				<action-key>UPDATE_ANY_SHAPE</action-key>
 			</owner-defaults>
 		</permissions>
 	</portlet-resource>

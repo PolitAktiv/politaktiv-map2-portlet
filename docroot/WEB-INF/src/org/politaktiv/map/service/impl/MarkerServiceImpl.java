@@ -69,8 +69,8 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 		User user = getPermissionChecker().getUser();
 		long currentUserId = user.getUserId();
 		
-		// TODO: review mje 18.09.: Do not use static services in here - we've spring - so let's use DI! 
-		ShapePermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
+//		// TODO: review mje 18.09.: Do not use static services in here - we've spring - so let's use DI!
+//		ShapePermission.checkAdd(getPermissionChecker(), groupId, portletId, primKey);
 
 		Date currentDate = new Date();
 
@@ -150,7 +150,7 @@ public class MarkerServiceImpl extends MarkerServiceBaseImpl {
 
 	public List<Marker> getMarkersByUserId(String portletId, String primKey, long userId) throws SystemException, PrincipalException {
 
-		ShapePermission.checkOwner(getPermissionChecker(), userId);
+//		ShapePermission.checkOwner(getPermissionChecker(), userId);
 		
 		List<Marker> markers = MarkerUtil.findByUserId(userId);
 
