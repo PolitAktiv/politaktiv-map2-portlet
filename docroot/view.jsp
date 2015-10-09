@@ -23,9 +23,8 @@ String portletId = portletDisplay.getRootPortletId();
 String primKey = portletDisplay.getResourcePK();
 
 boolean canAddAndUpdatePersonalShape = ShapePermission.canAddAndUpdatePersonalShape(permissionChecker, portletGroupId, portletId, primKey);
-boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecker, portletGroupId, portletId, primKey);// ||
+boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecker, portletGroupId, portletId, primKey);
 %>
-Key === <%=primKey%>
 <% // div contains map %>
 <div id="<portlet:namespace />map" class="map"></div>
 
