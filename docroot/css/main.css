@@ -22,33 +22,46 @@
 	border-radius: 0 4px 4px 0;
 }
 
-.leaflet-marker-custom-title-wrap {
-	position:relative;
-	padding-right: 25px;
+.map-popup-wrapper {
+	min-width: 130px;
+}
+
+.leaflet-shape-title-wrap,
+.leaflet-shape-url-wrap,
+.leaflet-shape-text-wrap {
+	padding-top: 3px;
+}
+
+.leaflet-shape-title-wrap {
 	color: #222;
 }
-.leaflet-marker-url-wrap,
-.leaflet-marker-text-wrap {
-	position: relative;
+
+.leaflet-shape-title-wrap input,
+.leaflet-shape-url-wrap input,
+.leaflet-shape-text-wrap input {
+	margin-top: 3px;
+	padding: 1px 4px;
 }
 
-.leaflet-marker-edit-descr {
-	display: block;
-	position: absolute;
-	top: 50%;
-	right: 0;
-	width: 20px;
-	height: 20px;
-	margin-top: -10px;
-	background: #eee url(../images/edit-button.png) center center no-repeat;
-	border-radius: 3px;
+.leaflet-shape-buttons {
+	margin-top: 8px;
+	text-align: right;
+}
+
+.leaflet-shape-edit,
+.leaflet-shape-save,
+.leaflet-shape-cancel {
+	display: inline-block;
+	margin-leftt: 8px;
+    padding: 1px 8px;
+	font-size: 13px;
+	border-radius: 5px;
+	background: #e0e0e0;
+	color: #222;
 	cursor: pointer;
 }
-.leaflet-marker-edit-descr:hover {
-	background-color: #ddd;
-}
 
-.leaflet-marker-author {
+.leaflet-shape-author-wrap {
 	border-top: 1px solid #ddd;
 	margin-top: 5px;
 	padding-top: 5px;

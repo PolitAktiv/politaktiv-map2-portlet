@@ -1,11 +1,13 @@
 function createMap2 (prop) {
     var _Map2 = {
 
-        markerTitleClass: 'leaflet-marker-custom-title',
-        markerTitleWrapClass: 'leaflet-marker-custom-title-wrap',
-        editButtonClass: 'leaflet-marker-edit-descr',
-        markerTextClass: 'leaflet-marker-text',
-        markerAuthorClass: 'leaflet-marker-author',
+        shapeTitleClass: 'leaflet-shape-title',
+        shapeUrlClass: 'leaflet-shape-url',
+        shapeTextClass: 'leaflet-shape-text',
+        shapeAuthorClass: 'leaflet-shape-author',
+        shapeEditClass: 'leaflet-shape-edit',
+        shapeSaveClass: 'leaflet-shape-save',
+        shapeCancelClass: 'leaflet-shape-cancel',
 
         init: function(prop) {
             if (console) console.log(prop);
@@ -18,7 +20,7 @@ function createMap2 (prop) {
 
             _Map2.initViewCenter();
 
-            _Map2.getMarkers();
+            _Map2.getShapes();
 
             _Map2.map.setView([prop.center.lat, prop.center.lng], prop.zoomLevel);
         },
@@ -36,7 +38,7 @@ function createMap2 (prop) {
             _Map2.map.addControl(_Map2.viewCenter);
         },
 
-        getMarkers: function() {
+        getShapes: function() {
             Liferay.Service(
                     '/politaktiv-map2-portlet.shape/get-all-shapes',
                     data = {
@@ -48,7 +50,7 @@ function createMap2 (prop) {
                         if (console) console.log(res);
 
                         _Map2.initShapes(res);
-                        _Map2.initShapesList(res);
+                        _Map2.initShapesList();
                         _Map2.initShapesControls();
                     },
                     exceptionCallback = function(res) {
@@ -99,7 +101,7 @@ function createMap2 (prop) {
     		shapeData.coordinates = null;
     		shapeData.points = points;
 
-    		var properties = { markerData: shapeData };
+    		var properties = { shapeData: shapeData };
     		if (shapeData.userId === prop.userId) {
     			if(shapeData.shapeType === 'POINT') {
 	    			properties.icon = _Map2.ownIcon;
@@ -131,7 +133,7 @@ function createMap2 (prop) {
             } else {
                 _Map2.otherLayers.addLayer(shape);
             }
-            if (shapeData.updatableByCurrentUser) {
+            if ((shapeData.userId === prop.userId && prop.canAddAndUpdatePersonalShape) || prop.canUpdateAnyShapes) {
                 _Map2.editableLayers.addLayer(shape);
             }
 
@@ -141,110 +143,102 @@ function createMap2 (prop) {
         initPopup: function(shape) {
 
             // create a popup
-        	/*var template = L.DomUtil.get(prop.popupTemplateId);
-        	var popupContent = template.cloneNode();
-        	popupContent.removeClass('hide');*/
+        	var template = L.DomUtil.get(prop.popupTemplateId);
+        	var popupContent = template.cloneNode(true);
+
+    		var titleNode = shape.options.shapeData.url ? popupContent.querySelector('a.' + _Map2.shapeTitleClass) : popupContent.querySelector('span.' + _Map2.shapeTitleClass),
+	        	textNode = popupContent.querySelector('span.' + _Map2.shapeTextClass),
+	        	authorNode = popupContent.querySelector('span.' + _Map2.shapeAuthorClass),
+	        	titleInput = popupContent.querySelector('input.' + _Map2.shapeTitleClass),
+	        	urlInput = popupContent.querySelector('input.' + _Map2.shapeUrlClass),
+	        	textInput = popupContent.querySelector('input.' + _Map2.shapeTextClass),
+            	editButton = popupContent.querySelector('.' + _Map2.shapeEditClass),
+            	saveButton = popupContent.querySelector('.' + _Map2.shapeSaveClass),
+            	cancelButton = popupContent.querySelector('.' + _Map2.shapeCancelClass);
+
+    		titleNode.innerText = shape.options.shapeData.title;
+    		if (shape.options.shapeData.url) titleNode.href = shape.options.shapeData.url;
+    		L.DomUtil.removeClass(titleNode,'hide');
+        	textNode.innerText = shape.options.shapeData.abstractDescription;
+        	authorNode.innerText = shape.options.shapeData.userName;
+
+    		titleInput.value = shape.options.shapeData.title;
+    		urlInput.value = shape.options.shapeData.url;
+        	textInput.value = shape.options.shapeData.abstractDescription;
+
+            if ((shape.options.shapeData.userId === prop.userId && prop.canAddAndUpdatePersonalShape) || prop.canUpdateAnyShapes) {
+            	L.DomUtil.removeClass(editButton,'hide');
+            	var switchToViewMode = function() {
+            		L.DomUtil.removeClass(titleNode,'hide');
+            		L.DomUtil.removeClass(textNode,'hide');
+    	        	L.DomUtil.addClass(titleInput,'hide');
+    	        	L.DomUtil.addClass(urlInput,'hide');
+    	        	L.DomUtil.addClass(textInput,'hide');
+            		L.DomUtil.addClass(saveButton,'hide');
+            		L.DomUtil.addClass(cancelButton,'hide');
+            		L.DomUtil.removeClass(editButton,'hide');
+            		popupObj.update();
+            	}
+            	var switchToEditMode = function() {
+            		L.DomUtil.addClass(titleNode,'hide');
+            		L.DomUtil.addClass(textNode,'hide');
+    	        	L.DomUtil.removeClass(titleInput,'hide');
+    	        	L.DomUtil.removeClass(urlInput,'hide');
+    	        	L.DomUtil.removeClass(textInput,'hide');
+            		L.DomUtil.removeClass(saveButton,'hide');
+            		L.DomUtil.removeClass(cancelButton,'hide');
+            		L.DomUtil.addClass(editButton,'hide');
+            		popupObj.update();
+            	}
+
+            	L.DomEvent.on(editButton, 'click', function() {
+            		switchToEditMode();
+            	});
+
+            	L.DomEvent.on(saveButton, 'click', function() {
+            		shape.options.shapeData.title = titleInput.value;
+            		shape.options.shapeData.url = urlInput.value;
+                	shape.options.shapeData.abstractDescription = textInput.value;
+
+                    _Map2.updateshapeData(shape, function(res){
+                		shape.options.shapeData.title = res.title;
+                		shape.options.shapeData.url = res.url;
+                    	shape.options.shapeData.abstractDescription = res.abstractDescription;
+
+                		L.DomUtil.addClass(titleNode,'hide');
+                		titleNode = res.url ? popupContent.querySelector('a.' + _Map2.shapeTitleClass) : popupContent.querySelector('span.' + _Map2.shapeTitleClass) ;
+                        titleNode.innerText = res.title;
+                		titleNode.href = res.url;
+                		L.DomUtil.removeClass(titleNode,'hide');
+                    	textNode.innerText = res.abstractDescription;
+
+                        _Map2.shapesList.update();
+                        switchToViewMode();
+                    },
+                    function(){
+                    	shape.options.shapeData.title = titleNode.innerText;
+                		shape.options.shapeData.url = titleNode.href;
+                    	shape.options.shapeData.abstractDescription = textNode.innerText;
+
+                		titleInput.value = titleNode.innerText;
+                		urlInput.value = titleNode.href;
+                    	textInput.value = textNode.innerText;
+                    });
+            	});
+
+            	L.DomEvent.on(cancelButton, 'click', function() {
+            		switchToViewMode();
+            	});
+        	}
 
             var popupObj = new L.Popup();
-            var popupContent = L.DomUtil.create('div', 'leaflet-custom-popup-content');
-
-            var popupTitleWrap = L.DomUtil.create('div', _Map2.markerTitleWrapClass);
-            var popupTitle;
-            if (shape.options.markerData.url) {
-	            popupTitle = L.DomUtil.create('a', _Map2.markerTitleClass);
-	            popupTitle.href = shape.options.markerData.url;
-	            popupTitle.target='_blank';
-            } else {
-	            popupTitle = L.DomUtil.create('span', _Map2.markerTitleClass);
-            }
-
-            popupTitle.innerHTML = shape.options.markerData.title;
-            popupTitleWrap.appendChild(popupTitle);
-            popupContent.appendChild(popupTitleWrap);
-
-            if (shape.options.markerData.updatableByCurrentUser) { // add "edit button" if marker is editable
-                var editTitle = L.DomUtil.create('span', _Map2.editButtonClass);
-                popupTitleWrap.appendChild(editTitle);
-
-                L.DomEvent.on(editTitle, 'click', function() {
-                    var title = prompt(prop.translations.editTitleMessage, shape.options.markerData.title);
-
-                    if (title != null) {
-                        // update marker
-                    	shape.options.markerData.title = title;
-                        _Map2.updateMarkerData(shape, function(){
-                            popupTitle.innerHTML = title;
-                            popupObj.update();
-                            _Map2.markersList.update();
-                        },
-                        function(){
-                        	shape.options.markerData.title = popupTitle.innerHTML;
-                        });
-                    }
-                });
-
-            	var popupUrlWrap = L.DomUtil.create('div', 'leaflet-marker-url-wrap');
-            	var popupUrl = L.DomUtil.create('span');
-            	popupUrl.innerHTML = shape.options.markerData.url || 'http://';
-            	popupUrlWrap.appendChild(popupUrl);
-            	var editUrl = L.DomUtil.create('span', _Map2.editButtonClass);
-            	popupUrlWrap.appendChild(editUrl);
-            	popupContent.appendChild(popupUrlWrap);
-
-            	L.DomEvent.on(editUrl, 'click', function() {
-                    var url = prompt(prop.translations.editUrlMessage, shape.options.markerData.url);
-
-                    if (url != null) {
-                    	shape.options.markerData.url = url;
-                        _Map2.updateMarkerData(shape, function(){
-                            popupUrl.innerHTML = url;
-                            popupObj.update();
-                            _Map2.markersList.update();
-                        },
-                        function() {
-                        	shape.options.markerData.url = popupUrl.innerHTML;
-                        });
-                    }
-                });
-            }
-
-            var popupTextWrap = L.DomUtil.create('div', 'leaflet-marker-text-wrap');
-            var popupText = L.DomUtil.create('div', _Map2.markerTextClass);
-            popupText.innerHTML = shape.options.markerData.abstractDescription;
-            popupTextWrap.appendChild(popupText);
-            popupContent.appendChild(popupTextWrap);
-
-            if (shape.options.markerData.updatableByCurrentUser) {    
-                var editText = L.DomUtil.create('span', _Map2.editButtonClass);
-                popupTextWrap.appendChild(editText);
-
-                L.DomEvent.on(editText, 'click', function() {
-                    var text = prompt(prop.translations.editTextMessage, shape.options.markerData.abstractDescription);
-
-                    if (text != null) {
-                    	shape.options.markerData.abstractDescription = text;
-                        _Map2.updateMarkerData(shape, function(){
-                            popupText.innerHTML = text;
-                            popupObj.update();
-                            _Map2.markersList.update();
-                        },
-                        function(){
-                        	shape.options.markerData.abstractDescription = popupText.innerHTML;
-                        });
-                    }
-                });
-            }
-
-            var popupAuthor = L.DomUtil.create('div', _Map2.markerAuthorClass);
-            popupAuthor.innerHTML = (prop.translations.addedBy + shape.options.markerData.userName);
-            popupContent.appendChild(popupAuthor);
-
+        	L.DomUtil.removeClass(popupContent,'hide');
             popupObj.setContent(popupContent);
             shape.bindPopup(popupObj);
         },
 
-        updateMarkerData: function(shape, success, onError) {
-        	var data = shape.options.markerData;
+        updateshapeData: function(shape, success, onError) {
+        	var data = shape.options.shapeData;
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/update-shape',
                 data = {
@@ -261,25 +255,24 @@ function createMap2 (prop) {
                 successCallback = function(res) {
                     if (console) console.log('edit ok:');
                     if (console) console.log(res);
-                    if (typeof success === 'function') success();
+                    if (typeof success === 'function') success(res);
                 },
                 exceptionCallback = function(res) {
                     if (console) console.log('edit fail:');
                     if (console) console.log(res);
                     alert(res);
-                    if (typeof onError === 'function') onError();
+                    if (typeof onError === 'function') onError(res);
                 }
             );
         },
 
-        initShapesList: function(markersData) {
-            _Map2.markersList = new L.Control.MarkersList({
-                titleClass: _Map2.markerTitleClass,
+        initShapesList: function() {
+            _Map2.shapesList = new L.Control.ShapesList({
                 otherLayers: _Map2.otherLayers,
                 ownLayers: _Map2.ownLayers,
                 translations: prop.translations
             });
-            _Map2.map.addControl(_Map2.markersList);
+            _Map2.map.addControl(_Map2.shapesList);
         },
 
         initShapesControls: function() {
@@ -288,7 +281,7 @@ function createMap2 (prop) {
         	var drawOptions = {};
         	var drawProp = { color: '#d11' };
         	
-        	if (prop.canAddMarkers) {
+        	if (prop.canAddAndUpdatePersonalShape) {
         		drawOptions.draw = {
                     polyline: drawProp,
                     polygon: drawProp,
@@ -308,7 +301,7 @@ function createMap2 (prop) {
                 };
         	}
         	
-        	if (prop.canUpdateMarkers) {
+        	if (prop.canAddAndUpdatePersonalShape || prop.canUpdateAnyShapes) {
         		drawOptions.edit = {
                         featureGroup: _Map2.editableLayers,
                         remove: false
@@ -345,11 +338,11 @@ function createMap2 (prop) {
                 var shapes = e.layers.getLayers();
 
                 for (var i=0, len=shapes.length; i<len; i++) {
-                	shapes[i].options.markerData.points = instance.parsePoints(shapes[i]);
+                	shapes[i].options.shapeData.points = instance.parsePoints(shapes[i]);
                 	if (typeof shapes[i].getRadius === 'function') {
-                		shapes[i].options.markerData.radius = shapes[i].getRadius();
+                		shapes[i].options.shapeData.radius = shapes[i].getRadius();
                 	}
-                    _Map2.updateMarkerData(shapes[i]);
+                    _Map2.updateshapeData(shapes[i]);
                 }
             });
         },
@@ -371,7 +364,7 @@ function createMap2 (prop) {
         
         saveShape: function(layer, type, title, url, description) {
         	var instance = this;
-	        var markerData = {
+	        var shapeData = {
 	            portletId: prop.portletId,
 	            primKey: prop.primKey,
 	            groupId: prop.groupId,
@@ -385,15 +378,15 @@ function createMap2 (prop) {
 	        }
 	        Liferay.Service(
 	            '/politaktiv-map2-portlet.shape/add-shape',
-	            data = markerData,
+	            data = shapeData,
 	            successCallback = function(res) {
 	                if (console) console.log('add ok:');
 	                if (console) console.log(res);
-	                layer.options.markerData = res;
+	                layer.options.shapeData = res;
 	                _Map2.editableLayers.addLayer(layer);
 	                _Map2.ownLayers.addLayer(layer);
 	                _Map2.initPopup(layer);
-	                _Map2.markersList.update();
+	                _Map2.shapesList.update();
 	                layer.openPopup();
 	            },
 	            exceptionCallback = function(res) {

@@ -25,26 +25,31 @@ String primKey = portletDisplay.getResourcePK();
 boolean canAddAndUpdatePersonalShape = ShapePermission.canAddAndUpdatePersonalShape(permissionChecker, portletGroupId, portletId, primKey);
 boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecker, portletGroupId, portletId, primKey);
 %>
-<% // div contains map %>
+<%-- div contains map --%>
 <div id="<portlet:namespace />map" class="map"></div>
 
 <div id="<portlet:namespace />PopupTemplate" class="map-popup-wrapper hide">
 	<div class="leaflet-custom-popup-content">
-		<div class="leaflet-marker-custom-title-wrap">
-			<span class="leaflet-marker-custom-title">asdfg222222222222222222</span>
-			<span class="leaflet-marker-edit-descr hide"></span>
+		<div class="leaflet-shape-title-wrap">
+			<span class="leaflet-shape-title hide"></span>
+			<a class="leaflet-shape-title hide" target="_blank" href=""></a>
+			<input class="leaflet-shape-title hide" />
 		</div>
-		<div class="leaflet-marker-url-wrap hide">
-			<span class="">http://</span>
-			<span class="leaflet-marker-edit-descr"></span>
+		<div class="leaflet-shape-url-wrap">
+			<input class="leaflet-shape-url hide" />
 		</div>
-		<div class="leaflet-marker-text-wrap">
-			<div class="leaflet-marker-text">descr</div>
-			<span class="leaflet-marker-edit-descr hide"></span>
+		<div class="leaflet-shape-text-wrap">
+			<span class="leaflet-shape-text"></span>
+			<input class="leaflet-shape-text hide" />
 		</div>
-		<div class="leaflet-marker-author">
-			Added by:
-			<span>Joe Bloggs</span>
+		<div class="leaflet-shape-buttons">
+			<span class="leaflet-shape-edit hide"><liferay-ui:message key="map2.edit-button" /></span>
+			<span class="leaflet-shape-save hide"><liferay-ui:message key="map2.save-button" /></span>
+			<span class="leaflet-shape-cancel hide"><liferay-ui:message key="map2.cancel-button" /></span>
+		</div>
+		<div class="leaflet-shape-author-wrap">
+			<liferay-ui:message key="map2.added-by" />
+			<span class="leaflet-shape-author"></span>
 		</div>
 	</div>
 </div>
@@ -55,8 +60,23 @@ boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecke
 <aui:script use="aui-base">
 L.drawLocal.draw.toolbar.actions.title = '<liferay-ui:message key="drawLocal.draw.toolbar.actions.title" />';
 L.drawLocal.draw.toolbar.actions.text = '<liferay-ui:message key="drawLocal.draw.toolbar.actions.text" />';
+L.drawLocal.draw.toolbar.buttons.polyline = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.polyline" />';
+L.drawLocal.draw.toolbar.buttons.polygon = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.polygon" />';
+L.drawLocal.draw.toolbar.buttons.rectangle = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.rectangle" />';
+L.drawLocal.draw.toolbar.buttons.circle = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.circle" />';
 L.drawLocal.draw.toolbar.buttons.marker = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.marker" />';
+L.drawLocal.draw.handlers.circle.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.circle.tooltip.start" />';
+L.drawLocal.draw.handlers.circle.radius = '<liferay-ui:message key="drawLocal.draw.handlers.circle.radius" />';
 L.drawLocal.draw.handlers.marker.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.marker.tooltip.start" />';
+L.drawLocal.draw.handlers.polygon.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.polygon.tooltip.start" />';
+L.drawLocal.draw.handlers.polygon.tooltip.cont = '<liferay-ui:message key="drawLocal.draw.handlers.polygon.tooltip.cont" />';
+L.drawLocal.draw.handlers.polygon.tooltip.end = '<liferay-ui:message key="drawLocal.draw.handlers.polygon.tooltip.end" />';
+L.drawLocal.draw.handlers.polyline.error = '<liferay-ui:message key="drawLocal.draw.handlers.polyline.error" />';
+L.drawLocal.draw.handlers.polyline.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.polyline.tooltip.start" />';
+L.drawLocal.draw.handlers.polyline.tooltip.cont = '<liferay-ui:message key="drawLocal.draw.handlers.polyline.tooltip.cont" />';
+L.drawLocal.draw.handlers.polyline.tooltip.end = '<liferay-ui:message key="drawLocal.draw.handlers.polyline.tooltip.end" />';
+L.drawLocal.draw.handlers.rectangle.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.rectangle.tooltip.start" />';
+L.drawLocal.draw.handlers.simpleshape.tooltip.end = '<liferay-ui:message key="drawLocal.draw.handlers.simpleshape.tooltip.end" />';
 L.drawLocal.edit.toolbar.actions.save.title = '<liferay-ui:message key="drawLocal.edit.toolbar.actions.save.title" />';
 L.drawLocal.edit.toolbar.actions.save.text = '<liferay-ui:message key="drawLocal.edit.toolbar.actions.save.text" />';
 L.drawLocal.edit.toolbar.actions.cancel.title = '<liferay-ui:message key="drawLocal.edit.toolbar.actions.cancel.title" />';
@@ -74,17 +94,14 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawL
         portletId: '<%= portletId %>',
         primKey: '<%= primKey %>',
         userId: <%= themeDisplay.getUserId() %>,
-        canAddMarkers: <%= canAddAndUpdatePersonalShape %>,
-        canUpdateMarkers: <%= canUpdateAnyShapes %>,
+        canAddAndUpdatePersonalShape: <%= canAddAndUpdatePersonalShape %>,
+        canUpdateAnyShapes: <%= canUpdateAnyShapes %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,
         translations: {
             resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
-            yourMarkers: '<liferay-ui:message key="map2.your-markers" />',
-            allMarkers: '<liferay-ui:message key="map2.all-markers" />',
-            addedBy: '<liferay-ui:message key="map2.added-by" />',
-            addTitleMessage: '<liferay-ui:message key="map2.add-title-message" />',
-            editTitleMessage: '<liferay-ui:message key="map2.edit-title-message" />'
+            yourShapes: '<liferay-ui:message key="map2.your-shapes" />',
+            allShapes: '<liferay-ui:message key="map2.all-shapes" />'
         }
     });
 </aui:script>

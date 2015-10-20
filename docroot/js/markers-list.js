@@ -1,5 +1,5 @@
 
-L.Control.MarkersList = L.Control.extend({
+L.Control.ShapesList = L.Control.extend({
 
     options: {
         containerClass: 'leaflet-control-layers leaflet-control leaflet-markers-list',
@@ -36,7 +36,7 @@ L.Control.MarkersList = L.Control.extend({
 
         if (own.length) {
             var listHeader = L.DomUtil.create('div', this.options.headerClass);
-            listHeader.innerHTML = this.options.translations.yourMarkers;
+            listHeader.innerHTML = this.options.translations.yourShapes;
             this._list.appendChild(listHeader);
     
             for (var i=0, len=own.length; i<len; i++) {
@@ -51,7 +51,7 @@ L.Control.MarkersList = L.Control.extend({
 
         if (other.length) {
             var list2Header = L.DomUtil.create('div', this.options.headerClass);
-            list2Header.innerHTML = this.options.translations.allMarkers;
+            list2Header.innerHTML = this.options.translations.allShapes;
             this._list.appendChild(list2Header);
     
             for (var i=0, len=other.length; i<len; i++) {
@@ -60,25 +60,25 @@ L.Control.MarkersList = L.Control.extend({
         }
     },
 
-    addItem: function(marker) {
+    addItem: function(shape) {
         var self = this;
         var item;
 
         item = L.DomUtil.create('div', this.options.listItemClass);
-        item.innerHTML = marker.options.markerData.title;
+        item.innerHTML = shape.options.shapeData.title;
         this._list.appendChild(item);
 
         L.DomEvent.on(item, 'click', function() {
         	var center;
-        	if (typeof marker.getLatLng === 'function'){
-        		center = marker.getLatLng();
+        	if (typeof shape.getLatLng === 'function'){
+        		center = shape.getLatLng();
             } else {
-            	center = marker.getBounds().getCenter();
+            	center = shape.getBounds().getCenter();
             }
     		if (console) console.log(center);
             self._map.setView(center);
-            marker.openPopup();
-            marker._popup.setLatLng(center);
+            shape.openPopup();
+            shape._popup.setLatLng(center);
         });
     }
 
