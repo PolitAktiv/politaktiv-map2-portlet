@@ -28,19 +28,19 @@ boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecke
 <%-- div contains map --%>
 <div id="<portlet:namespace />map" class="map"></div>
 
-<div id="<portlet:namespace />PopupTemplate" class="map-popup-wrapper hide">
+<div id="<portlet:namespace />PopupTemplate" class="hide">
 	<div class="leaflet-custom-popup-content">
 		<div class="leaflet-shape-title-wrap">
 			<span class="leaflet-shape-title hide"></span>
 			<a class="leaflet-shape-title hide" target="_blank" href=""></a>
-			<input class="leaflet-shape-title hide" />
+			<input class="leaflet-shape-title hide" placeholder="<liferay-ui:message key="map2.shape-title-placeholder" />" />
 		</div>
 		<div class="leaflet-shape-url-wrap">
-			<input class="leaflet-shape-url hide" />
+			<input class="leaflet-shape-url hide" placeholder="<liferay-ui:message key="map2.shape-url-placeholder" />" />
 		</div>
 		<div class="leaflet-shape-text-wrap">
 			<span class="leaflet-shape-text"></span>
-			<input class="leaflet-shape-text hide" />
+			<input class="leaflet-shape-text hide" placeholder="<liferay-ui:message key="map2.shape-text-placeholder" />" />
 		</div>
 		<div class="leaflet-shape-buttons">
 			<span class="leaflet-shape-edit hide"><liferay-ui:message key="map2.edit-button" /></span>
@@ -101,7 +101,8 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawL
         translations: {
             resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
             yourShapes: '<liferay-ui:message key="map2.your-shapes" />',
-            allShapes: '<liferay-ui:message key="map2.all-shapes" />'
+            allShapes: '<liferay-ui:message key="map2.all-shapes" />',
+            addTitleMessage: '<liferay-ui:message key="map2.add-title-message" />'
         }
     });
 </aui:script>

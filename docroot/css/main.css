@@ -22,7 +22,7 @@
 	border-radius: 0 4px 4px 0;
 }
 
-.map-popup-wrapper {
+.leaflet-custom-popup-content {
 	min-width: 130px;
 }
 

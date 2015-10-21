@@ -143,7 +143,7 @@ function createMap2 (prop) {
         initPopup: function(shape) {
 
             // create a popup
-        	var template = L.DomUtil.get(prop.popupTemplateId);
+        	var template = L.DomUtil.get(prop.popupTemplateId).children[0];
         	var popupContent = template.cloneNode(true);
 
     		var titleNode = shape.options.shapeData.url ? popupContent.querySelector('a.' + _Map2.shapeTitleClass) : popupContent.querySelector('span.' + _Map2.shapeTitleClass),
@@ -156,11 +156,11 @@ function createMap2 (prop) {
             	saveButton = popupContent.querySelector('.' + _Map2.shapeSaveClass),
             	cancelButton = popupContent.querySelector('.' + _Map2.shapeCancelClass);
 
-    		titleNode.innerText = shape.options.shapeData.title;
+    		titleNode.innerHTML = shape.options.shapeData.title;
     		if (shape.options.shapeData.url) titleNode.href = shape.options.shapeData.url;
     		L.DomUtil.removeClass(titleNode,'hide');
-        	textNode.innerText = shape.options.shapeData.abstractDescription;
-        	authorNode.innerText = shape.options.shapeData.userName;
+        	textNode.innerHTML = shape.options.shapeData.abstractDescription;
+        	authorNode.innerHTML = shape.options.shapeData.userName;
 
     		titleInput.value = shape.options.shapeData.title;
     		urlInput.value = shape.options.shapeData.url;
@@ -207,22 +207,22 @@ function createMap2 (prop) {
 
                 		L.DomUtil.addClass(titleNode,'hide');
                 		titleNode = res.url ? popupContent.querySelector('a.' + _Map2.shapeTitleClass) : popupContent.querySelector('span.' + _Map2.shapeTitleClass) ;
-                        titleNode.innerText = res.title;
+                        titleNode.innerHTML = res.title;
                 		titleNode.href = res.url;
                 		L.DomUtil.removeClass(titleNode,'hide');
-                    	textNode.innerText = res.abstractDescription;
+                    	textNode.innerHTML = res.abstractDescription;
 
                         _Map2.shapesList.update();
                         switchToViewMode();
                     },
                     function(){
-                    	shape.options.shapeData.title = titleNode.innerText;
-                		shape.options.shapeData.url = titleNode.href;
-                    	shape.options.shapeData.abstractDescription = textNode.innerText;
+                    	shape.options.shapeData.title = titleNode.innerHTML;
+                		shape.options.shapeData.url = titleNode.href ? titleNode.href : '';
+                    	shape.options.shapeData.abstractDescription = textNode.innerHTML;
 
-                		titleInput.value = titleNode.innerText;
-                		urlInput.value = titleNode.href;
-                    	textInput.value = textNode.innerText;
+                		titleInput.value = shape.options.shapeData.title;
+                		urlInput.value = shape.options.shapeData.url;
+                    	textInput.value = shape.options.shapeData.abstractDescription;
                     });
             	});
 
@@ -232,12 +232,13 @@ function createMap2 (prop) {
         	}
 
             var popupObj = new L.Popup();
-        	L.DomUtil.removeClass(popupContent,'hide');
+        	//L.DomUtil.removeClass(popupContent,'hide');
             popupObj.setContent(popupContent);
             shape.bindPopup(popupObj);
         },
 
         updateshapeData: function(shape, success, onError) {
+        	var instance = this;
         	var data = shape.options.shapeData;
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/update-shape',
@@ -250,7 +251,7 @@ function createMap2 (prop) {
                         url: data.url,
                         shapeType: data.shapeType,
                         radius: data.radius,
-                        points: data.points
+                        points: data.points || instance.parsePoints(shape)
                 },
                 successCallback = function(res) {
                     if (console) console.log('edit ok:');
@@ -319,15 +320,14 @@ function createMap2 (prop) {
                 var type = e.layerType,
                     layer = e.layer;
 
-                var shapeTitle = prompt(prop.translations.addTitleMessage),
-                	url, description;
+                var shapeTitle = prompt(prop.translations.addTitleMessage);
 
                 if (shapeTitle != null) {
-                	url = prompt(prop.translations.addUrlMessage);
+                	/*url = prompt(prop.translations.addUrlMessage);
                 	url = url || '';
                 	description = prompt(prop.translations.addDescriptionMessage);
-                	description = description || '';
-                	instance.saveShape(layer, type, shapeTitle, url, description);
+                	description = description || '';*/
+                	instance.saveShape(layer, type, shapeTitle, '', '');
                 } else {
                     _Map2.map.removeLayer(layer);
                 }
@@ -338,7 +338,7 @@ function createMap2 (prop) {
                 var shapes = e.layers.getLayers();
 
                 for (var i=0, len=shapes.length; i<len; i++) {
-                	shapes[i].options.shapeData.points = instance.parsePoints(shapes[i]);
+                	//shapes[i].options.shapeData.points = instance.parsePoints(shapes[i]);
                 	if (typeof shapes[i].getRadius === 'function') {
                 		shapes[i].options.shapeData.radius = shapes[i].getRadius();
                 	}
