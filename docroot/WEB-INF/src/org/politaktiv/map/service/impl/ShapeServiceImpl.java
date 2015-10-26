@@ -165,5 +165,17 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
     }
 
 
+    public void deleteShapeById(String portletId, String primKey, long shapeId) throws SystemException, PortalException {
+
+        Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
+
+        if(ShapePermission.canUpdateShape(getPermissionChecker(), shape, portletId, primKey)){
+
+            ShapeUtil.remove(shapeId);
+            CoordinateLocalServiceUtil.removeCoordinatesByShapeId(shapeId);
+
+            LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been deleted.");
+        }
+    }
 
 }

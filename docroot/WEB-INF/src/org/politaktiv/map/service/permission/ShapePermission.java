@@ -41,10 +41,12 @@ public class ShapePermission {
 		return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_ANY_SHAPE_ACTION);
 	}
 	
-	public static boolean canUpdateShape(PermissionChecker permissionChecker, Shape shape, String resourceName, String primKey) {
-		return ((canAddAndUpdatePersonalShape(permissionChecker, shape.getGroupId(), resourceName, primKey)) ||
-				canUpdateAnyShapes(permissionChecker, shape.getGroupId(), resourceName, primKey));
-	}
+    public static boolean canUpdateShape(PermissionChecker permissionChecker, Shape shape, String resourceName, String primKey) {
+
+       return (((permissionChecker.getUserId()==shape.getUserId())&&canAddAndUpdatePersonalShape(permissionChecker,shape.getGroupId(),resourceName,primKey))||
+               canUpdateAnyShapes(permissionChecker,shape.getGroupId(),resourceName,primKey));
+
+    }
 
 	public static boolean contains(PermissionChecker permissionChecker, long groupId, String resourceName,
 			String primKey, String actionId) {

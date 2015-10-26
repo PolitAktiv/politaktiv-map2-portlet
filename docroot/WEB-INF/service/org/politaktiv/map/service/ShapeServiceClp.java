@@ -59,6 +59,12 @@ public class ShapeServiceClp implements ShapeService {
 		_methodParameterTypes6 = new String[] {
 				"java.lang.String", "java.lang.String", "long"
 			};
+
+		_methodName7 = "deleteShapeById";
+
+		_methodParameterTypes7 = new String[] {
+				"java.lang.String", "java.lang.String", "long"
+			};
 	}
 
 	@Override
@@ -310,6 +316,43 @@ public class ShapeServiceClp implements ShapeService {
 		return (java.util.List<org.politaktiv.map.model.Shape>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
+	public void deleteShapeById(java.lang.String portletId,
+		java.lang.String primKey, long shapeId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		try {
+			_invokableService.invokeMethod(_methodName7,
+				_methodParameterTypes7,
+				new Object[] {
+					ClpSerializer.translateInput(portletId),
+					
+				ClpSerializer.translateInput(primKey),
+					
+				shapeId
+				});
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
+			}
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+	}
+
 	private InvokableService _invokableService;
 	private String _methodName0;
 	private String[] _methodParameterTypes0;
@@ -323,4 +366,6 @@ public class ShapeServiceClp implements ShapeService {
 	private String[] _methodParameterTypes5;
 	private String _methodName6;
 	private String[] _methodParameterTypes6;
+	private String _methodName7;
+	private String[] _methodParameterTypes7;
 }

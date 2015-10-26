@@ -135,5 +135,17 @@ public class ShapeServiceSoap {
 		}
 	}
 
+	public static void deleteShapeById(java.lang.String portletId,
+		java.lang.String primKey, long shapeId) throws RemoteException {
+		try {
+			ShapeServiceUtil.deleteShapeById(portletId, primKey, shapeId);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(ShapeServiceSoap.class);
 }

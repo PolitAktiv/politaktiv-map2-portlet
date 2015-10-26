@@ -59,6 +59,12 @@ public class ShapeServiceClpInvoker {
 		_methodParameterTypes33 = new String[] {
 				"java.lang.String", "java.lang.String", "long"
 			};
+
+		_methodName34 = "deleteShapeById";
+
+		_methodParameterTypes34 = new String[] {
+				"java.lang.String", "java.lang.String", "long"
+			};
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -110,6 +116,14 @@ public class ShapeServiceClpInvoker {
 				(java.lang.String)arguments[1], ((Long)arguments[2]).longValue());
 		}
 
+		if (_methodName34.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes34, parameterTypes)) {
+			ShapeServiceUtil.deleteShapeById((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1], ((Long)arguments[2]).longValue());
+
+			return null;
+		}
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -125,4 +139,6 @@ public class ShapeServiceClpInvoker {
 	private String[] _methodParameterTypes32;
 	private String _methodName33;
 	private String[] _methodParameterTypes33;
+	private String _methodName34;
+	private String[] _methodParameterTypes34;
 }

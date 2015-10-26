@@ -93,4 +93,9 @@ public interface ShapeService extends BaseService, InvokableService {
 		java.lang.String portletId, java.lang.String primKey, long userId)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.security.auth.PrincipalException;
+
+	public void deleteShapeById(java.lang.String portletId,
+		java.lang.String primKey, long shapeId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 }

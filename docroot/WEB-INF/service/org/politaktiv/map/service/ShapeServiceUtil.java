@@ -103,6 +103,13 @@ public class ShapeServiceUtil {
 		return getService().getShapesByUserId(portletId, primKey, userId);
 	}
 
+	public static void deleteShapeById(java.lang.String portletId,
+		java.lang.String primKey, long shapeId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().deleteShapeById(portletId, primKey, shapeId);
+	}
+
 	public static void clearService() {
 		_service = null;
 	}

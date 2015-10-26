@@ -97,6 +97,14 @@ public class ShapeServiceWrapper implements ShapeService,
 		return _shapeService.getShapesByUserId(portletId, primKey, userId);
 	}
 
+	@Override
+	public void deleteShapeById(java.lang.String portletId,
+		java.lang.String primKey, long shapeId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_shapeService.deleteShapeById(portletId, primKey, shapeId);
+	}
+
 	/**
 	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
