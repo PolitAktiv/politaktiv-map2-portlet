@@ -31,10 +31,6 @@ public interface Shape extends ShapeModel, PersistedModel {
 	 *
 	 * Never modify this interface directly. Add methods to {@link org.politaktiv.map.model.impl.ShapeImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public boolean isUpdatableByCurrentUser();
-
-	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser);
-
 	@com.liferay.portal.kernel.json.JSON()
 	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates()
 		throws com.liferay.portal.kernel.exception.SystemException;

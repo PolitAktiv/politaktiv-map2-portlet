@@ -474,41 +474,6 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	}
 
 	@Override
-	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser) {
-		try {
-			String methodName = "setUpdatableByCurrentUser";
-
-			Class<?>[] parameterTypes = new Class<?>[] { boolean.class };
-
-			Object[] parameterValues = new Object[] { updatableByCurrentUser };
-
-			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
-		}
-		catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
-
-	@Override
-	public boolean isUpdatableByCurrentUser() {
-		try {
-			String methodName = "isUpdatableByCurrentUser";
-
-			Class<?>[] parameterTypes = new Class<?>[] {  };
-
-			Object[] parameterValues = new Object[] {  };
-
-			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
-					parameterTypes, parameterValues);
-
-			return returnObj;
-		}
-		catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
-
-	@Override
 	public void validate(
 		java.util.List<java.util.List<java.lang.String>> points) {
 		try {

@@ -132,17 +132,10 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         List<Shape> shapes = ShapeUtil.findAll();
 
-        try {
-            for (Shape shape : shapes) {
-                boolean canUserUpdateMarker = ShapePermission.canUpdateShape(getPermissionChecker(), shape, portletId, primKey);
+        for (Shape shape : shapes) {
 
-                shape.setUpdatableByCurrentUser(canUserUpdateMarker);
-                shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
-                shape.setTitle(HtmlUtil.escape(shape.getTitle()));
-            }
-
-        } catch (PrincipalException e) {
-            LOGGER.info("Can't get permission checker " + e.getMessage());
+            shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
+            shape.setTitle(HtmlUtil.escape(shape.getTitle()));
         }
 
         return shapes;
@@ -154,9 +147,6 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         List<Shape> shapes = ShapeUtil.findByUserId(userId);
 
         for (Shape shape : shapes) {
-            boolean canUserUpdateMarker = ShapePermission.canUpdateShape(getPermissionChecker(), shape, portletId, primKey);
-
-            shape.setUpdatableByCurrentUser(canUserUpdateMarker);
             shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
             shape.setTitle(HtmlUtil.escape(shape.getTitle()));
         }

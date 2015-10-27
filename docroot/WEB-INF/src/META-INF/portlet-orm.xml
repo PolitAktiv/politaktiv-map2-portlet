@@ -48,8 +48,6 @@
 	</entity>
 	<entity class="org.politaktiv.map.model.impl.ShapeImpl" name="Shape">
 		<table name="politaktivmaptwo_Shape" />
-		<attributes>
-			<transient name="updatableByCurrentUser" />
-		</attributes>
+		<attributes />
 	</entity>
 </entity-mappings>

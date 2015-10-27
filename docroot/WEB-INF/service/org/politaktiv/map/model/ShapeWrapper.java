@@ -528,16 +528,6 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 	}
 
 	@Override
-	public boolean isUpdatableByCurrentUser() {
-		return _shape.isUpdatableByCurrentUser();
-	}
-
-	@Override
-	public void setUpdatableByCurrentUser(boolean updatableByCurrentUser) {
-		_shape.setUpdatableByCurrentUser(updatableByCurrentUser);
-	}
-
-	@Override
 	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _shape.getCoordinates();

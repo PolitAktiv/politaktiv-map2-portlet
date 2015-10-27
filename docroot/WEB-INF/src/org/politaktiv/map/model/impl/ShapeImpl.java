@@ -43,24 +43,8 @@ public class ShapeImpl extends ShapeBaseImpl {
 	 * Never reference this class directly. All methods that expect a shape model instance should use the {@link org.politaktiv.map.model.Shape} interface instead.
 	 */
 
-    /** The updatable by current user json property - used to detect if current user can update marker.
-     * Does not stored to DB, used at JSON frontend communication. */
-    @JSON
-    public boolean updatableByCurrentUser;
-
-
 	public ShapeImpl() {
 	}
-
-    @Override
-    public boolean isUpdatableByCurrentUser() {
-        return updatableByCurrentUser;
-    }
-
-    @Override
-    public void setUpdatableByCurrentUser(boolean updatableByCurrentUser) {
-        this.updatableByCurrentUser = updatableByCurrentUser;
-    }
 
     @JSON
     @Override
