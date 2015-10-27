@@ -84,6 +84,7 @@ L.drawLocal.edit.toolbar.actions.cancel.text = '<liferay-ui:message key="drawLoc
 L.drawLocal.edit.toolbar.buttons.edit = '<liferay-ui:message key="drawLocal.edit.toolbar.buttons.edit" />';
 L.drawLocal.edit.handlers.edit.tooltip.text = '<liferay-ui:message key="drawLocal.edit.handlers.edit.tooltip.text" />';
 L.drawLocal.edit.handlers.edit.tooltip.subtext = '<liferay-ui:message key="drawLocal.edit.handlers.edit.tooltip.subtext" />';
+L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLocal.edit.handlers.remove.tooltip.text" />';
 
 <%-- ajax calls details: /api/jsonws?contextPath=/politaktiv-map2-portlet --%>
     var map2 = createMap2({
