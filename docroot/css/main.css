@@ -91,3 +91,8 @@
 .leaflet-markers-list-item:hover {
 	color: #027;
 }
+
+.config-map {
+	height: 300px;
+}
+
