@@ -74,10 +74,10 @@
 			lngInput.value = e.latlng.lng.toString().substr(0,10);
 			center.setLatLng(e.latlng);
 		});
-		latInput.addEventListener('change',function() {
+		L.DomEvent.on(latInput, 'change', function() {
 			center.setLatLng([latInput.value, lngInput.value]);
 		});
-		lngInput.addEventListener('change',function() {
+		L.DomEvent.on(lngInput, 'change', function() {
 			center.setLatLng([latInput.value, lngInput.value]);
 		});
 	}
