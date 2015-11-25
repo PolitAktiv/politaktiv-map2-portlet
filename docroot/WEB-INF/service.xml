@@ -46,6 +46,8 @@
 		<column name="shapeType" type="String" />
 		<column name="radius" type="long" />
 
+        <column name="layer" type="String"/>
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
@@ -55,5 +57,15 @@
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
+
+        <finder name="Layer" return-type="Collection">
+            <finder-column name="layer"/>
+        </finder>
+
+        <finder name="UserIdAndLayer" return-type="Collection">
+            <finder-column name="userId"/>
+            <finder-column name="layer"/>
+        </finder>
+
 	</entity>
 </service-builder>

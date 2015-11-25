@@ -37,7 +37,7 @@ public class ShapeServiceClp implements ShapeService {
 		_methodParameterTypes3 = new String[] {
 				"java.lang.String", "java.lang.String", "long", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.util.List"
+				"java.lang.String", "long", "java.lang.String", "java.util.List"
 			};
 
 		_methodName4 = "updateShape";
@@ -45,19 +45,20 @@ public class ShapeServiceClp implements ShapeService {
 		_methodParameterTypes4 = new String[] {
 				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.util.List"
+				"java.lang.String", "long", "java.lang.String", "java.util.List"
 			};
 
 		_methodName5 = "getAllShapes";
 
 		_methodParameterTypes5 = new String[] {
-				"java.lang.String", "java.lang.String"
+				"java.lang.String", "java.lang.String", "java.lang.String"
 			};
 
 		_methodName6 = "getShapesByUserId";
 
 		_methodParameterTypes6 = new String[] {
-				"java.lang.String", "java.lang.String", "long"
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String"
 			};
 
 		_methodName7 = "deleteShapeById";
@@ -122,6 +123,7 @@ public class ShapeServiceClp implements ShapeService {
 		java.lang.String primKey, long groupId, long companyId,
 		java.lang.String title, java.lang.String abstractDescription,
 		java.lang.String url, java.lang.String shapeType, long radius,
+		java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -149,6 +151,8 @@ public class ShapeServiceClp implements ShapeService {
 					ClpSerializer.translateInput(shapeType),
 						
 					radius,
+						
+					ClpSerializer.translateInput(shapesLayer),
 						
 					ClpSerializer.translateInput(points)
 					});
@@ -185,6 +189,7 @@ public class ShapeServiceClp implements ShapeService {
 		java.lang.String portletId, java.lang.String primKey, long shapeId,
 		java.lang.String title, java.lang.String abstractDescription,
 		java.lang.String url, java.lang.String shapeType, long radius,
+		java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -210,6 +215,8 @@ public class ShapeServiceClp implements ShapeService {
 					ClpSerializer.translateInput(shapeType),
 						
 					radius,
+						
+					ClpSerializer.translateInput(shapesLayer),
 						
 					ClpSerializer.translateInput(points)
 					});
@@ -243,7 +250,8 @@ public class ShapeServiceClp implements ShapeService {
 
 	@Override
 	public java.util.List<org.politaktiv.map.model.Shape> getAllShapes(
-		java.lang.String portletId, java.lang.String primKey)
+		java.lang.String portletId, java.lang.String primKey,
+		java.lang.String shapesLayer)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
@@ -253,7 +261,9 @@ public class ShapeServiceClp implements ShapeService {
 					new Object[] {
 						ClpSerializer.translateInput(portletId),
 						
-					ClpSerializer.translateInput(primKey)
+					ClpSerializer.translateInput(primKey),
+						
+					ClpSerializer.translateInput(shapesLayer)
 					});
 		}
 		catch (Throwable t) {
@@ -277,7 +287,8 @@ public class ShapeServiceClp implements ShapeService {
 
 	@Override
 	public java.util.List<org.politaktiv.map.model.Shape> getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId)
+		java.lang.String portletId, java.lang.String primKey, long userId,
+		java.lang.String shapesLayer)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.security.auth.PrincipalException {
 		Object returnObj = null;
@@ -290,7 +301,9 @@ public class ShapeServiceClp implements ShapeService {
 						
 					ClpSerializer.translateInput(primKey),
 						
-					userId
+					userId,
+						
+					ClpSerializer.translateInput(shapesLayer)
 					});
 		}
 		catch (Throwable t) {

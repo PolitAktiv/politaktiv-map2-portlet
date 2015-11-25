@@ -40,12 +40,12 @@
 <%@ page import="static org.politaktiv.map.Constants.CENTER_LONGTITUDE" %>
 <%@ page import="static org.politaktiv.map.Constants.CENTER_LATITUDE" %>
 <%@ page import="static org.politaktiv.map.Constants.ZOOM_LEVEL" %>
+<%@ page import="static org.politaktiv.map.Constants.SHAPES_LAYER" %>
 
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_CENTER_LONGTITUDE" %>
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_CENTER_LATITUDE" %>
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_ZOOM_LEVEL" %>
-
-
+<%@ page import="static org.politaktiv.map.Constants.DEFAULT_SHAPES_LAYER" %>
 
 
 <portlet:defineObjects />
@@ -55,6 +55,7 @@
 	String centerLongtitude = PrefsParamUtil.getString(portletPreferences, renderRequest, CENTER_LONGTITUDE, DEFAULT_CENTER_LONGTITUDE);
 	String centerLatitude = PrefsParamUtil.getString(portletPreferences, renderRequest, CENTER_LATITUDE, DEFAULT_CENTER_LATITUDE);
 	String zoomLevel = PrefsParamUtil.getString(portletPreferences, renderRequest, ZOOM_LEVEL, DEFAULT_ZOOM_LEVEL);
+	String shapesLayer = PrefsParamUtil.getString(portletPreferences, renderRequest, SHAPES_LAYER, DEFAULT_SHAPES_LAYER);
 %>
 
 <script type="text/javascript">
@@ -62,6 +63,7 @@
 	var centerLongtitude = <%= centerLongtitude %>
 	var centerLatitude = <%= centerLatitude %>
 	var zoomLevel = <%= zoomLevel %>
+	var shapesLayer = <%= shapesLayer %>
 
 /*]]>*/
 </script>

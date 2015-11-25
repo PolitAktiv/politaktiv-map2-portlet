@@ -61,6 +61,7 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 		attributes.put("url", getUrl());
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
+		attributes.put("layer", getLayer());
 
 		return attributes;
 	}
@@ -138,6 +139,12 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 
 		if (radius != null) {
 			setRadius(radius);
+		}
+
+		String layer = (String)attributes.get("layer");
+
+		if (layer != null) {
+			setLayer(layer);
 		}
 	}
 
@@ -421,6 +428,26 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 	@Override
 	public void setRadius(long radius) {
 		_shape.setRadius(radius);
+	}
+
+	/**
+	* Returns the layer of this shape.
+	*
+	* @return the layer of this shape
+	*/
+	@Override
+	public java.lang.String getLayer() {
+		return _shape.getLayer();
+	}
+
+	/**
+	* Sets the layer of this shape.
+	*
+	* @param layer the layer of this shape
+	*/
+	@Override
+	public void setLayer(java.lang.String layer) {
+		_shape.setLayer(layer);
 	}
 
 	@Override

@@ -17,5 +17,6 @@ create table politaktivmaptwo_Shape (
 	abstractDescription VARCHAR(1024) null,
 	url VARCHAR(256) null,
 	shapeType VARCHAR(75) null,
-	radius LONG
+	radius LONG,
+	layer VARCHAR(75) null
 );

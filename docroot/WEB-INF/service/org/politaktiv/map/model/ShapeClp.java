@@ -87,6 +87,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		attributes.put("url", getUrl());
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
+		attributes.put("layer", getLayer());
 
 		return attributes;
 	}
@@ -164,6 +165,12 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 
 		if (radius != null) {
 			setRadius(radius);
+		}
+
+		String layer = (String)attributes.get("layer");
+
+		if (layer != null) {
+			setLayer(layer);
 		}
 	}
 
@@ -455,6 +462,29 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	}
 
 	@Override
+	public String getLayer() {
+		return _layer;
+	}
+
+	@Override
+	public void setLayer(String layer) {
+		_layer = layer;
+
+		if (_shapeRemoteModel != null) {
+			try {
+				Class<?> clazz = _shapeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLayer", String.class);
+
+				method.invoke(_shapeRemoteModel, layer);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates() {
 		try {
 			String methodName = "getCoordinates";
@@ -571,6 +601,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		clone.setUrl(getUrl());
 		clone.setShapeType(getShapeType());
 		clone.setRadius(getRadius());
+		clone.setLayer(getLayer());
 
 		return clone;
 	}
@@ -617,7 +648,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{shapeId=");
 		sb.append(getShapeId());
@@ -643,6 +674,8 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		sb.append(getShapeType());
 		sb.append(", radius=");
 		sb.append(getRadius());
+		sb.append(", layer=");
+		sb.append(getLayer());
 		sb.append("}");
 
 		return sb.toString();
@@ -650,7 +683,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("org.politaktiv.map.model.Shape");
@@ -704,6 +737,10 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 			"<column><column-name>radius</column-name><column-value><![CDATA[");
 		sb.append(getRadius());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>layer</column-name><column-value><![CDATA[");
+		sb.append(getLayer());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -723,5 +760,6 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	private String _url;
 	private String _shapeType;
 	private long _radius;
+	private String _layer;
 	private BaseModel<?> _shapeRemoteModel;
 }

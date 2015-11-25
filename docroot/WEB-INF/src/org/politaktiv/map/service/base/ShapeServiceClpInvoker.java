@@ -37,7 +37,7 @@ public class ShapeServiceClpInvoker {
 		_methodParameterTypes30 = new String[] {
 				"java.lang.String", "java.lang.String", "long", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.util.List"
+				"java.lang.String", "long", "java.lang.String", "java.util.List"
 			};
 
 		_methodName31 = "updateShape";
@@ -45,19 +45,20 @@ public class ShapeServiceClpInvoker {
 		_methodParameterTypes31 = new String[] {
 				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.util.List"
+				"java.lang.String", "long", "java.lang.String", "java.util.List"
 			};
 
 		_methodName32 = "getAllShapes";
 
 		_methodParameterTypes32 = new String[] {
-				"java.lang.String", "java.lang.String"
+				"java.lang.String", "java.lang.String", "java.lang.String"
 			};
 
 		_methodName33 = "getShapesByUserId";
 
 		_methodParameterTypes33 = new String[] {
-				"java.lang.String", "java.lang.String", "long"
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String"
 			};
 
 		_methodName34 = "deleteShapeById";
@@ -90,7 +91,8 @@ public class ShapeServiceClpInvoker {
 				(java.lang.String)arguments[4], (java.lang.String)arguments[5],
 				(java.lang.String)arguments[6], (java.lang.String)arguments[7],
 				((Long)arguments[8]).longValue(),
-				(java.util.List<java.util.List<java.lang.String>>)arguments[9]);
+				(java.lang.String)arguments[9],
+				(java.util.List<java.util.List<java.lang.String>>)arguments[10]);
 		}
 
 		if (_methodName31.equals(name) &&
@@ -101,19 +103,21 @@ public class ShapeServiceClpInvoker {
 				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
 				(java.lang.String)arguments[5], (java.lang.String)arguments[6],
 				((Long)arguments[7]).longValue(),
-				(java.util.List<java.util.List<java.lang.String>>)arguments[8]);
+				(java.lang.String)arguments[8],
+				(java.util.List<java.util.List<java.lang.String>>)arguments[9]);
 		}
 
 		if (_methodName32.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes32, parameterTypes)) {
 			return ShapeServiceUtil.getAllShapes((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1]);
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2]);
 		}
 
 		if (_methodName33.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes33, parameterTypes)) {
 			return ShapeServiceUtil.getShapesByUserId((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1], ((Long)arguments[2]).longValue());
+				(java.lang.String)arguments[1],
+				((Long)arguments[2]).longValue(), (java.lang.String)arguments[3]);
 		}
 
 		if (_methodName34.equals(name) &&

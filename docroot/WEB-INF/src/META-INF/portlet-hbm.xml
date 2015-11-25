@@ -29,5 +29,6 @@
 		<property name="url" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="shapeType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="radius" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layer" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>

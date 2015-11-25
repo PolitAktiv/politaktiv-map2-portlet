@@ -77,9 +77,10 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			{ "abstractDescription", Types.VARCHAR },
 			{ "url", Types.VARCHAR },
 			{ "shapeType", Types.VARCHAR },
-			{ "radius", Types.BIGINT }
+			{ "radius", Types.BIGINT },
+			{ "layer", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,url VARCHAR(256) null,shapeType VARCHAR(75) null,radius LONG)";
+	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,url VARCHAR(256) null,shapeType VARCHAR(75) null,radius LONG,layer VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table politaktivmaptwo_Shape";
 	public static final String ORDER_BY_JPQL = " ORDER BY shape.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Shape.createDate ASC";
@@ -95,8 +96,9 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.politaktiv.map.model.Shape"),
 			true);
-	public static long USERID_COLUMN_BITMASK = 1L;
-	public static long CREATEDATE_COLUMN_BITMASK = 2L;
+	public static long LAYER_COLUMN_BITMASK = 1L;
+	public static long USERID_COLUMN_BITMASK = 2L;
+	public static long CREATEDATE_COLUMN_BITMASK = 4L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -123,6 +125,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		model.setUrl(soapModel.getUrl());
 		model.setShapeType(soapModel.getShapeType());
 		model.setRadius(soapModel.getRadius());
+		model.setLayer(soapModel.getLayer());
 
 		return model;
 	}
@@ -199,6 +202,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		attributes.put("url", getUrl());
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
+		attributes.put("layer", getLayer());
 
 		return attributes;
 	}
@@ -276,6 +280,12 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 
 		if (radius != null) {
 			setRadius(radius);
+		}
+
+		String layer = (String)attributes.get("layer");
+
+		if (layer != null) {
+			setLayer(layer);
 		}
 	}
 
@@ -460,6 +470,32 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		_radius = radius;
 	}
 
+	@JSON
+	@Override
+	public String getLayer() {
+		if (_layer == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _layer;
+		}
+	}
+
+	@Override
+	public void setLayer(String layer) {
+		_columnBitmask |= LAYER_COLUMN_BITMASK;
+
+		if (_originalLayer == null) {
+			_originalLayer = _layer;
+		}
+
+		_layer = layer;
+	}
+
+	public String getOriginalLayer() {
+		return GetterUtil.getString(_originalLayer);
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -503,6 +539,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		shapeImpl.setUrl(getUrl());
 		shapeImpl.setShapeType(getShapeType());
 		shapeImpl.setRadius(getRadius());
+		shapeImpl.setLayer(getLayer());
 
 		shapeImpl.resetOriginalValues();
 
@@ -556,6 +593,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		shapeModelImpl._originalUserId = shapeModelImpl._userId;
 
 		shapeModelImpl._setOriginalUserId = false;
+
+		shapeModelImpl._originalLayer = shapeModelImpl._layer;
 
 		shapeModelImpl._columnBitmask = 0;
 	}
@@ -633,12 +672,20 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 
 		shapeCacheModel.radius = getRadius();
 
+		shapeCacheModel.layer = getLayer();
+
+		String layer = shapeCacheModel.layer;
+
+		if ((layer != null) && (layer.length() == 0)) {
+			shapeCacheModel.layer = null;
+		}
+
 		return shapeCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{shapeId=");
 		sb.append(getShapeId());
@@ -664,6 +711,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		sb.append(getShapeType());
 		sb.append(", radius=");
 		sb.append(getRadius());
+		sb.append(", layer=");
+		sb.append(getLayer());
 		sb.append("}");
 
 		return sb.toString();
@@ -671,7 +720,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("org.politaktiv.map.model.Shape");
@@ -725,6 +774,10 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			"<column><column-name>radius</column-name><column-value><![CDATA[");
 		sb.append(getRadius());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>layer</column-name><column-value><![CDATA[");
+		sb.append(getLayer());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -748,6 +801,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 	private String _url;
 	private String _shapeType;
 	private long _radius;
+	private String _layer;
+	private String _originalLayer;
 	private long _columnBitmask;
 	private Shape _escapedModel;
 }

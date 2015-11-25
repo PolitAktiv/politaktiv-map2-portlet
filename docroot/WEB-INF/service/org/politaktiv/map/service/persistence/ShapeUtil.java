@@ -268,6 +268,342 @@ public class ShapeUtil {
 	}
 
 	/**
+	* Returns all the shapes where layer = &#63;.
+	*
+	* @param layer the layer
+	* @return the matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Shape> findByLayer(
+		java.lang.String layer)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByLayer(layer);
+	}
+
+	/**
+	* Returns a range of all the shapes where layer = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param layer the layer
+	* @param start the lower bound of the range of shapes
+	* @param end the upper bound of the range of shapes (not inclusive)
+	* @return the range of matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Shape> findByLayer(
+		java.lang.String layer, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByLayer(layer, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the shapes where layer = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param layer the layer
+	* @param start the lower bound of the range of shapes
+	* @param end the upper bound of the range of shapes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Shape> findByLayer(
+		java.lang.String layer, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByLayer(layer, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first shape in the ordered set where layer = &#63;.
+	*
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching shape
+	* @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape findByLayer_First(
+		java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchShapeException {
+		return getPersistence().findByLayer_First(layer, orderByComparator);
+	}
+
+	/**
+	* Returns the first shape in the ordered set where layer = &#63;.
+	*
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching shape, or <code>null</code> if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape fetchByLayer_First(
+		java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().fetchByLayer_First(layer, orderByComparator);
+	}
+
+	/**
+	* Returns the last shape in the ordered set where layer = &#63;.
+	*
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching shape
+	* @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape findByLayer_Last(
+		java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchShapeException {
+		return getPersistence().findByLayer_Last(layer, orderByComparator);
+	}
+
+	/**
+	* Returns the last shape in the ordered set where layer = &#63;.
+	*
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching shape, or <code>null</code> if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape fetchByLayer_Last(
+		java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().fetchByLayer_Last(layer, orderByComparator);
+	}
+
+	/**
+	* Returns the shapes before and after the current shape in the ordered set where layer = &#63;.
+	*
+	* @param shapeId the primary key of the current shape
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next shape
+	* @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape[] findByLayer_PrevAndNext(
+		long shapeId, java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchShapeException {
+		return getPersistence()
+				   .findByLayer_PrevAndNext(shapeId, layer, orderByComparator);
+	}
+
+	/**
+	* Removes all the shapes where layer = &#63; from the database.
+	*
+	* @param layer the layer
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByLayer(java.lang.String layer)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByLayer(layer);
+	}
+
+	/**
+	* Returns the number of shapes where layer = &#63;.
+	*
+	* @param layer the layer
+	* @return the number of matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByLayer(java.lang.String layer)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByLayer(layer);
+	}
+
+	/**
+	* Returns all the shapes where userId = &#63; and layer = &#63;.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @return the matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Shape> findByUserIdAndLayer(
+		long userId, java.lang.String layer)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByUserIdAndLayer(userId, layer);
+	}
+
+	/**
+	* Returns a range of all the shapes where userId = &#63; and layer = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @param start the lower bound of the range of shapes
+	* @param end the upper bound of the range of shapes (not inclusive)
+	* @return the range of matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Shape> findByUserIdAndLayer(
+		long userId, java.lang.String layer, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByUserIdAndLayer(userId, layer, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the shapes where userId = &#63; and layer = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @param start the lower bound of the range of shapes
+	* @param end the upper bound of the range of shapes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Shape> findByUserIdAndLayer(
+		long userId, java.lang.String layer, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByUserIdAndLayer(userId, layer, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first shape in the ordered set where userId = &#63; and layer = &#63;.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching shape
+	* @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape findByUserIdAndLayer_First(
+		long userId, java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchShapeException {
+		return getPersistence()
+				   .findByUserIdAndLayer_First(userId, layer, orderByComparator);
+	}
+
+	/**
+	* Returns the first shape in the ordered set where userId = &#63; and layer = &#63;.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching shape, or <code>null</code> if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape fetchByUserIdAndLayer_First(
+		long userId, java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByUserIdAndLayer_First(userId, layer, orderByComparator);
+	}
+
+	/**
+	* Returns the last shape in the ordered set where userId = &#63; and layer = &#63;.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching shape
+	* @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape findByUserIdAndLayer_Last(
+		long userId, java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchShapeException {
+		return getPersistence()
+				   .findByUserIdAndLayer_Last(userId, layer, orderByComparator);
+	}
+
+	/**
+	* Returns the last shape in the ordered set where userId = &#63; and layer = &#63;.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching shape, or <code>null</code> if a matching shape could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape fetchByUserIdAndLayer_Last(
+		long userId, java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByUserIdAndLayer_Last(userId, layer, orderByComparator);
+	}
+
+	/**
+	* Returns the shapes before and after the current shape in the ordered set where userId = &#63; and layer = &#63;.
+	*
+	* @param shapeId the primary key of the current shape
+	* @param userId the user ID
+	* @param layer the layer
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next shape
+	* @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Shape[] findByUserIdAndLayer_PrevAndNext(
+		long shapeId, long userId, java.lang.String layer,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchShapeException {
+		return getPersistence()
+				   .findByUserIdAndLayer_PrevAndNext(shapeId, userId, layer,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the shapes where userId = &#63; and layer = &#63; from the database.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByUserIdAndLayer(long userId,
+		java.lang.String layer)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByUserIdAndLayer(userId, layer);
+	}
+
+	/**
+	* Returns the number of shapes where userId = &#63; and layer = &#63;.
+	*
+	* @param userId the user ID
+	* @param layer the layer
+	* @return the number of matching shapes
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByUserIdAndLayer(long userId, java.lang.String layer)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByUserIdAndLayer(userId, layer);
+	}
+
+	/**
 	* Caches the shape in the entity cache if it is enabled.
 	*
 	* @param shape the shape

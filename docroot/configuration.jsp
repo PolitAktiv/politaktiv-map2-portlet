@@ -34,6 +34,7 @@
 						<aui:validator name="min">1</aui:validator>
 						<aui:validator name="max">18</aui:validator>
 					</aui:input>
+                    <aui:input label="shapes-layer" name="preferences--shapesLayer--" value="<%=shapesLayer%>"></aui:input>
 				</aui:fieldset>
 		
 			<aui:button-row>
@@ -55,14 +56,14 @@
 		center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
 		zoomLevel: <%= zoomLevel %>
 	});
-	
+
 	function initMapConfig(prop) {
 		var wrap = L.DomUtil.get(prop.wrapperId);
 		var configMap = L.map(wrap.querySelector('.config-map'));
 		var center = L.marker([prop.center.lat, prop.center.lng]);
 		var latInput = wrap.querySelector('.map-center-latitude');
 		var lngInput = wrap.querySelector('.map-center-longtitude');
-	
+
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 						attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
 					}).addTo(configMap);

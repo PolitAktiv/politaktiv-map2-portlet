@@ -36,6 +36,7 @@
 			<basic name="url" />
 			<basic name="shapeType" />
 			<basic name="radius" />
+			<basic name="layer" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />

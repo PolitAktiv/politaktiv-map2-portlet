@@ -263,6 +263,21 @@ public interface ShapeModel extends BaseModel<Shape>, GroupedModel {
 	 */
 	public void setRadius(long radius);
 
+	/**
+	 * Returns the layer of this shape.
+	 *
+	 * @return the layer of this shape
+	 */
+	@AutoEscape
+	public String getLayer();
+
+	/**
+	 * Sets the layer of this shape.
+	 *
+	 * @param layer the layer of this shape
+	 */
+	public void setLayer(String layer);
+
 	@Override
 	public boolean isNew();
 

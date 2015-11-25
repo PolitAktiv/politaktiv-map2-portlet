@@ -43,6 +43,7 @@ public class ShapeSoap implements Serializable {
 		soapModel.setUrl(model.getUrl());
 		soapModel.setShapeType(model.getShapeType());
 		soapModel.setRadius(model.getRadius());
+		soapModel.setLayer(model.getLayer());
 
 		return soapModel;
 	}
@@ -191,6 +192,14 @@ public class ShapeSoap implements Serializable {
 		_radius = radius;
 	}
 
+	public String getLayer() {
+		return _layer;
+	}
+
+	public void setLayer(String layer) {
+		_layer = layer;
+	}
+
 	private long _shapeId;
 	private long _groupId;
 	private long _companyId;
@@ -203,4 +212,5 @@ public class ShapeSoap implements Serializable {
 	private String _url;
 	private String _shapeType;
 	private long _radius;
+	private String _layer;
 }

@@ -28,5 +28,6 @@
 		</field>
 		<field name="shapeType" type="String" />
 		<field name="radius" type="long" />
+		<field name="layer" type="String" />
 	</model>
 </model-hints>

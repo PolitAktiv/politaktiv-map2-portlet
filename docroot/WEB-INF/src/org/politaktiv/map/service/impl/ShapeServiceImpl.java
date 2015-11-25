@@ -58,7 +58,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
     private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
 
 
-    public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String url, String shapeType, long radius, List<List<String>> points)
+    public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String url, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
         User user = getPermissionChecker().getUser();
@@ -84,6 +84,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setUrl(url);
         shape.setShapeType(shapeType);
         shape.setRadius(radius);
+        shape.setLayer(shapesLayer);
 
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
 
@@ -98,7 +99,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
 
 
-    public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String url, String shapeType, long radius, List<List<String>> points)
+    public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String url, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
@@ -113,6 +114,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setAbstractDescription(abstractDescription);
         shape.setUrl(url);
         shape.setRadius(radius);
+        shape.setLayer(shapesLayer);
 
         CoordinateLocalServiceUtil.removeCoordinatesByShapeId(shapeId);
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
@@ -128,9 +130,9 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
 
     @AccessControlled(guestAccessEnabled = true)
-    public List<Shape> getAllShapes(String portletId, String primKey) throws SystemException {
+    public List<Shape> getAllShapes(String portletId, String primKey, String shapesLayer) throws SystemException {
 
-        List<Shape> shapes = ShapeUtil.findAll();
+        List<Shape> shapes = ShapeUtil.findByLayer(shapesLayer);
 
         for (Shape shape : shapes) {
 
@@ -141,10 +143,9 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         return shapes;
     }
 
-    public List<Shape> getShapesByUserId(String portletId, String primKey, long userId) throws SystemException, PrincipalException {
+    public List<Shape> getShapesByUserId(String portletId, String primKey, long userId, String shapesLayer) throws SystemException, PrincipalException {
 
-
-        List<Shape> shapes = ShapeUtil.findByUserId(userId);
+        List<Shape> shapes = ShapeUtil.findByUserIdAndLayer(userId, shapesLayer);
 
         for (Shape shape : shapes) {
             shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));

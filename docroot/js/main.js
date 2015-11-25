@@ -43,7 +43,8 @@ function createMap2 (prop) {
                     '/politaktiv-map2-portlet.shape/get-all-shapes',
                     data = {
                             portletId: prop.portletId,
-                            primKey: prop.primKey
+                            primKey: prop.primKey,
+                            shapesLayer: prop.shapesLayer
                     },
                     successCallback = function(res) {
                         if (console) console.log('ok:');
@@ -256,6 +257,7 @@ function createMap2 (prop) {
                         url: data.url,
                         shapeType: data.shapeType,
                         radius: data.radius,
+                        shapesLayer:prop.shapesLayer,
                         points: data.points || _Map2.parsePoints(shape)
                 },
                 successCallback = function(res) {
@@ -387,6 +389,7 @@ function createMap2 (prop) {
                 url: url,
                 shapeType: (type==='marker')?'POINT':type.toUpperCase(),
                 radius: (type==='circle')?layer.getRadius():0,
+                shapesLayer: prop.shapesLayer,
                 points: _Map2.parsePoints(layer)
             }
             Liferay.Service(

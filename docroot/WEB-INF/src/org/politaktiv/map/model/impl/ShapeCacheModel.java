@@ -37,7 +37,7 @@ import java.util.Date;
 public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{shapeId=");
 		sb.append(shapeId);
@@ -63,6 +63,8 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		sb.append(shapeType);
 		sb.append(", radius=");
 		sb.append(radius);
+		sb.append(", layer=");
+		sb.append(layer);
 		sb.append("}");
 
 		return sb.toString();
@@ -128,6 +130,13 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 
 		shapeImpl.setRadius(radius);
 
+		if (layer == null) {
+			shapeImpl.setLayer(StringPool.BLANK);
+		}
+		else {
+			shapeImpl.setLayer(layer);
+		}
+
 		shapeImpl.resetOriginalValues();
 
 		return shapeImpl;
@@ -147,6 +156,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		url = objectInput.readUTF();
 		shapeType = objectInput.readUTF();
 		radius = objectInput.readLong();
+		layer = objectInput.readUTF();
 	}
 
 	@Override
@@ -196,6 +206,13 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		}
 
 		objectOutput.writeLong(radius);
+
+		if (layer == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(layer);
+		}
 	}
 
 	public long shapeId;
@@ -210,4 +227,5 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 	public String url;
 	public String shapeType;
 	public long radius;
+	public String layer;
 }

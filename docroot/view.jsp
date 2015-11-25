@@ -94,6 +94,7 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
         companyId: <%= company.getCompanyId() %>,
         portletId: '<%= portletId %>',
         primKey: '<%= primKey %>',
+        shapesLayer: '<%= shapesLayer %>',
         userId: <%= themeDisplay.getUserId() %>,
         canAddAndUpdatePersonalShape: <%= canAddAndUpdatePersonalShape %>,
         canUpdateAnyShapes: <%= canUpdateAnyShapes %>,
