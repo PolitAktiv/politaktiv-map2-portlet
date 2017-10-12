@@ -18,6 +18,17 @@
 			<transient name="primaryKeyObj" />
 		</attributes>
 	</mapped-superclass>
+	<mapped-superclass class="org.politaktiv.map.model.impl.LayerModelImpl">
+		<attributes>
+			<id name="layerId" />
+			<basic name="label" />
+			<basic name="userId" />
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+			<transient name="userUuid" />
+		</attributes>
+	</mapped-superclass>
 	<mapped-superclass class="org.politaktiv.map.model.impl.ShapeModelImpl">
 		<attributes>
 			<id name="shapeId" />
@@ -45,6 +56,10 @@
 	</mapped-superclass>
 	<entity class="org.politaktiv.map.model.impl.CoordinateImpl" name="Coordinate">
 		<table name="politaktivmaptwo_Coordinate" />
+		<attributes />
+	</entity>
+	<entity class="org.politaktiv.map.model.impl.LayerImpl" name="Layer">
+		<table name="politaktivmaptwo_Layer" />
 		<attributes />
 	</entity>
 	<entity class="org.politaktiv.map.model.impl.ShapeImpl" name="Shape">

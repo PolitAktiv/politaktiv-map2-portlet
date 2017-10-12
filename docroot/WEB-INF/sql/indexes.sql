@@ -2,7 +2,9 @@
 
 create index IX_C9C94E1E on politaktivmaptwo_Coordinate (shapeId);
 
+create index IX_5C31031D on politaktivmaptwo_Layer (label);
 create index IX_8ED0CCE1 on politaktivmaptwo_Layer (userId);
+create index IX_A8234CA3 on politaktivmaptwo_Layer (userId, label);
 
 -- create index IX_499830EA on politaktivmaptwo_Marker (userId);
 

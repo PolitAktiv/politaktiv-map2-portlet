@@ -11,6 +11,11 @@
 			<hint name="max-length">11</hint>
 		</field>
 	</model>
+	<model name="org.politaktiv.map.model.Layer">
+		<field name="layerId" type="long" />
+		<field name="label" type="String" />
+		<field name="userId" type="long" />
+	</model>
 	<model name="org.politaktiv.map.model.Shape">
 		<field name="shapeId" type="long" />
 		<field name="groupId" type="long" />

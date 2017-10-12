@@ -5,6 +5,12 @@ create table politaktivmaptwo_Coordinate (
 	latitude VARCHAR(11) null
 );
 
+create table politaktivmaptwo_Layer (
+	layerId LONG not null primary key,
+	label VARCHAR(75) null,
+	userId LONG
+);
+
 create table politaktivmaptwo_Shape (
 	shapeId LONG not null primary key,
 	groupId LONG,

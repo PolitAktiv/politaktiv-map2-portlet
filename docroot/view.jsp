@@ -100,11 +100,23 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
         canUpdateAnyShapes: <%= canUpdateAnyShapes %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,
-        translations: {
-            resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
-            yourShapes: '<liferay-ui:message key="map2.your-shapes" />',
-            allShapes: '<liferay-ui:message key="map2.all-shapes" />',
-            addTitleMessage: '<liferay-ui:message key="map2.add-title-message" />'
-        }
+		translations: {
+		resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
+		yourShapes: '<liferay-ui:message key="map2.your-shapes" />',
+		allShapes: '<liferay-ui:message key="map2.all-shapes" />',
+		addTitleMessage: '<liferay-ui:message key="map2.add-title-message" />',
+		addLabelMessage: '<liferay-ui:message key="map2.add-label-message" />',
+		deleteLabelMessage: '<liferay-ui:message key="map2.delete-label-message" />',
+		addLabelMessageAgain: '<liferay-ui:message key="map2.add-label-message-again" />',
+		exceptionAddMessage: '<liferay-ui:message key="map2.exception-add-message" />',
+		exceptionDeleteMessage: '<liferay-ui:message key="map2.exception-delete-message" />',
+		exceptionAddSecondMessage: '<liferay-ui:message key="map2.exception-add-second-message" />',
+		exceptionDeleteSecondMessage: '<liferay-ui:message key="map2.exception-delete-second-message" />',
+		addLayer: '<liferay-ui:message key="map2.add-layer" />',
+		deleteLayer: '<liferay-ui:message key="map2.delete-layer" />',
+		exceptionMessage: '<liferay-ui:message key="map2.exception-message" />',
+		confirmDeleteMessage: '<liferay-ui:message key="map2.confirm-delete-message" />',
+		confirmAddMessage: '<liferay-ui:message key="map2.confirm-add-message" />',
+		}
     });
 </aui:script>

@@ -4,26 +4,54 @@
 	<author>Paul Butenko</author>
 	<namespace>politaktivmaptwo</namespace>
 
-    <entity name="Coordinate" local-service="true">
+	<entity name="Coordinate" local-service="true">
 
-        <!-- PK fields -->
-        <column name="coordinateId" type="long" primary="true"/>
+		<!-- PK fields -->
+		<column name="coordinateId" type="long" primary="true"/>
 
-        <column name="shapeId" type="long"/>
+		<column name="shapeId" type="long"/>
 
-        <!-- Data fields -->
-        <column name="longitude" type="String" />
-        <column name="latitude" type="String" />
+		<!-- Data fields -->
+		<column name="longitude" type="String" />
+		<column name="latitude" type="String" />
 
-        <!-- Finder methods -->
-        <finder name="ShapeId" return-type="Collection">
-            <finder-column name="shapeId"/>
-        </finder>
-    </entity>
+		<!-- Finder methods -->
+		<finder name="ShapeId" return-type="Collection">
+			<finder-column name="shapeId"/>
+		</finder>
+	</entity>
 
+	<entity name="Layer" local-service="true" remote-service="true">
 
+		<!-- PK fields -->
+		<column name="layerId" type="long" primary="true"/>
 
-    <entity name="Shape" local-service="true" remote-service="true">
+		<!-- Data fields -->
+		<column name="label" type="String" />
+		<column name="userId" type="long" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="label" />
+		</order>
+
+		<!-- Finder methods -->
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+
+		<finder name="Label" return-type="Layer">
+			<finder-column name="label" />
+		</finder>
+
+		<finder name="UserIdAndLabel" return-type="Layer">
+			<finder-column name="userId"/>
+			<finder-column name="label"/>
+		</finder>
+
+	</entity>
+
+	<entity name="Shape" local-service="true" remote-service="true">
 
 		<!-- PK fields -->
 		<column name="shapeId" type="long" primary="true" />
@@ -46,7 +74,7 @@
 		<column name="shapeType" type="String" />
 		<column name="radius" type="long" />
 
-        <column name="layer" type="String"/>
+		<column name="layer" type="String"/>
 
 		<!-- Order -->
 		<order by="asc">
@@ -58,14 +86,14 @@
 			<finder-column name="userId" />
 		</finder>
 
-        <finder name="Layer" return-type="Collection">
-            <finder-column name="layer"/>
-        </finder>
+		<finder name="Layer" return-type="Collection">
+			<finder-column name="layer"/>
+		</finder>
 
-        <finder name="UserIdAndLayer" return-type="Collection">
-            <finder-column name="userId"/>
-            <finder-column name="layer"/>
-        </finder>
+		<finder name="UserIdAndLayer" return-type="Collection">
+			<finder-column name="userId"/>
+			<finder-column name="layer"/>
+		</finder>
 
 	</entity>
 </service-builder>

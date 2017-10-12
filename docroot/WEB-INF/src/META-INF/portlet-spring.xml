@@ -4,6 +4,9 @@
 	<bean id="org.politaktiv.map.service.CoordinateLocalService" class="org.politaktiv.map.service.impl.CoordinateLocalServiceImpl" />
 	<bean id="org.politaktiv.map.service.CoordinateService" class="org.politaktiv.map.service.impl.CoordinateServiceImpl" />
 	<bean id="org.politaktiv.map.service.persistence.CoordinatePersistence" class="org.politaktiv.map.service.persistence.CoordinatePersistenceImpl" parent="basePersistence" />
+	<bean id="org.politaktiv.map.service.LayerLocalService" class="org.politaktiv.map.service.impl.LayerLocalServiceImpl" />
+	<bean id="org.politaktiv.map.service.LayerService" class="org.politaktiv.map.service.impl.LayerServiceImpl" />
+	<bean id="org.politaktiv.map.service.persistence.LayerPersistence" class="org.politaktiv.map.service.persistence.LayerPersistenceImpl" parent="basePersistence" />
 	<bean id="org.politaktiv.map.service.ShapeLocalService" class="org.politaktiv.map.service.impl.ShapeLocalServiceImpl" />
 	<bean id="org.politaktiv.map.service.ShapeService" class="org.politaktiv.map.service.impl.ShapeServiceImpl" />
 	<bean id="org.politaktiv.map.service.persistence.ShapePersistence" class="org.politaktiv.map.service.persistence.ShapePersistenceImpl" parent="basePersistence" />

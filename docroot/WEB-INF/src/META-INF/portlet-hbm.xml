@@ -3,6 +3,7 @@
 
 <hibernate-mapping default-lazy="false" auto-import="false">
 	<import class="org.politaktiv.map.model.Coordinate" />
+	<import class="org.politaktiv.map.model.Layer" />
 	<import class="org.politaktiv.map.model.Shape" />
 	<class name="org.politaktiv.map.model.impl.CoordinateImpl" table="politaktivmaptwo_Coordinate">
 		<cache usage="read-write" />
@@ -12,6 +13,14 @@
 		<property name="shapeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="longitude" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="latitude" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.politaktiv.map.model.impl.LayerImpl" table="politaktivmaptwo_Layer">
+		<cache usage="read-write" />
+		<id name="layerId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="label" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.politaktiv.map.model.impl.ShapeImpl" table="politaktivmaptwo_Shape">
 		<cache usage="read-write" />
