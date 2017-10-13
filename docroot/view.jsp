@@ -54,6 +54,8 @@ boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecke
 	</div>
 </div>
 
+<input id="<portlet:namespace />ImageUpload" type="file" accept="image/*" class="hide"/>
+
 
 <br/>
 
@@ -65,6 +67,7 @@ L.drawLocal.draw.toolbar.buttons.polygon = '<liferay-ui:message key="drawLocal.d
 L.drawLocal.draw.toolbar.buttons.rectangle = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.rectangle" />';
 L.drawLocal.draw.toolbar.buttons.circle = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.circle" />';
 L.drawLocal.draw.toolbar.buttons.marker = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.marker" />';
+L.drawLocal.draw.toolbar.buttons.image = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.image" />';
 L.drawLocal.draw.handlers.circle.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.circle.tooltip.start" />';
 L.drawLocal.draw.handlers.circle.radius = '<liferay-ui:message key="drawLocal.draw.handlers.circle.radius" />';
 L.drawLocal.draw.handlers.marker.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.marker.tooltip.start" />';
@@ -90,6 +93,7 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
     var map2 = createMap2({
         wrapperId: '<portlet:namespace />map',
         popupTemplateId: '<portlet:namespace />PopupTemplate',
+        imageUploadId: '<portlet:namespace />ImageUpload',
         groupId: <%= portletGroupId %>,
         companyId: <%= company.getCompanyId() %>,
         portletId: '<%= portletId %>',

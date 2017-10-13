@@ -63,7 +63,7 @@
 	var centerLongtitude = <%= centerLongtitude %>
 	var centerLatitude = <%= centerLatitude %>
 	var zoomLevel = <%= zoomLevel %>
-	var shapesLayer = <%= shapesLayer %>
+	var shapesLayer = '<%= shapesLayer %>'
 
 /*]]>*/
 </script>

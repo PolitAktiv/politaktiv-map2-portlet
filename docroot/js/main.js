@@ -122,8 +122,23 @@ function createMap2 (prop) {
 
                 var shapeTitle = prompt(prop.translations.addTitleMessage);
 
-                if (shapeTitle.length) {
-                    _Map2.saveShape(layer, label, type, shapeTitle, '', '');
+                if (shapeTitle && shapeTitle.length) {
+                    if (type === 'image') {
+                        var fileInput = L.DomUtil.get(prop.imageUploadId);
+                        fileInput.click();
+                        var fileChange = function () {
+                            if (fileInput.files.length) {
+                                console.log(fileInput.files, fileInput.value);
+                                _Map2.saveShape(layer, label, type, shapeTitle, '', '');
+                            } else {
+                                _Map2.map.removeLayer(layer);
+                            }
+                            L.DomEvent.off(fileInput, 'change', fileChange);
+                        };
+                        L.DomEvent.on(fileInput, 'change', fileChange);
+                    } else {
+                        _Map2.saveShape(layer, label, type, shapeTitle, '', '');
+                    }
                 } else {
                     _Map2.map.removeLayer(layer);
                 }
@@ -468,7 +483,8 @@ function createMap2 (prop) {
                     rectangle: drawProp,
                     marker: {
                         icon: _Map2.ownIcon
-                    }
+                    },
+                    image: {}
                 };
             } else {
                 drawOptions.draw = {
@@ -476,7 +492,8 @@ function createMap2 (prop) {
                     polygon: false,
                     circle: false,
                     rectangle: false,
-                    marker: false
+                    marker: false,
+                    image: false
                 };
             }
 
