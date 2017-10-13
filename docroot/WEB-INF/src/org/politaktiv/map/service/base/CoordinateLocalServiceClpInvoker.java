@@ -106,31 +106,31 @@ public class CoordinateLocalServiceClpInvoker {
 				"org.politaktiv.map.model.Coordinate"
 			};
 
-		_methodName40 = "getBeanIdentifier";
+		_methodName46 = "getBeanIdentifier";
 
-		_methodParameterTypes40 = new String[] {  };
+		_methodParameterTypes46 = new String[] {  };
 
-		_methodName41 = "setBeanIdentifier";
+		_methodName47 = "setBeanIdentifier";
 
-		_methodParameterTypes41 = new String[] { "java.lang.String" };
+		_methodParameterTypes47 = new String[] { "java.lang.String" };
 
-		_methodName46 = "addCoordinate";
+		_methodName52 = "addCoordinate";
 
-		_methodParameterTypes46 = new String[] {
+		_methodParameterTypes52 = new String[] {
 				"long", "java.lang.String", "java.lang.String"
 			};
 
-		_methodName47 = "addCoordinates";
+		_methodName53 = "addCoordinates";
 
-		_methodParameterTypes47 = new String[] { "long", "java.util.List" };
+		_methodParameterTypes53 = new String[] { "long", "java.util.List" };
 
-		_methodName48 = "getAllCoordinatesByShapeId";
+		_methodName54 = "getAllCoordinatesByShapeId";
 
-		_methodParameterTypes48 = new String[] { "long" };
+		_methodParameterTypes54 = new String[] { "long" };
 
-		_methodName49 = "removeCoordinatesByShapeId";
+		_methodName55 = "removeCoordinatesByShapeId";
 
-		_methodParameterTypes49 = new String[] { "long" };
+		_methodParameterTypes55 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -222,37 +222,37 @@ public class CoordinateLocalServiceClpInvoker {
 			return CoordinateLocalServiceUtil.updateCoordinate((org.politaktiv.map.model.Coordinate)arguments[0]);
 		}
 
-		if (_methodName40.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes40, parameterTypes)) {
+		if (_methodName46.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes46, parameterTypes)) {
 			return CoordinateLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName41.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes41, parameterTypes)) {
+		if (_methodName47.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes47, parameterTypes)) {
 			CoordinateLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName46.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes46, parameterTypes)) {
+		if (_methodName52.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes52, parameterTypes)) {
 			return CoordinateLocalServiceUtil.addCoordinate(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1], (java.lang.String)arguments[2]);
 		}
 
-		if (_methodName47.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes47, parameterTypes)) {
+		if (_methodName53.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes53, parameterTypes)) {
 			return CoordinateLocalServiceUtil.addCoordinates(((Long)arguments[0]).longValue(),
 				(java.util.List<java.util.List<java.lang.String>>)arguments[1]);
 		}
 
-		if (_methodName48.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes48, parameterTypes)) {
+		if (_methodName54.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes54, parameterTypes)) {
 			return CoordinateLocalServiceUtil.getAllCoordinatesByShapeId(((Long)arguments[0]).longValue());
 		}
 
-		if (_methodName49.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes49, parameterTypes)) {
+		if (_methodName55.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes55, parameterTypes)) {
 			CoordinateLocalServiceUtil.removeCoordinatesByShapeId(((Long)arguments[0]).longValue());
 
 			return null;
@@ -293,16 +293,16 @@ public class CoordinateLocalServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName40;
-	private String[] _methodParameterTypes40;
-	private String _methodName41;
-	private String[] _methodParameterTypes41;
 	private String _methodName46;
 	private String[] _methodParameterTypes46;
 	private String _methodName47;
 	private String[] _methodParameterTypes47;
-	private String _methodName48;
-	private String[] _methodParameterTypes48;
-	private String _methodName49;
-	private String[] _methodParameterTypes49;
+	private String _methodName52;
+	private String[] _methodParameterTypes52;
+	private String _methodName53;
+	private String[] _methodParameterTypes53;
+	private String _methodName54;
+	private String[] _methodParameterTypes54;
+	private String _methodName55;
+	private String[] _methodParameterTypes55;
 }

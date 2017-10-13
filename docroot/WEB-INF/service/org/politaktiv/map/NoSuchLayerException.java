@@ -17,7 +17,7 @@ package org.politaktiv.map;
 import com.liferay.portal.NoSuchModelException;
 
 /**
- * @author Paul Butenko
+ * @author Viktor Somka
  */
 public class NoSuchLayerException extends NoSuchModelException {
 

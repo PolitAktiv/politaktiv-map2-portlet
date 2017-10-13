@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BaseModel;
 
 import org.politaktiv.map.model.CoordinateClp;
+import org.politaktiv.map.model.LayerClp;
 import org.politaktiv.map.model.ShapeClp;
 
 import java.io.ObjectInputStream;
@@ -107,6 +108,10 @@ public class ClpSerializer {
 			return translateInputCoordinate(oldModel);
 		}
 
+		if (oldModelClassName.equals(LayerClp.class.getName())) {
+			return translateInputLayer(oldModel);
+		}
+
 		if (oldModelClassName.equals(ShapeClp.class.getName())) {
 			return translateInputShape(oldModel);
 		}
@@ -130,6 +135,16 @@ public class ClpSerializer {
 		CoordinateClp oldClpModel = (CoordinateClp)oldModel;
 
 		BaseModel<?> newModel = oldClpModel.getCoordinateRemoteModel();
+
+		newModel.setModelAttributes(oldClpModel.getModelAttributes());
+
+		return newModel;
+	}
+
+	public static Object translateInputLayer(BaseModel<?> oldModel) {
+		LayerClp oldClpModel = (LayerClp)oldModel;
+
+		BaseModel<?> newModel = oldClpModel.getLayerRemoteModel();
 
 		newModel.setModelAttributes(oldClpModel.getModelAttributes());
 
@@ -166,6 +181,10 @@ public class ClpSerializer {
 		if (oldModelClassName.equals(
 					"org.politaktiv.map.model.impl.CoordinateImpl")) {
 			return translateOutputCoordinate(oldModel);
+		}
+
+		if (oldModelClassName.equals("org.politaktiv.map.model.impl.LayerImpl")) {
+			return translateOutputLayer(oldModel);
 		}
 
 		if (oldModelClassName.equals("org.politaktiv.map.model.impl.ShapeImpl")) {
@@ -256,6 +275,10 @@ public class ClpSerializer {
 			return new org.politaktiv.map.NoSuchCoordinateException();
 		}
 
+		if (className.equals("org.politaktiv.map.NoSuchLayerException")) {
+			return new org.politaktiv.map.NoSuchLayerException();
+		}
+
 		if (className.equals("org.politaktiv.map.NoSuchShapeException")) {
 			return new org.politaktiv.map.NoSuchShapeException();
 		}
@@ -269,6 +292,16 @@ public class ClpSerializer {
 		newModel.setModelAttributes(oldModel.getModelAttributes());
 
 		newModel.setCoordinateRemoteModel(oldModel);
+
+		return newModel;
+	}
+
+	public static Object translateOutputLayer(BaseModel<?> oldModel) {
+		LayerClp newModel = new LayerClp();
+
+		newModel.setModelAttributes(oldModel.getModelAttributes());
+
+		newModel.setLayerRemoteModel(oldModel);
 
 		return newModel;
 	}

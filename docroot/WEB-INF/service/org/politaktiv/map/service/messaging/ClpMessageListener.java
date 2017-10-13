@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.messaging.Message;
 import org.politaktiv.map.service.ClpSerializer;
 import org.politaktiv.map.service.CoordinateLocalServiceUtil;
 import org.politaktiv.map.service.CoordinateServiceUtil;
+import org.politaktiv.map.service.LayerLocalServiceUtil;
+import org.politaktiv.map.service.LayerServiceUtil;
 import org.politaktiv.map.service.ShapeLocalServiceUtil;
 import org.politaktiv.map.service.ShapeServiceUtil;
 
@@ -41,6 +43,9 @@ public class ClpMessageListener extends BaseMessageListener {
 			CoordinateLocalServiceUtil.clearService();
 
 			CoordinateServiceUtil.clearService();
+			LayerLocalServiceUtil.clearService();
+
+			LayerServiceUtil.clearService();
 			ShapeLocalServiceUtil.clearService();
 
 			ShapeServiceUtil.clearService();

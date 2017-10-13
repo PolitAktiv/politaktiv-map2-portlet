@@ -1,8 +1,8 @@
 function createMap2 (prop) {
     var selectContainer = L.DomUtil.create('div', 'leaflet-control-drop-down');
     var layers;
-    // var baseLayersList = L.DomUtil.create('div', 'base');
-    // div.appendChild(baseLayersList);
+    var eventBind = false;
+
     var _Map2 = {
 
         shapeTitleClass: 'leaflet-shape-title',
@@ -61,11 +61,6 @@ function createMap2 (prop) {
                     var label = select[0].value;
 
                     if (label !== 'Select layer') {
-                        console.log("RRR");
-                        // _Map2.map.removeControl(shapesList);
-                        // shapesList.removeFrom(_Map2.map);
-                        // shapesList.remove();
-
                         console.log(label);
                         _Map2.getShapes(label);
                     }
@@ -105,10 +100,57 @@ function createMap2 (prop) {
                     _Map2.initShapes(res);
                     _Map2.initShapesList();
                     _Map2.initShapesControls();
+
+                    !eventBind && _Map2.initMapEvents();
+                    eventBind = true;
                 },
                 exceptionCallback = function(res) {
                 }
             );
+        },
+
+        initMapEvents: function() {
+            console.log('INIT EVENTS');
+            //leaflet.draw event functions
+            _Map2.map.on('draw:created', function (e) {
+                console.log('CREATED');
+
+                var type = e.layerType,
+                    layer = e.layer,
+                    select = selectContainer.getElementsByTagName('select'),
+                    label = select[0].value;
+
+                var shapeTitle = prompt(prop.translations.addTitleMessage);
+
+                if (shapeTitle.length) {
+                    _Map2.saveShape(layer, label, type, shapeTitle, '', '');
+                } else {
+                    _Map2.map.removeLayer(layer);
+                }
+            });
+
+            _Map2.map.on('draw:edited', function (e) {
+                console.log('EDITED');
+                var shapes = e.layers.getLayers();
+
+                for (var i=0, len=shapes.length; i<len; i++) {
+                    //shapes[i].options.shapeData.points = instance.parsePoints(shapes[i]);
+                    if (typeof shapes[i].getRadius === 'function') {
+                        shapes[i].options.shapeData.radius = shapes[i].getRadius();
+                    }
+                    shapes[i].options.shapeData.points = _Map2.parsePoints(shapes[i]);
+                    _Map2.updateShapeData(shapes[i]);
+                }
+            });
+
+            _Map2.map.on('draw:deleted', function (e) {
+                console.log('DELETED');
+                var shapes = e.layers.getLayers();
+
+                for (var i=0, len=shapes.length; i<len; i++) {
+                    _Map2.removeShape(shapes[i]);
+                }
+            });
         },
 
         cleanShapesAndControls: function() {
@@ -168,7 +210,7 @@ function createMap2 (prop) {
                 onAdd: function (map) {
                     var addButton = L.DomUtil.create('div', 'leaflet-bar leaflet-control-button');
 
-                    addButton.innerHTML= 'Delete layer';
+                    addButton.innerHTML= prop.translations.deleteLayer;
 
                     L.DomEvent.on(addButton, 'click', function() {
 
@@ -178,8 +220,9 @@ function createMap2 (prop) {
                             if(label.length < 1) {
                                 alert(prop.translations.addLabelMessageAgain);
                             } else {
-                                console.log('Label not empty');
                                 _Map2.deleteLayerContainer(label);
+                                console.log("cleanShapesAndControls");
+                                _Map2.cleanShapesAndControls();
                             }
                         } while(label.length < 1)
                     });
@@ -252,30 +295,24 @@ function createMap2 (prop) {
                     shape = L.polyline(coordsFormatted, properties);
                     break;
                 case 'CIRCLE':
-                    console.log('CIRCLE GO');
                     shape = L.circle(coordsFormatted[0], shapeData.radius, properties);
                     break;
                 case 'POLYGON':
                     shape = L.polygon(coordsFormatted, properties);
                     break;
                 case 'RECTANGLE':
-                    console.log('RECTANGE');
                     shape = L.rectangle(coordsFormatted, properties);
                     break;
             }
 
             if (shapeData.userId === prop.userId) {
-                console.log('1');
                 _Map2.ownLayers.addLayer(shape);
             } else {
-                console.log('2');
                 _Map2.otherLayers.addLayer(shape);
             }
             if ((shapeData.userId === prop.userId && prop.canAddAndUpdatePersonalShape) || prop.canUpdateAnyShapes) {
-                console.log('3');
                 _Map2.editableLayers.addLayer(shape);
             } else {
-                console.log('4');
                 _Map2.fixedLayers.addLayer(shape);
             }
 
@@ -419,7 +456,6 @@ function createMap2 (prop) {
         },
 
         initShapesControls: function() {
-
             //leaflet.draw options
             var drawOptions = {};
             var drawProp = { color: '#d11' };
@@ -456,55 +492,6 @@ function createMap2 (prop) {
             //add leaflet.draw options to map
             var drawControl = new L.Control.Draw(drawOptions);
             _Map2.map.addControl(drawControl);
-
-            //leaflet.draw event functions
-            _Map2.map.on('draw:created', function (e) {
-
-                var select = selectContainer.getElementsByTagName('select');
-                var label = select[0].value;
-
-                var type = e.layerType,
-                    layer = e.layer;
-
-                var shapeTitle = prompt(prop.translations.addTitleMessage);
-
-                if (shapeTitle != '') {
-
-                    /*url = prompt(prop.translations.addUrlMessage);
-                     url = url || '';
-                     description = prompt(prop.translations.addDescriptionMessage);
-                     description = description || '';*/
-                     console.log("Label is: " + label);
-                     console.log("shapeTitle is: " + shapeTitle);
-                    console.log(layer);
-                    _Map2.saveShape(layer, label, type, shapeTitle, '', '');
-                } else {
-                    _Map2.map.removeLayer(layer);
-                }
-            });
-
-            _Map2.map.on('draw:edited', function (e) {
-                //console.log('edited');
-                var shapes = e.layers.getLayers();
-
-                for (var i=0, len=shapes.length; i<len; i++) {
-                    //shapes[i].options.shapeData.points = instance.parsePoints(shapes[i]);
-                    if (typeof shapes[i].getRadius === 'function') {
-                        shapes[i].options.shapeData.radius = shapes[i].getRadius();
-                    }
-                    shapes[i].options.shapeData.points = _Map2.parsePoints(shapes[i]);
-                    _Map2.updateShapeData(shapes[i]);
-                }
-            });
-
-            _Map2.map.on('draw:deleted', function (e) {
-                //if (console) console.log('deleted');
-                var shapes = e.layers.getLayers();
-
-                for (var i=0, len=shapes.length; i<len; i++) {
-                    _Map2.removeShape(shapes[i]);
-                }
-            });
         },
 
         parsePoints: function(layer) {
@@ -572,17 +559,15 @@ function createMap2 (prop) {
                 successCallback = function(res) {
 
                     if (res == false) {
-                        console.log('YYY');
-                        console.log(res);
 
                         do {
                             var newLabel = prompt(prop.translations.exceptionDeleteMessage);
-                        //
-                        //     if(newLabel.length && newLabel != label) {
-                        //         _Map2.deleteLayerContainer(newLabel);
-                        //     } else {
-                        //         alert(prop.translations.exceptionDeleteSecondMessage);
-                        //     }
+
+                            if(newLabel.length && newLabel != label) {
+                                _Map2.deleteLayerContainer(newLabel);
+                            } else {
+                                alert(prop.translations.exceptionDeleteSecondMessage);
+                            }
                         } while(newLabel.length == 0 || newLabel == label)
 
                     } else {
@@ -592,20 +577,6 @@ function createMap2 (prop) {
                         });
                         alert(prop.translations.confirmDeleteMessage);
                     }
-
-
-
-
-
-
-                    // if (res == true) {
-                    //
-                    //     _Map2.loadLayers().then(function(res) {
-                    //         _Map2.getLayers(res);
-                    //         _Map2.getDropDownMenu();
-                    //     });
-                    //     alert(prop.translations.confirmDeleteMessage);
-                    // }
                 },
                 exceptionCallback = function(res) {
                     console.log('delete fail:');

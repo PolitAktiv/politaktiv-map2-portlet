@@ -36,7 +36,7 @@ import java.util.List;
  * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
  * </p>
  *
- * @author Paul Butenko
+ * @author Viktor Somka
  * @see org.politaktiv.map.service.base.LayerServiceBaseImpl
  * @see org.politaktiv.map.service.LayerServiceUtil
  */
@@ -51,10 +51,6 @@ public class LayerServiceImpl extends LayerServiceBaseImpl {
 
     public boolean addLayer(long userId, String shapesLayer) throws SystemException, ValidatorException, PortalException {
 
-        System.out.println("YES!!!!!");
-        System.out.println("userId: " + userId);
-        System.out.println(shapesLayer);
-
 //        User user = getPermissionChecker().getUser();
 //        long currentUserId = user.getUserId();
 //        System.out.println("currentUserId: " + userId);
@@ -65,7 +61,6 @@ public class LayerServiceImpl extends LayerServiceBaseImpl {
         layer.setUserId(userId);
 
         int count = layerPersistence.countByUserIdAndLabel(userId, shapesLayer);
-        System.out.println("count is: " + count);
 
         if (count < 1){
             LayerLocalServiceUtil.updateLayer(layer);
@@ -79,15 +74,11 @@ public class LayerServiceImpl extends LayerServiceBaseImpl {
 
     public boolean deleteLayer(long userId, String shapesLayer) throws SystemException, ValidatorException, PortalException {
 
-        System.out.println("deleteLayer!!!!!");
-        System.out.println("userId: " + userId);
-        System.out.println(shapesLayer);
-
         int count = layerPersistence.countByUserIdAndLabel(userId, shapesLayer);
-        System.out.println("count is: " + count);
 
         if (count > 0){
             layerPersistence.removeByUserIdAndLabel(userId, shapesLayer);
+            shapePersistence.removeByUserIdAndLayer(userId, shapesLayer);
             LOGGER.info("Layer with label: " + shapesLayer + " for user: " + getPermissionChecker().getUserId() + " has been deleted.");
             return true;
         }
@@ -97,14 +88,7 @@ public class LayerServiceImpl extends LayerServiceBaseImpl {
 
     public List<Layer> findAllLayers(long userId) throws SystemException, ValidatorException, PortalException {
 
-        System.out.println("FindAllLayers!!!!!");
-        System.out.println("userId: " + userId);
-
         List<Layer> layers = LayerUtil.findByUserId(userId);
-
-        for (Layer layer : layers) {
-            System.out.println("layer label: " + layer.getLabel());
-        }
         return layers;
     }
 }

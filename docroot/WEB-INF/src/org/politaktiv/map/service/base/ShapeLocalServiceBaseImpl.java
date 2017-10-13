@@ -34,6 +34,7 @@ import com.liferay.portal.service.persistence.UserPersistence;
 import org.politaktiv.map.model.Shape;
 import org.politaktiv.map.service.ShapeLocalService;
 import org.politaktiv.map.service.persistence.CoordinatePersistence;
+import org.politaktiv.map.service.persistence.LayerPersistence;
 import org.politaktiv.map.service.persistence.ShapePersistence;
 
 import java.io.Serializable;
@@ -330,6 +331,62 @@ public abstract class ShapeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the layer local service.
+	 *
+	 * @return the layer local service
+	 */
+	public org.politaktiv.map.service.LayerLocalService getLayerLocalService() {
+		return layerLocalService;
+	}
+
+	/**
+	 * Sets the layer local service.
+	 *
+	 * @param layerLocalService the layer local service
+	 */
+	public void setLayerLocalService(
+		org.politaktiv.map.service.LayerLocalService layerLocalService) {
+		this.layerLocalService = layerLocalService;
+	}
+
+	/**
+	 * Returns the layer remote service.
+	 *
+	 * @return the layer remote service
+	 */
+	public org.politaktiv.map.service.LayerService getLayerService() {
+		return layerService;
+	}
+
+	/**
+	 * Sets the layer remote service.
+	 *
+	 * @param layerService the layer remote service
+	 */
+	public void setLayerService(
+		org.politaktiv.map.service.LayerService layerService) {
+		this.layerService = layerService;
+	}
+
+	/**
+	 * Returns the layer persistence.
+	 *
+	 * @return the layer persistence
+	 */
+	public LayerPersistence getLayerPersistence() {
+		return layerPersistence;
+	}
+
+	/**
+	 * Sets the layer persistence.
+	 *
+	 * @param layerPersistence the layer persistence
+	 */
+	public void setLayerPersistence(LayerPersistence layerPersistence) {
+		this.layerPersistence = layerPersistence;
+	}
+
+	/**
 	 * Returns the shape local service.
 	 *
 	 * @return the shape local service
@@ -567,6 +624,12 @@ public abstract class ShapeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.politaktiv.map.service.CoordinateService coordinateService;
 	@BeanReference(type = CoordinatePersistence.class)
 	protected CoordinatePersistence coordinatePersistence;
+	@BeanReference(type = org.politaktiv.map.service.LayerLocalService.class)
+	protected org.politaktiv.map.service.LayerLocalService layerLocalService;
+	@BeanReference(type = org.politaktiv.map.service.LayerService.class)
+	protected org.politaktiv.map.service.LayerService layerService;
+	@BeanReference(type = LayerPersistence.class)
+	protected LayerPersistence layerPersistence;
 	@BeanReference(type = org.politaktiv.map.service.ShapeLocalService.class)
 	protected org.politaktiv.map.service.ShapeLocalService shapeLocalService;
 	@BeanReference(type = org.politaktiv.map.service.ShapeService.class)
