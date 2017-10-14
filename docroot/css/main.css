@@ -68,25 +68,29 @@
 }
 
 .leaflet-markers-list {
-	width: 130px;
-	padding: 12px;
+	width: 154px;
 	max-height: 500px;
 	overflow: auto;
 }
 
 .leaflet-markers-list-header {
+	padding: 12px 12px 0;
 	font-size: 14px;
 	font-weight: bold;
 	color: #777;
 }
 
 .leaflet-markers-list-item {
+	padding: 0 12px 0;
 	max-height: 54px;
 	overflow: hidden;
 	margin: 3px 0 0 10px;
 	word-wrap: break-word;
 	color: #444;
 	cursor: pointer;
+}
+.leaflet-markers-list-item:last-child {
+	padding: 0 12px 12px;
 }
 .leaflet-markers-list-item:hover {
 	color: #027;
@@ -95,4 +99,3 @@
 .config-map {
 	height: 300px;
 }
-

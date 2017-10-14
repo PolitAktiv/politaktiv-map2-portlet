@@ -117,6 +117,12 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
 		exceptionMessage: '<liferay-ui:message key="map2.exception-message" />',
 		confirmDeleteMessage: '<liferay-ui:message key="map2.confirm-delete-message" />',
 		confirmAddMessage: '<liferay-ui:message key="map2.confirm-add-message" />',
+		maximumLayers: '<liferay-ui:message key="map2.maximum-layers" />',
+		caution1: '<liferay-ui:message key="map2.caution1" />',
+		caution2: '<liferay-ui:message key="map2.caution2" />',
+		chooseLayer: '<liferay-ui:message key="map2.choose-layer" />',
+		deleteConfirmation1: '<liferay-ui:message key="map2.delete-confirmation1" />',
+		deleteConfirmation2: '<liferay-ui:message key="map2.delete-confirmation2" />'
 		}
     });
 </aui:script>

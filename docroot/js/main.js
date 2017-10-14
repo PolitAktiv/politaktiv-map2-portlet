@@ -30,6 +30,7 @@ function createMap2 (prop) {
             _Map2.getDeleteLayerButton();
 
             _Map2.loadLayers().then(function(res) {
+                console.log(res);
                 _Map2.getLayers(res);
                 _Map2.getDropDownMenu();
             });
@@ -38,8 +39,8 @@ function createMap2 (prop) {
         },
 
         getLayers: function(res) {
-            var options = '<option>' + 'Select layer' +'</option>';
-            var elem = '<select>{0}</select>';
+            var options = '<option data-value="default">' + 'Select layer' +'</option>';
+            var elem = '<select id="map-layers-select">{0}</select>';
 
             res.forEach(function(element) {
                 var option = '<option>' + element.label +'</option>';
@@ -56,13 +57,12 @@ function createMap2 (prop) {
             });
 
             selector.onAdd = function(map) {
-                L.DomEvent.on(selectContainer, 'change', function() {
-                    var select = selectContainer.getElementsByTagName('select');
-                    var label = select[0].value;
+                L.DomEvent.addListener(selectContainer, 'change', function(e) {
+                    var currentOption = document.getElementById('map-layers-select').value;
+                    var defaultOption = document.querySelector('[data-value]').value;
 
-                    if (label !== 'Select layer') {
-                        console.log(label);
-                        _Map2.getShapes(label);
+                    if(currentOption !== defaultOption) {
+                        _Map2.getShapes(currentOption);
                     }
                 });
 
@@ -122,7 +122,7 @@ function createMap2 (prop) {
 
                 var shapeTitle = prompt(prop.translations.addTitleMessage);
 
-                if (shapeTitle.length) {
+                if (shapeTitle && shapeTitle.length) {
                     _Map2.saveShape(layer, label, type, shapeTitle, '', '');
                 } else {
                     _Map2.map.removeLayer(layer);
@@ -180,19 +180,27 @@ function createMap2 (prop) {
                 onAdd: function (map) {
                     var addButton = L.DomUtil.create('div', 'leaflet-bar leaflet-control-button');
 
-                    addButton.innerHTML= 'Add layer';
+                    addButton.innerHTML= prop.translations.addLayer;
 
                     L.DomEvent.on(addButton, 'click', function() {
+                        console.log('addButton!!!');
+                        var layersExists = document.getElementById('map-layers-select').querySelectorAll('option').length - 1;
+                        var maximumLayers = prop.translations.maximumLayers;
 
-                        do {
-                            var label = prompt(prop.translations.addLabelMessage);
-                            if(label.length < 1) {
-                                alert(prop.translations.addLabelMessageAgain);
-                            } else {
-                                console.log('Label not empty');
-                                _Map2.saveLayerContainer(label);
-                            }
-                        } while(label.length < 1)
+                        if(layersExists < maximumLayers) {
+                            do {
+                                var label = prompt(prop.translations.addLabelMessage);
+                                if(label && label.length < 1) {
+                                    alert(prop.translations.addLabelMessageAgain);
+                                } else if(label !== null) {
+                                    _Map2.saveLayerContainer(label);
+                                }
+                            } while(label && label.length < 1)
+                        } else {
+                            // TODO
+                            // alert("You can't add more then " + maximumLayers + " layers");
+                            alert(prop.translations.caution1 + " " + prop.translations.maximumLayers + " " + prop.translations.caution2);
+                        }
                     });
                     return addButton;
                 }
@@ -208,25 +216,24 @@ function createMap2 (prop) {
                 },
 
                 onAdd: function (map) {
-                    var addButton = L.DomUtil.create('div', 'leaflet-bar leaflet-control-button');
+                    var deleteButton = L.DomUtil.create('div', 'leaflet-bar leaflet-control-button');
 
-                    addButton.innerHTML= prop.translations.deleteLayer;
+                    deleteButton.innerHTML= prop.translations.deleteLayer;
 
-                    L.DomEvent.on(addButton, 'click', function() {
+                    L.DomEvent.on(deleteButton, 'click', function() {
+                        var currentOption = document.getElementById('map-layers-select').value;
+                        var defaultOption = document.querySelector('[data-value]').value;
 
-                        do {
-                            var label = prompt(prop.translations.deleteLabelMessage);
+                        if(currentOption === defaultOption) {
+                            alert(prop.translations.chooseLayer);
+                        } else {
+                            var confirmation = confirm(prop.translations.deleteConfirmation1 + " " + currentOption + " " + prop.translations.deleteConfirmation2);
 
-                            if(label.length < 1) {
-                                alert(prop.translations.addLabelMessageAgain);
-                            } else {
-                                _Map2.deleteLayerContainer(label);
-                                console.log("cleanShapesAndControls");
-                                _Map2.cleanShapesAndControls();
-                            }
-                        } while(label.length < 1)
+                            confirmation && _Map2.deleteLayerContainer(currentOption);
+                            confirmation && _Map2.cleanShapesAndControls();
+                        }
                     });
-                    return addButton;
+                    return deleteButton;
                 }
             });
 
@@ -525,18 +532,26 @@ function createMap2 (prop) {
                         do {
                             var newLabel = prompt(prop.translations.exceptionAddMessage);
 
-                            if(newLabel.length && newLabel != label) {
+                            if(newLabel && newLabel.length && newLabel != label) {
                                 _Map2.saveLayerContainer(newLabel);
-                            } else {
+                            } else if(newLabel !== null) {
                                 alert(prop.translations.exceptionAddSecondMessage);
                             }
-                        } while(newLabel.length == 0 || newLabel == label)
+                        } while(newLabel && newLabel.length == 0 || newLabel == label)
 
                     } else {
                         _Map2.loadLayers().then(function(res) {
                             _Map2.getLayers(res);
-                            _Map2.getDropDownMenu();
+
+                            var select = document.getElementById('map-layers-select');
+
+                            select.value = label;
+                            var selectContainer = select.parentNode;
+
+                            // set select value of created layer and trigger change event;
+                            selectContainer.dispatchEvent(new Event('change'));
                         });
+
                         alert(prop.translations.confirmAddMessage);
                     }
 
@@ -558,22 +573,10 @@ function createMap2 (prop) {
                 data = layerData,
                 successCallback = function(res) {
 
-                    if (res == false) {
-
-                        do {
-                            var newLabel = prompt(prop.translations.exceptionDeleteMessage);
-
-                            if(newLabel.length && newLabel != label) {
-                                _Map2.deleteLayerContainer(newLabel);
-                            } else {
-                                alert(prop.translations.exceptionDeleteSecondMessage);
-                            }
-                        } while(newLabel.length == 0 || newLabel == label)
-
-                    } else {
+                    if (res == true) {
                         _Map2.loadLayers().then(function(res) {
                             _Map2.getLayers(res);
-                            _Map2.getDropDownMenu();
+                            // _Map2.getDropDownMenu();
                         });
                         alert(prop.translations.confirmDeleteMessage);
                     }
