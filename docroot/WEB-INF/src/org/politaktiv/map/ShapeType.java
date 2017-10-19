@@ -5,5 +5,5 @@ package org.politaktiv.map;
  * Email: ukrajncev@gmail.com
  */
 public enum ShapeType {
-    POINT, CIRCLE, POLYLINE, POLYGON, RECTANGLE
+    POINT, CIRCLE, POLYLINE, POLYGON, RECTANGLE, IMAGE
 }

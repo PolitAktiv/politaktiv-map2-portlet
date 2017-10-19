@@ -35,7 +35,7 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="title" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="abstractDescription" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="url" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="image" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="shapeType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="radius" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="layer" type="com.liferay.portal.dao.orm.hibernate.StringType" />

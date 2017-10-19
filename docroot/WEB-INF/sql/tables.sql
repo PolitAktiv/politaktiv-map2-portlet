@@ -21,7 +21,7 @@ create table politaktivmaptwo_Shape (
 	modifiedDate DATE null,
 	title VARCHAR(75) null,
 	abstractDescription VARCHAR(1024) null,
-	url VARCHAR(256) null,
+	image Text,
 	shapeType VARCHAR(75) null,
 	radius LONG,
 	layer VARCHAR(75) null

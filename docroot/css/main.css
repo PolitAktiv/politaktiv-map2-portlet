@@ -8,8 +8,14 @@
 	display: inline-block;
 	margin: 0;
 	font-size: 0;
+	background-color: #fff;
 }
-
+.leaflet-draw-toolbar.leaflet-bar .leaflet-draw-draw-image {
+	background: #fff url('/politaktiv-map2-portlet/images/camera.png') 0 6px no-repeat;
+	width: 15px;
+	background-size: contain;
+	margin: 0 5px;
+}
 .leaflet-draw-toolbar a,
 .leaflet-draw-toolbar a:hover {
 	display: inline-block;
@@ -53,7 +59,7 @@
 .leaflet-shape-cancel {
 	display: inline-block;
 	margin-leftt: 8px;
-    padding: 1px 8px;
+	padding: 1px 8px;
 	font-size: 13px;
 	border-radius: 5px;
 	background: #e0e0e0;
@@ -98,4 +104,7 @@
 
 .config-map {
 	height: 300px;
+}
+.leaflet-marker-pane img {
+	max-width: 25px !important;
 }

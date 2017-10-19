@@ -75,12 +75,12 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "title", Types.VARCHAR },
 			{ "abstractDescription", Types.VARCHAR },
-			{ "url", Types.VARCHAR },
+			{ "image", Types.VARCHAR },
 			{ "shapeType", Types.VARCHAR },
 			{ "radius", Types.BIGINT },
 			{ "layer", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,url VARCHAR(256) null,shapeType VARCHAR(75) null,radius LONG,layer VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,image Text,shapeType VARCHAR(75) null,radius LONG,layer VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table politaktivmaptwo_Shape";
 	public static final String ORDER_BY_JPQL = " ORDER BY shape.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Shape.createDate ASC";
@@ -122,7 +122,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		model.setModifiedDate(soapModel.getModifiedDate());
 		model.setTitle(soapModel.getTitle());
 		model.setAbstractDescription(soapModel.getAbstractDescription());
-		model.setUrl(soapModel.getUrl());
+		model.setImage(soapModel.getImage());
 		model.setShapeType(soapModel.getShapeType());
 		model.setRadius(soapModel.getRadius());
 		model.setLayer(soapModel.getLayer());
@@ -199,7 +199,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("title", getTitle());
 		attributes.put("abstractDescription", getAbstractDescription());
-		attributes.put("url", getUrl());
+		attributes.put("image", getImage());
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
 		attributes.put("layer", getLayer());
@@ -264,10 +264,10 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			setAbstractDescription(abstractDescription);
 		}
 
-		String url = (String)attributes.get("url");
+		String image = (String)attributes.get("image");
 
-		if (url != null) {
-			setUrl(url);
+		if (image != null) {
+			setImage(image);
 		}
 
 		String shapeType = (String)attributes.get("shapeType");
@@ -429,18 +429,18 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 
 	@JSON
 	@Override
-	public String getUrl() {
-		if (_url == null) {
+	public String getImage() {
+		if (_image == null) {
 			return StringPool.BLANK;
 		}
 		else {
-			return _url;
+			return _image;
 		}
 	}
 
 	@Override
-	public void setUrl(String url) {
-		_url = url;
+	public void setImage(String image) {
+		_image = image;
 	}
 
 	@JSON
@@ -536,7 +536,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		shapeImpl.setModifiedDate(getModifiedDate());
 		shapeImpl.setTitle(getTitle());
 		shapeImpl.setAbstractDescription(getAbstractDescription());
-		shapeImpl.setUrl(getUrl());
+		shapeImpl.setImage(getImage());
 		shapeImpl.setShapeType(getShapeType());
 		shapeImpl.setRadius(getRadius());
 		shapeImpl.setLayer(getLayer());
@@ -654,12 +654,12 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			shapeCacheModel.abstractDescription = null;
 		}
 
-		shapeCacheModel.url = getUrl();
+		shapeCacheModel.image = getImage();
 
-		String url = shapeCacheModel.url;
+		String image = shapeCacheModel.image;
 
-		if ((url != null) && (url.length() == 0)) {
-			shapeCacheModel.url = null;
+		if ((image != null) && (image.length() == 0)) {
+			shapeCacheModel.image = null;
 		}
 
 		shapeCacheModel.shapeType = getShapeType();
@@ -705,8 +705,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		sb.append(getTitle());
 		sb.append(", abstractDescription=");
 		sb.append(getAbstractDescription());
-		sb.append(", url=");
-		sb.append(getUrl());
+		sb.append(", image=");
+		sb.append(getImage());
 		sb.append(", shapeType=");
 		sb.append(getShapeType());
 		sb.append(", radius=");
@@ -763,8 +763,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		sb.append(getAbstractDescription());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>url</column-name><column-value><![CDATA[");
-		sb.append(getUrl());
+			"<column><column-name>image</column-name><column-value><![CDATA[");
+		sb.append(getImage());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>shapeType</column-name><column-value><![CDATA[");
@@ -798,7 +798,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 	private Date _modifiedDate;
 	private String _title;
 	private String _abstractDescription;
-	private String _url;
+	private String _image;
 	private String _shapeType;
 	private long _radius;
 	private String _layer;

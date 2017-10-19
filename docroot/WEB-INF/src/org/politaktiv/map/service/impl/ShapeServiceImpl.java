@@ -30,6 +30,7 @@ import org.politaktiv.map.service.permission.ShapePermission;
 import org.politaktiv.map.service.persistence.ShapeUtil;
 
 import javax.portlet.ValidatorException;
+import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
@@ -58,9 +59,10 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
     private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
 
 
-    public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String url, String shapeType, long radius, String shapesLayer, List<List<String>> points)
+    public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
+        System.out.println("addShape!!!");
         User user = getPermissionChecker().getUser();
         long currentUserId = user.getUserId();
 
@@ -81,7 +83,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         shape.setTitle(title);
         shape.setAbstractDescription(abstractDescription);
-        shape.setUrl(url);
+        shape.setImage(image);
         shape.setShapeType(shapeType);
         shape.setRadius(radius);
         shape.setLayer(shapesLayer);
@@ -99,7 +101,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
 
 
-    public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String url, String shapeType, long radius, String shapesLayer, List<List<String>> points)
+    public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
@@ -112,7 +114,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         shape.setTitle(title);
         shape.setAbstractDescription(abstractDescription);
-        shape.setUrl(url);
+        shape.setImage(image);
         shape.setRadius(radius);
         shape.setLayer(shapesLayer);
 

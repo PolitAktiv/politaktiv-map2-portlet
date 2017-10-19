@@ -28,9 +28,7 @@
 		<field name="abstractDescription" type="String">
 			<hint name="max-length">1024</hint>
 		</field>
-		<field name="url" type="String">
-			<hint name="max-length">256</hint>
-		</field>
+		<field name="image" type="Text" />
 		<field name="shapeType" type="String" />
 		<field name="radius" type="long" />
 		<field name="layer" type="String" />

@@ -39,7 +39,7 @@ function createMap2 (prop) {
         },
 
         getLayers: function(res) {
-            var options = '<option data-value="default">' + 'Select layer' +'</option>';
+            var options = '<option data-value="default">' + prop.translations.defaultLayer +'</option>';
             var elem = '<select id="map-layers-select">{0}</select>';
 
             res.forEach(function(element) {
@@ -59,16 +59,19 @@ function createMap2 (prop) {
             selector.onAdd = function(map) {
                 L.DomEvent.addListener(selectContainer, 'change', function(e) {
                     var currentOption = document.getElementById('map-layers-select').value;
-                    var defaultOption = document.querySelector('[data-value]').value;
 
-                    if(currentOption !== defaultOption) {
-                        _Map2.getShapes(currentOption);
-                    }
+                    _Map2.getShapes(currentOption);
                 });
-
                 return selectContainer;
             };
+
             selector.addTo(_Map2.map);
+
+            // trigger change event for main layer to get shapes on map
+            var el = document.getElementById('map-layers-select');
+            var ev = document.createEvent('Event');
+            ev.initEvent('change', true, false);
+            el.dispatchEvent(ev);
         },
 
         initViewCenter: function() {
@@ -110,10 +113,8 @@ function createMap2 (prop) {
         },
 
         initMapEvents: function() {
-            console.log('INIT EVENTS');
             //leaflet.draw event functions
             _Map2.map.on('draw:created', function (e) {
-                console.log('CREATED');
 
                 var type = e.layerType,
                     layer = e.layer,
@@ -123,7 +124,39 @@ function createMap2 (prop) {
                 var shapeTitle = prompt(prop.translations.addTitleMessage);
 
                 if (shapeTitle && shapeTitle.length) {
-                    _Map2.saveShape(layer, label, type, shapeTitle, '', '');
+
+                    if (type === 'image') {
+                        var fileInput = L.DomUtil.get(prop.imageUploadId);
+                        fileInput.click();
+
+                        var fileChange = function () {
+                            if (fileInput.files.length) {
+                                var file = fileInput.files[0];
+                                var reader = new FileReader();
+
+                                reader.onload = function(event) {
+                                    var base64 = reader.result;
+                                    var sizeKB = file.size / 1024;
+                                    var maxFileSize = prop.translations.maxFileSize;
+
+                                    if(sizeKB < maxFileSize) {
+                                        _Map2.saveShape(layer, label, type, shapeTitle, '', base64);
+                                    } else {
+                                        alert(prop.translations.caution3 + " " + prop.translations.maxFileSize + " " + prop.translations.caution4);
+                                    }
+
+                                    fileInput.value = '';
+                                };
+                                reader.readAsDataURL(file);
+                            } else {
+                                _Map2.map.removeLayer(layer);
+                            }
+                            L.DomEvent.off(fileInput, 'change', fileChange);
+                        };
+                        L.DomEvent.on(fileInput, 'change', fileChange);
+                    } else {
+                        _Map2.saveShape(layer, label, type, shapeTitle, '', '');
+                    }
                 } else {
                     _Map2.map.removeLayer(layer);
                 }
@@ -134,7 +167,7 @@ function createMap2 (prop) {
                 var shapes = e.layers.getLayers();
 
                 for (var i=0, len=shapes.length; i<len; i++) {
-                    //shapes[i].options.shapeData.points = instance.parsePoints(shapes[i]);
+
                     if (typeof shapes[i].getRadius === 'function') {
                         shapes[i].options.shapeData.radius = shapes[i].getRadius();
                     }
@@ -183,22 +216,18 @@ function createMap2 (prop) {
                     addButton.innerHTML= prop.translations.addLayer;
 
                     L.DomEvent.on(addButton, 'click', function() {
-                        console.log('addButton!!!');
                         var layersExists = document.getElementById('map-layers-select').querySelectorAll('option').length - 1;
                         var maximumLayers = prop.translations.maximumLayers;
 
                         if(layersExists < maximumLayers) {
-                            do {
-                                var label = prompt(prop.translations.addLabelMessage);
-                                if(label && label.length < 1) {
-                                    alert(prop.translations.addLabelMessageAgain);
-                                } else if(label !== null) {
-                                    _Map2.saveLayerContainer(label);
-                                }
-                            } while(label && label.length < 1)
+                            var label = prompt(prop.translations.addLabelMessage);
+
+                            if(label !== null && label.length) {
+                                _Map2.saveLayerContainer(label);
+                            } else if(label !== null) {
+                                alert(prop.translations.addLabelMessageAgain);
+                            }
                         } else {
-                            // TODO
-                            // alert("You can't add more then " + maximumLayers + " layers");
                             alert(prop.translations.caution1 + " " + prop.translations.maximumLayers + " " + prop.translations.caution2);
                         }
                     });
@@ -227,10 +256,11 @@ function createMap2 (prop) {
                         if(currentOption === defaultOption) {
                             alert(prop.translations.chooseLayer);
                         } else {
-                            var confirmation = confirm(prop.translations.deleteConfirmation1 + " " + currentOption + " " + prop.translations.deleteConfirmation2);
 
+                            var confirmation = confirm(prop.translations.deleteConfirmation1 + " " + currentOption + " " + prop.translations.deleteConfirmation2);
                             confirmation && _Map2.deleteLayerContainer(currentOption);
                             confirmation && _Map2.cleanShapesAndControls();
+                            confirmation &&_Map2.getShapes(prop.translations.defaultLayer);
                         }
                     });
                     return deleteButton;
@@ -243,18 +273,6 @@ function createMap2 (prop) {
         initShapes: function(shapesData) {
             var i, len = shapesData.length;
 
-            _Map2.ownIcon = L.icon({
-                iconUrl: '/politaktiv-map2-portlet/images/marker-icon-red.png',
-                iconRetinaUrl: '/politaktiv-map2-portlet/images/marker-icon-red-2x.png',
-                shadowUrl: '/politaktiv-map2-portlet/images/marker-shadow.png',
-
-                iconSize: [25, 41],
-                shadowSize: [41, 41],
-                iconAnchor: [12, 41],
-                shadowAnchor: [12, 41],
-                popupAnchor: [1, -34]
-            });
-
             _Map2.ownLayers = new L.FeatureGroup();
             //_Map2.map.addLayer(_Map2.ownLayers);
 
@@ -266,6 +284,18 @@ function createMap2 (prop) {
 
             _Map2.fixedLayers = new L.FeatureGroup();
             _Map2.map.addLayer(_Map2.fixedLayers);
+
+            _Map2.ownIcon = L.icon({
+                iconUrl: '/politaktiv-map2-portlet/images/marker-icon-red.png',
+                iconRetinaUrl: '/politaktiv-map2-portlet/images/marker-icon-red-2x.png',
+                shadowUrl: '/politaktiv-map2-portlet/images/marker-shadow.png',
+
+                iconSize: [25, 41],
+                shadowSize: [41, 41],
+                iconAnchor: [12, 41],
+                shadowAnchor: [12, 41],
+                popupAnchor: [1, -34]
+            });
 
             for (i=0; i<len; i++) {
                 _Map2.initShape(shapesData[i]);
@@ -285,10 +315,19 @@ function createMap2 (prop) {
             shapeData.coordinates = null;
             shapeData.points = points;
 
+            _Map2.imageIcon = L.icon({
+                iconUrl: shapeData.image,
+                iconRetinaUrl: shapeData.image,
+                iconAnchor: [10, 26],
+                popupAnchor: [1, -34]
+            });
+
             var properties = { shapeData: shapeData };
             if (shapeData.userId === prop.userId) {
                 if(shapeData.shapeType === 'POINT') {
                     properties.icon = _Map2.ownIcon;
+                } else if(shapeData.shapeType === 'IMAGE') {
+                    properties.icon = _Map2.imageIcon;
                 } else {
                     properties.color = '#d11';
                 }
@@ -309,6 +348,10 @@ function createMap2 (prop) {
                     break;
                 case 'RECTANGLE':
                     shape = L.rectangle(coordsFormatted, properties);
+                    break;
+                case 'IMAGE':
+                    // TODO: check should we create L.image for this in leaflet-src
+                    shape = L.marker(coordsFormatted[0], properties);
                     break;
             }
 
@@ -475,7 +518,8 @@ function createMap2 (prop) {
                     rectangle: drawProp,
                     marker: {
                         icon: _Map2.ownIcon
-                    }
+                    },
+                    image: {}
                 };
             } else {
                 drawOptions.draw = {
@@ -483,7 +527,8 @@ function createMap2 (prop) {
                     polygon: false,
                     circle: false,
                     rectangle: false,
-                    marker: false
+                    marker: false,
+                    image: false
                 };
             }
 
@@ -544,14 +589,12 @@ function createMap2 (prop) {
                             _Map2.getLayers(res);
 
                             var select = document.getElementById('map-layers-select');
-
                             select.value = label;
                             var selectContainer = select.parentNode;
 
                             // set select value of created layer and trigger change event;
                             selectContainer.dispatchEvent(new Event('change'));
                         });
-
                         alert(prop.translations.confirmAddMessage);
                     }
 
@@ -576,7 +619,6 @@ function createMap2 (prop) {
                     if (res == true) {
                         _Map2.loadLayers().then(function(res) {
                             _Map2.getLayers(res);
-                            // _Map2.getDropDownMenu();
                         });
                         alert(prop.translations.confirmDeleteMessage);
                     }
@@ -610,7 +652,7 @@ function createMap2 (prop) {
             return fetchData();
         },
 
-        saveShape: function(layer, label, type, title, url, description) {
+        saveShape: function(layer, label, type, title, description, image) {
             var shapeData = {
                 portletId: prop.portletId,
                 primKey: prop.primKey,
@@ -618,25 +660,49 @@ function createMap2 (prop) {
                 companyId: prop.companyId,
                 title: title,
                 abstractDescription: description,
-                url: url,
+                image: image,
                 shapeType: (type==='marker')?'POINT':type.toUpperCase(),
                 radius: (type==='circle')?layer.getRadius():0,
                 shapesLayer: label,
                 points: _Map2.parsePoints(layer)
             };
+
+            console.log(shapeData);
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/add-shape',
                 data = shapeData,
                 successCallback = function(res) {
+                    if(res.image.length) {
+                        // update marker when we choose image
+                        layer.options.icon.options = {
+                            iconAnchor: [10, 26],
+                            popupAnchor: [1, -34],
+                            shadowSize: [0, 0]
+                        };
+                    }
 
-                    console.log('Add-shape!!!');
-                    console.log(res);
                     layer.options.shapeData = res;
                     _Map2.editableLayers.addLayer(layer);
                     _Map2.ownLayers.addLayer(layer);
                     _Map2.initPopup(layer);
                     _Map2.shapesList.update();
                     layer.openPopup();
+                    console.log(res);
+
+                    if(res.image.length) {
+                        var newIcon = layer.editing._marker._icon;
+                        newIcon.src = res.image;
+
+                        // reset to default blue marker
+                        layer.options.icon.options = {
+                            iconSize: [25, 41],
+                            shadowSize: [41, 41],
+                            iconAnchor: [12, 41],
+                            shadowAnchor: [12, 41],
+                            popupAnchor: [1, -34]
+                        };
+                    }
+
                 },
                 exceptionCallback = function(res) {
                     console.log('add fail:');

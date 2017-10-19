@@ -54,6 +54,7 @@ boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecke
 	</div>
 </div>
 
+<input id="<portlet:namespace />ImageUpload" type="file" accept="image/*" class="hide"/>
 
 <br/>
 
@@ -65,6 +66,7 @@ L.drawLocal.draw.toolbar.buttons.polygon = '<liferay-ui:message key="drawLocal.d
 L.drawLocal.draw.toolbar.buttons.rectangle = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.rectangle" />';
 L.drawLocal.draw.toolbar.buttons.circle = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.circle" />';
 L.drawLocal.draw.toolbar.buttons.marker = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.marker" />';
+L.drawLocal.draw.toolbar.buttons.image = '<liferay-ui:message key="drawLocal.draw.toolbar.buttons.image" />';
 L.drawLocal.draw.handlers.circle.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.circle.tooltip.start" />';
 L.drawLocal.draw.handlers.circle.radius = '<liferay-ui:message key="drawLocal.draw.handlers.circle.radius" />';
 L.drawLocal.draw.handlers.marker.tooltip.start = '<liferay-ui:message key="drawLocal.draw.handlers.marker.tooltip.start" />';
@@ -90,6 +92,7 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
     var map2 = createMap2({
         wrapperId: '<portlet:namespace />map',
         popupTemplateId: '<portlet:namespace />PopupTemplate',
+		imageUploadId: '<portlet:namespace />ImageUpload',
         groupId: <%= portletGroupId %>,
         companyId: <%= company.getCompanyId() %>,
         portletId: '<%= portletId %>',
@@ -104,14 +107,12 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
 		resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
 		yourShapes: '<liferay-ui:message key="map2.your-shapes" />',
 		allShapes: '<liferay-ui:message key="map2.all-shapes" />',
+
 		addTitleMessage: '<liferay-ui:message key="map2.add-title-message" />',
 		addLabelMessage: '<liferay-ui:message key="map2.add-label-message" />',
-		deleteLabelMessage: '<liferay-ui:message key="map2.delete-label-message" />',
 		addLabelMessageAgain: '<liferay-ui:message key="map2.add-label-message-again" />',
 		exceptionAddMessage: '<liferay-ui:message key="map2.exception-add-message" />',
-		exceptionDeleteMessage: '<liferay-ui:message key="map2.exception-delete-message" />',
 		exceptionAddSecondMessage: '<liferay-ui:message key="map2.exception-add-second-message" />',
-		exceptionDeleteSecondMessage: '<liferay-ui:message key="map2.exception-delete-second-message" />',
 		addLayer: '<liferay-ui:message key="map2.add-layer" />',
 		deleteLayer: '<liferay-ui:message key="map2.delete-layer" />',
 		exceptionMessage: '<liferay-ui:message key="map2.exception-message" />',
@@ -120,9 +121,13 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
 		maximumLayers: '<liferay-ui:message key="map2.maximum-layers" />',
 		caution1: '<liferay-ui:message key="map2.caution1" />',
 		caution2: '<liferay-ui:message key="map2.caution2" />',
+		caution3: '<liferay-ui:message key="map2.caution3" />',
+		caution4: '<liferay-ui:message key="map2.caution4" />',
+		maxFileSize: '<liferay-ui:message key="map2.maximum-file-size" />',
 		chooseLayer: '<liferay-ui:message key="map2.choose-layer" />',
 		deleteConfirmation1: '<liferay-ui:message key="map2.delete-confirmation1" />',
-		deleteConfirmation2: '<liferay-ui:message key="map2.delete-confirmation2" />'
+		deleteConfirmation2: '<liferay-ui:message key="map2.delete-confirmation2" />',
+		defaultLayer: '<liferay-ui:message key="map2.default-layer" />'
 		}
     });
 </aui:script>

@@ -1973,7 +1973,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		shapeImpl.setModifiedDate(shape.getModifiedDate());
 		shapeImpl.setTitle(shape.getTitle());
 		shapeImpl.setAbstractDescription(shape.getAbstractDescription());
-		shapeImpl.setUrl(shape.getUrl());
+		shapeImpl.setImage(shape.getImage());
 		shapeImpl.setShapeType(shape.getShapeType());
 		shapeImpl.setRadius(shape.getRadius());
 		shapeImpl.setLayer(shape.getLayer());

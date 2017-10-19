@@ -57,8 +57,8 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		sb.append(title);
 		sb.append(", abstractDescription=");
 		sb.append(abstractDescription);
-		sb.append(", url=");
-		sb.append(url);
+		sb.append(", image=");
+		sb.append(image);
 		sb.append(", shapeType=");
 		sb.append(shapeType);
 		sb.append(", radius=");
@@ -114,11 +114,11 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 			shapeImpl.setAbstractDescription(abstractDescription);
 		}
 
-		if (url == null) {
-			shapeImpl.setUrl(StringPool.BLANK);
+		if (image == null) {
+			shapeImpl.setImage(StringPool.BLANK);
 		}
 		else {
-			shapeImpl.setUrl(url);
+			shapeImpl.setImage(image);
 		}
 
 		if (shapeType == null) {
@@ -153,7 +153,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		modifiedDate = objectInput.readLong();
 		title = objectInput.readUTF();
 		abstractDescription = objectInput.readUTF();
-		url = objectInput.readUTF();
+		image = objectInput.readUTF();
 		shapeType = objectInput.readUTF();
 		radius = objectInput.readLong();
 		layer = objectInput.readUTF();
@@ -191,11 +191,11 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 			objectOutput.writeUTF(abstractDescription);
 		}
 
-		if (url == null) {
+		if (image == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
 		else {
-			objectOutput.writeUTF(url);
+			objectOutput.writeUTF(image);
 		}
 
 		if (shapeType == null) {
@@ -224,7 +224,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 	public long modifiedDate;
 	public String title;
 	public String abstractDescription;
-	public String url;
+	public String image;
 	public String shapeType;
 	public long radius;
 	public String layer;

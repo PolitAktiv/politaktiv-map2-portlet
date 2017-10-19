@@ -220,19 +220,19 @@ public interface ShapeModel extends BaseModel<Shape>, GroupedModel {
 	public void setAbstractDescription(String abstractDescription);
 
 	/**
-	 * Returns the url of this shape.
+	 * Returns the image of this shape.
 	 *
-	 * @return the url of this shape
+	 * @return the image of this shape
 	 */
 	@AutoEscape
-	public String getUrl();
+	public String getImage();
 
 	/**
-	 * Sets the url of this shape.
+	 * Sets the image of this shape.
 	 *
-	 * @param url the url of this shape
+	 * @param image the image of this shape
 	 */
-	public void setUrl(String url);
+	public void setImage(String image);
 
 	/**
 	 * Returns the shape type of this shape.

@@ -10,7 +10,7 @@
 				<action-key>VIEW</action-key>
 				<action-key>EDIT</action-key>
 				<action-key>CONFIGURATION</action-key>
-
+				<action-key>ADD_MARKER</action-key>
 				<action-key>ADD_AND_UPDATE_PERSONAL_SHAPE</action-key>
 				<action-key>UPDATE_ANY_SHAPE</action-key>
 			</supports>

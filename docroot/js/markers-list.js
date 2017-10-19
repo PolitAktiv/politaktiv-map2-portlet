@@ -8,6 +8,7 @@ L.Control.ShapesList = L.Control.extend({
     },
 
     initialize: function(options) {
+
         this.options = L.Util.extend(this.options, options);
 
         L.Control.prototype.initialize.call(this, this.options);
@@ -37,8 +38,8 @@ L.Control.ShapesList = L.Control.extend({
             var listHeader = L.DomUtil.create('div', this.options.headerClass);
             listHeader.innerHTML = this.options.translations.yourShapes;
             this._list.appendChild(listHeader);
-
-            for (var i = 0, len = own.length; i < len; i++) {
+    
+            for (var i=0, len=own.length; i<len; i++) {
                 this.addItem(own[i]);
             }
         }
@@ -52,8 +53,8 @@ L.Control.ShapesList = L.Control.extend({
             var list2Header = L.DomUtil.create('div', this.options.headerClass);
             list2Header.innerHTML = this.options.translations.allShapes;
             this._list.appendChild(list2Header);
-
-            for (var i = 0, len = other.length; i < len; i++) {
+    
+            for (var i=0, len=other.length; i<len; i++) {
                 this.addItem(other[i]);
             }
         }

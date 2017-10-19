@@ -84,7 +84,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("title", getTitle());
 		attributes.put("abstractDescription", getAbstractDescription());
-		attributes.put("url", getUrl());
+		attributes.put("image", getImage());
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
 		attributes.put("layer", getLayer());
@@ -149,10 +149,10 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 			setAbstractDescription(abstractDescription);
 		}
 
-		String url = (String)attributes.get("url");
+		String image = (String)attributes.get("image");
 
-		if (url != null) {
-			setUrl(url);
+		if (image != null) {
+			setImage(image);
 		}
 
 		String shapeType = (String)attributes.get("shapeType");
@@ -393,21 +393,21 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	}
 
 	@Override
-	public String getUrl() {
-		return _url;
+	public String getImage() {
+		return _image;
 	}
 
 	@Override
-	public void setUrl(String url) {
-		_url = url;
+	public void setImage(String image) {
+		_image = image;
 
 		if (_shapeRemoteModel != null) {
 			try {
 				Class<?> clazz = _shapeRemoteModel.getClass();
 
-				Method method = clazz.getMethod("setUrl", String.class);
+				Method method = clazz.getMethod("setImage", String.class);
 
-				method.invoke(_shapeRemoteModel, url);
+				method.invoke(_shapeRemoteModel, image);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -598,7 +598,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		clone.setModifiedDate(getModifiedDate());
 		clone.setTitle(getTitle());
 		clone.setAbstractDescription(getAbstractDescription());
-		clone.setUrl(getUrl());
+		clone.setImage(getImage());
 		clone.setShapeType(getShapeType());
 		clone.setRadius(getRadius());
 		clone.setLayer(getLayer());
@@ -668,8 +668,8 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		sb.append(getTitle());
 		sb.append(", abstractDescription=");
 		sb.append(getAbstractDescription());
-		sb.append(", url=");
-		sb.append(getUrl());
+		sb.append(", image=");
+		sb.append(getImage());
 		sb.append(", shapeType=");
 		sb.append(getShapeType());
 		sb.append(", radius=");
@@ -726,8 +726,8 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		sb.append(getAbstractDescription());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>url</column-name><column-value><![CDATA[");
-		sb.append(getUrl());
+			"<column><column-name>image</column-name><column-value><![CDATA[");
+		sb.append(getImage());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>shapeType</column-name><column-value><![CDATA[");
@@ -757,7 +757,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	private Date _modifiedDate;
 	private String _title;
 	private String _abstractDescription;
-	private String _url;
+	private String _image;
 	private String _shapeType;
 	private long _radius;
 	private String _layer;

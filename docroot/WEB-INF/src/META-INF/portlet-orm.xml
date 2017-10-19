@@ -44,7 +44,7 @@
 			</basic>
 			<basic name="title" />
 			<basic name="abstractDescription" />
-			<basic name="url" />
+			<basic name="image" />
 			<basic name="shapeType" />
 			<basic name="radius" />
 			<basic name="layer" />

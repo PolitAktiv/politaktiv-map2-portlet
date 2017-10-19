@@ -58,7 +58,7 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("title", getTitle());
 		attributes.put("abstractDescription", getAbstractDescription());
-		attributes.put("url", getUrl());
+		attributes.put("image", getImage());
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
 		attributes.put("layer", getLayer());
@@ -123,10 +123,10 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 			setAbstractDescription(abstractDescription);
 		}
 
-		String url = (String)attributes.get("url");
+		String image = (String)attributes.get("image");
 
-		if (url != null) {
-			setUrl(url);
+		if (image != null) {
+			setImage(image);
 		}
 
 		String shapeType = (String)attributes.get("shapeType");
@@ -371,23 +371,23 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 	}
 
 	/**
-	* Returns the url of this shape.
+	* Returns the image of this shape.
 	*
-	* @return the url of this shape
+	* @return the image of this shape
 	*/
 	@Override
-	public java.lang.String getUrl() {
-		return _shape.getUrl();
+	public java.lang.String getImage() {
+		return _shape.getImage();
 	}
 
 	/**
-	* Sets the url of this shape.
+	* Sets the image of this shape.
 	*
-	* @param url the url of this shape
+	* @param image the image of this shape
 	*/
 	@Override
-	public void setUrl(java.lang.String url) {
-		_shape.setUrl(url);
+	public void setImage(java.lang.String image) {
+		_shape.setImage(image);
 	}
 
 	/**

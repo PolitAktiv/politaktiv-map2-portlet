@@ -69,11 +69,9 @@
 		<!-- Data fields -->
 		<column name="title" type="String" />
 		<column name="abstractDescription" type="String" />
-		<column name="url" type="String" />
-
+		<column name="image" type="Text" />
 		<column name="shapeType" type="String" />
 		<column name="radius" type="long" />
-
 		<column name="layer" type="String"/>
 
 		<!-- Order -->

@@ -65,14 +65,14 @@ public class ShapeServiceSoap {
 	public static org.politaktiv.map.model.ShapeSoap addShape(
 		java.lang.String portletId, java.lang.String primKey, long groupId,
 		long companyId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
+		java.lang.String abstractDescription, java.lang.String image,
 		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws RemoteException {
 		try {
 			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.addShape(portletId,
 					primKey, groupId, companyId, title, abstractDescription,
-					url, shapeType, radius, shapesLayer, points);
+					image, shapeType, radius, shapesLayer, points);
 
 			return org.politaktiv.map.model.ShapeSoap.toSoapModel(returnValue);
 		}
@@ -86,13 +86,13 @@ public class ShapeServiceSoap {
 	public static org.politaktiv.map.model.ShapeSoap updateShape(
 		java.lang.String portletId, java.lang.String primKey, long shapeId,
 		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String url, java.lang.String shapeType, long radius,
+		java.lang.String image, java.lang.String shapeType, long radius,
 		java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws RemoteException {
 		try {
 			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.updateShape(portletId,
-					primKey, shapeId, title, abstractDescription, url,
+					primKey, shapeId, title, abstractDescription, image,
 					shapeType, radius, shapesLayer, points);
 
 			return org.politaktiv.map.model.ShapeSoap.toSoapModel(returnValue);

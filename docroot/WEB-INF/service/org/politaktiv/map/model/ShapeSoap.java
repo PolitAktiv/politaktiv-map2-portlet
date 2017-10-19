@@ -40,7 +40,7 @@ public class ShapeSoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setTitle(model.getTitle());
 		soapModel.setAbstractDescription(model.getAbstractDescription());
-		soapModel.setUrl(model.getUrl());
+		soapModel.setImage(model.getImage());
 		soapModel.setShapeType(model.getShapeType());
 		soapModel.setRadius(model.getRadius());
 		soapModel.setLayer(model.getLayer());
@@ -168,12 +168,12 @@ public class ShapeSoap implements Serializable {
 		_abstractDescription = abstractDescription;
 	}
 
-	public String getUrl() {
-		return _url;
+	public String getImage() {
+		return _image;
 	}
 
-	public void setUrl(String url) {
-		_url = url;
+	public void setImage(String image) {
+		_image = image;
 	}
 
 	public String getShapeType() {
@@ -209,7 +209,7 @@ public class ShapeSoap implements Serializable {
 	private Date _modifiedDate;
 	private String _title;
 	private String _abstractDescription;
-	private String _url;
+	private String _image;
 	private String _shapeType;
 	private long _radius;
 	private String _layer;

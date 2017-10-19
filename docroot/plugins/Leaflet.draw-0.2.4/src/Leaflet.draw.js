@@ -35,6 +35,11 @@ L.drawLocal = {
 					start: 'Click map to place marker.'
 				}
 			},
+			image: {
+				tooltip: {
+					start: 'Click map to place image.'
+				}
+			},
 			polygon: {
 				tooltip: {
 					start: 'Click to start drawing shape.',
