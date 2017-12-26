@@ -126,20 +126,24 @@ function createMap2 (prop) {
                 if (shapeTitle && shapeTitle.length) {
 
                     if (type === 'image') {
-                        var fileInput = L.DomUtil.get(prop.imageUploadId);
+                        var fileInput = /*L.DomUtil.get(prop.imageUploadId)*/ document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.setAttribute("accept", "image/*");
                         fileInput.click();
 
-                        var fileChange = function () {
+                        var fileChange = this._fileChange = function () {
                             if (fileInput.files.length) {
                                 var file = fileInput.files[0];
                                 var reader = new FileReader();
 
                                 reader.onload = function(event) {
                                     var base64 = reader.result;
-                                    var sizeKB = file.size / 1024;
-                                    var maxFileSize = prop.translations.maxFileSize;
+                                    var sizeMB = file.size / 1048576;
+                                    var maxFileSizeMb = prop.translations.maxFileSize;
 
-                                    if(sizeKB < maxFileSize) {
+                                    if(sizeMB < maxFileSizeMb) {
+                                        console.log("File size");
+                                        console.log(sizeMB);
                                         _Map2.saveShape(layer, label, type, shapeTitle, '', base64);
                                     } else {
                                         alert(prop.translations.caution3 + " " + prop.translations.maxFileSize + " " + prop.translations.caution4);
@@ -151,8 +155,9 @@ function createMap2 (prop) {
                             } else {
                                 _Map2.map.removeLayer(layer);
                             }
-                            L.DomEvent.off(fileInput, 'change', fileChange);
+                            L.DomEvent.off(fileInput, 'change', this._fileChange);
                         };
+
                         L.DomEvent.on(fileInput, 'change', fileChange);
                     } else {
                         _Map2.saveShape(layer, label, type, shapeTitle, '', '');
@@ -467,6 +472,7 @@ function createMap2 (prop) {
         },
 
         updateShapeData: function(shape, success, onError) {
+            console.log('updateShapeData!');
             var data = shape.options.shapeData;
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/update-shape',
@@ -476,20 +482,20 @@ function createMap2 (prop) {
                     shapeId: data.shapeId,
                     title: data.title,
                     abstractDescription: data.abstractDescription,
-                    url: data.url,
+                    image: data.image,
                     shapeType: data.shapeType,
                     radius: data.radius,
                     shapesLayer:prop.shapesLayer,
                     points: data.points || _Map2.parsePoints(shape)
                 },
                 successCallback = function(res) {
-                    if (console) console.log('edit ok:');
-                    if (console) console.log(res);
+                    console.log('edit ok:');
+                    console.log(res);
                     if (typeof success === 'function') success(res);
                 },
                 exceptionCallback = function(res) {
-                    if (console) console.log('edit fail:');
-                    if (console) console.log(res);
+                    console.log('edit fail:');
+                    console.log(res);
                     alert(res);
                     if (typeof onError === 'function') onError(res);
                 }
@@ -667,7 +673,9 @@ function createMap2 (prop) {
                 points: _Map2.parsePoints(layer)
             };
 
+            console.log("saveShape");
             console.log(shapeData);
+
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/add-shape',
                 data = shapeData,
@@ -705,7 +713,7 @@ function createMap2 (prop) {
 
                 },
                 exceptionCallback = function(res) {
-                    console.log('add fail:');
+                    console.log('add shape fail:');
                     console.log(res);
                     _Map2.map.removeLayer(layer);
                 }

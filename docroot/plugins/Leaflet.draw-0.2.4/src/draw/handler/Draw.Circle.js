@@ -6,7 +6,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#ff0000',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,

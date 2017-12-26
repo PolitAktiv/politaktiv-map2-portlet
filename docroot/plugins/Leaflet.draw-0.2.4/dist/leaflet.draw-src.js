@@ -212,7 +212,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		maxGuideLineLength: 4000,
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#ff0000',
 			weight: 4,
 			opacity: 0.5,
 			fill: false,
@@ -636,7 +636,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		showArea: false,
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#ff0000',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
@@ -833,7 +833,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#ff0000',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
@@ -894,7 +894,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#ff0000',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,

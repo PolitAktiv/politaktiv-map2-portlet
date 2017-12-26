@@ -69,7 +69,7 @@
 		<!-- Data fields -->
 		<column name="title" type="String" />
 		<column name="abstractDescription" type="String" />
-		<column name="image" type="Text" />
+		<column name="image" type="String" convert-null="true" />
 		<column name="shapeType" type="String" />
 		<column name="radius" type="long" />
 		<column name="layer" type="String"/>

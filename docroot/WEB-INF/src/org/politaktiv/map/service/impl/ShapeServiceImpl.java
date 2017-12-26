@@ -30,7 +30,6 @@ import org.politaktiv.map.service.permission.ShapePermission;
 import org.politaktiv.map.service.persistence.ShapeUtil;
 
 import javax.portlet.ValidatorException;
-import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +61,6 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
     public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
-        System.out.println("addShape!!!");
         User user = getPermissionChecker().getUser();
         long currentUserId = user.getUserId();
 
@@ -95,11 +93,8 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         ShapeLocalServiceUtil.updateShape(shape);
 
         LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been created.");
-
         return shape;
     }
-
-
 
     public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
@@ -157,7 +152,6 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         return shapes;
     }
 
-
     public void deleteShapeById(String portletId, String primKey, long shapeId) throws SystemException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
@@ -170,5 +164,4 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
             LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been deleted.");
         }
     }
-
 }
