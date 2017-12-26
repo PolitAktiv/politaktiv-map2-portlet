@@ -56,7 +56,7 @@ L.DrawToolbar = L.Toolbar.extend({
 			},
 			{
 				enabled: this.options.image,
-				handler: new L.Draw.Image(map, this.options.image),
+				handler: new L.Draw.ImageOverlay(map, this.options.image),
 				title: L.drawLocal.draw.toolbar.buttons.image
 			}
 		];

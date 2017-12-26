@@ -64,6 +64,10 @@ L.Control.ShapesList = L.Control.extend({
         var self = this;
         var item;
 
+        if (!shape.options.shapeData || shape.options.shapeData.title) {
+            return;
+        }
+
         item = L.DomUtil.create('div', this.options.listItemClass);
         item.innerHTML = shape.options.shapeData.title;
         this._list.appendChild(item);

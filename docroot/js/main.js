@@ -3,7 +3,7 @@ function createMap2 (prop) {
     var layers;
     var eventBind = false;
 
-    var _Map2 = {
+    var _Map2 = window._Map = {
 
         shapeTitleClass: 'leaflet-shape-title',
         shapeUrlClass: 'leaflet-shape-url',
@@ -107,8 +107,7 @@ function createMap2 (prop) {
                     !eventBind && _Map2.initMapEvents();
                     eventBind = true;
                 },
-                exceptionCallback = function(res) {
-                }
+                exceptionCallback = function(res) {}
             );
         },
 
@@ -126,39 +125,7 @@ function createMap2 (prop) {
                 if (shapeTitle && shapeTitle.length) {
 
                     if (type === 'image') {
-                        var fileInput = /*L.DomUtil.get(prop.imageUploadId)*/ document.createElement('input');
-                        fileInput.type = 'file';
-                        fileInput.setAttribute("accept", "image/*");
-                        fileInput.click();
-
-                        var fileChange = this._fileChange = function () {
-                            if (fileInput.files.length) {
-                                var file = fileInput.files[0];
-                                var reader = new FileReader();
-
-                                reader.onload = function(event) {
-                                    var base64 = reader.result;
-                                    var sizeMB = file.size / 1048576;
-                                    var maxFileSizeMb = prop.translations.maxFileSize;
-
-                                    if(sizeMB < maxFileSizeMb) {
-                                        console.log("File size");
-                                        console.log(sizeMB);
-                                        _Map2.saveShape(layer, label, type, shapeTitle, '', base64);
-                                    } else {
-                                        alert(prop.translations.caution3 + " " + prop.translations.maxFileSize + " " + prop.translations.caution4);
-                                    }
-
-                                    fileInput.value = '';
-                                };
-                                reader.readAsDataURL(file);
-                            } else {
-                                _Map2.map.removeLayer(layer);
-                            }
-                            L.DomEvent.off(fileInput, 'change', this._fileChange);
-                        };
-
-                        L.DomEvent.on(fileInput, 'change', fileChange);
+                        _Map2.saveShape(layer, label, type, shapeTitle, '', e.layer._url);
                     } else {
                         _Map2.saveShape(layer, label, type, shapeTitle, '', '');
                     }
@@ -254,7 +221,7 @@ function createMap2 (prop) {
 
                     deleteButton.innerHTML= prop.translations.deleteLayer;
 
-                    L.DomEvent.on(deleteButton, 'click', function() {
+                    L.DomEvent.on(deleteButton, 'click', function(e) {
                         var currentOption = document.getElementById('map-layers-select').value;
                         var defaultOption = document.querySelector('[data-value]').value;
 
@@ -355,8 +322,7 @@ function createMap2 (prop) {
                     shape = L.rectangle(coordsFormatted, properties);
                     break;
                 case 'IMAGE':
-                    // TODO: check should we create L.image for this in leaflet-src
-                    shape = L.marker(coordsFormatted[0], properties);
+                    shape = L.imageOverlay(shapeData.image, shapeData.points);
                     break;
             }
 
@@ -371,7 +337,9 @@ function createMap2 (prop) {
                 _Map2.fixedLayers.addLayer(shape);
             }
 
-            _Map2.initPopup(shape);
+            if(shapeData.shapeType !== 'IMAGE'){
+                _Map2.initPopup(shape);
+            }
         },
 
         initPopup: function(shape) {
@@ -558,7 +526,7 @@ function createMap2 (prop) {
                 points.push([  layer.getLatLng().lat.toString().substr(0,10),
                     layer.getLatLng().lng.toString().substr(0,10)  ]);
             } else {
-                var latLngs = layer.getLatLngs();
+                var latLngs = layer.getLatLngs ? layer.getLatLngs() : [layer._bounds._northEast, layer._bounds._southWest];
                 for (var i=0; i<latLngs.length; i++) {
                     points.push([  latLngs[i].lat.toString().substr(0,10),
                         latLngs[i].lng.toString().substr(0,10)  ]);
@@ -673,14 +641,13 @@ function createMap2 (prop) {
                 points: _Map2.parsePoints(layer)
             };
 
-            console.log("saveShape");
-            console.log(shapeData);
+            var data;
 
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/add-shape',
                 data = shapeData,
                 successCallback = function(res) {
-                    if(res.image.length) {
+                    if(res.image.length && type !== 'image') {
                         // update marker when we choose image
                         layer.options.icon.options = {
                             iconAnchor: [10, 26],
@@ -713,7 +680,7 @@ function createMap2 (prop) {
 
                 },
                 exceptionCallback = function(res) {
-                    console.log('add shape fail:');
+                    console.log('add fail:');
                     console.log(res);
                     _Map2.map.removeLayer(layer);
                 }
