@@ -95,8 +95,8 @@ L.Draw.ImageOverlay = L.Draw.Feature.extend({
     },
 
     addHooks: function () {
-    	var self = this;
-		this.createOverlay(function(){
+		var self = this;
+		this.createOverlay(function () {
             L.Draw.Feature.prototype.addHooks.call(self);
 		});
     },

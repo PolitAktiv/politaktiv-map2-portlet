@@ -1054,6 +1054,128 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	}
 });
 
+
+L.Draw.ImageOverlay = L.Draw.Feature.extend({
+    statics: {
+        TYPE: 'image'
+    },
+
+    initialize: function (map, options) {
+        this.type = L.Draw.Image.TYPE;
+        this._map = map;
+        L.Draw.Feature.prototype.initialize.call(this, map, options);
+    },
+	_getFileUrl: function (callback) {
+		var self = this;
+		var input = document.createElement('input');
+		var reader = new FileReader();
+		input.setAttribute('type', 'file');
+		input.setAttribute('accept', 'image/*');
+
+		input.addEventListener('change', function () {
+			if (input.files.length > 0 && input.files[0].size / 1024 <= 65) {
+				reader.readAsDataURL(input.files[0]);
+			}
+		});
+
+		reader.addEventListener('loadend', function () {
+			self.imageUrl = reader.result;
+			// console.log('loadend');
+
+			if (callback) {
+                callback.call(self, reader.result);
+			}
+		});
+
+		input.click();
+	},
+
+    forceUpdate: function () {
+        var image   = this.overlay._image,
+            topLeft = this._map.latLngToLayerPoint(this.overlay._bounds.getNorthWest()),
+            size = this._map.latLngToLayerPoint(this.overlay._bounds.getSouthEast())._subtract(topLeft);
+
+        L.DomUtil.setPosition(image, topLeft);
+
+        image.style.width  = size.x + 'px';
+        image.style.height = size.y + 'px';
+    },
+
+	createOverlay: function () {
+		var self = this;
+        self._getFileUrl(function () {
+            self.overlay = new L.ImageOverlay(self.imageUrl, [self._map.getCenter(), self._map.getCenter()]);
+
+            self._mapDraggable = self._map.dragging.enabled();
+
+            if (self._mapDraggable) {
+                self._map.dragging.disable();
+            }
+
+            function mouseDown(mouseDownEvent) {
+                L.DomEvent.stopPropagation(mouseDownEvent);
+                // console.log(mouseDownEvent, 'mousedown');
+
+                self.overlay._bounds._northEast = new L.LatLng(mouseDownEvent.latlng.lat, mouseDownEvent.latlng.lng);
+
+                var mouseMove = function (mouseMoveEvent) {
+                    L.DomEvent.stopPropagation(mouseMoveEvent);
+                    // console.log(mouseMoveEvent, 'mousemove');
+
+                    self.overlay._bounds._southWest = new L.LatLng(mouseMoveEvent.latlng.lat, mouseMoveEvent.latlng.lng);
+                    self.overlay._reset();
+                };
+
+                var mouseUp = function (mouseUpEvent) {
+                    L.DomEvent.stopPropagation(mouseUpEvent);
+                    // console.log(mouseUpEvent, 'mouseup');
+                    self.overlay._bounds._southWest = new L.LatLng(mouseUpEvent.latlng.lat, mouseUpEvent.latlng.lng);
+                    L.DomEvent.off(self._map, 'mousemove', mouseMove);
+                    L.DomEvent.off(self._map, 'mouseup', mouseUp);
+                    L.DomEvent.off(self._map, 'mousedown', mouseDown);
+
+                    self._map.dragging.enable();
+
+                    self._fireCreatedEvent();
+                };
+
+                L.DomEvent.on(self._map, 'mousemove', mouseMove);
+                L.DomEvent.on(self._map, 'mouseup', mouseUp);
+
+                self._map.addLayer(self.overlay);
+            }
+
+
+
+            L.DomEvent.on(self._map, 'mousedown', mouseDown);
+        });
+    },
+
+    addHooks: function () {
+		var self = this;
+		this.createOverlay(function () {
+            L.Draw.Feature.prototype.addHooks.call(self);
+		});
+    },
+
+    removeHooks: function () {
+        L.Draw.Feature.prototype.removeHooks.call(this);
+
+        if (this._map) {
+            if (this.overlay) {
+                this._map
+                    .removeLayer(this.overlay);
+                delete this.overlay;
+            }
+        }
+    },
+
+    _fireCreatedEvent: function () {
+        var marker = new L.ImageOverlay(this.imageUrl, this.overlay._bounds);
+        L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
+    }
+});
+
 L.Draw.Image = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'image'
@@ -2547,7 +2669,7 @@ L.DrawToolbar = L.Toolbar.extend({
 			},
 			{
 				enabled: this.options.image,
-				handler: new L.Draw.Image(map, this.options.image),
+				handler: new L.Draw.ImageOverlay(map, this.options.image),
 				title: L.drawLocal.draw.toolbar.buttons.image
 			}
 		];
