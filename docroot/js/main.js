@@ -6,7 +6,7 @@ function createMap2 (prop) {
     var _Map2 = {
 
         shapeTitleClass: 'leaflet-shape-title',
-        shapeUrlClass: 'leaflet-shape-url',
+        // shapeUrlClass: 'leaflet-shape-url',
         shapeTextClass: 'leaflet-shape-text',
         shapeAuthorClass: 'leaflet-shape-author',
         shapeEditClass: 'leaflet-shape-edit',
@@ -121,6 +121,7 @@ function createMap2 (prop) {
                     select = selectContainer.getElementsByTagName('select'),
                     label = select[0].value;
 
+                console.log('CREATED');
                 var shapeTitle = prompt(prop.translations.addTitleMessage);
 
                 if (shapeTitle && shapeTitle.length) {
@@ -168,6 +169,7 @@ function createMap2 (prop) {
             });
 
             _Map2.map.on('draw:edited', function (e) {
+
                 console.log('EDITED');
                 var shapes = e.layers.getLayers();
 
@@ -177,7 +179,9 @@ function createMap2 (prop) {
                         shapes[i].options.shapeData.radius = shapes[i].getRadius();
                     }
                     shapes[i].options.shapeData.points = _Map2.parsePoints(shapes[i]);
-                    _Map2.updateShapeData(shapes[i]);
+
+                    var layer = document.getElementById('map-layers-select').value;
+                    _Map2.updateShapeData(shapes[i], null, null, layer);
                 }
             });
 
@@ -384,7 +388,7 @@ function createMap2 (prop) {
                 textNode = popupContent.querySelector('span.' + _Map2.shapeTextClass),
                 authorNode = popupContent.querySelector('span.' + _Map2.shapeAuthorClass),
                 titleInput = popupContent.querySelector('input.' + _Map2.shapeTitleClass),
-                urlInput = popupContent.querySelector('input.' + _Map2.shapeUrlClass),
+                // urlInput = popupContent.querySelector('input.' + _Map2.shapeUrlClass),
                 textInput = popupContent.querySelector('input.' + _Map2.shapeTextClass),
                 editButton = popupContent.querySelector('.' + _Map2.shapeEditClass),
                 saveButton = popupContent.querySelector('.' + _Map2.shapeSaveClass),
@@ -397,7 +401,7 @@ function createMap2 (prop) {
             authorNode.innerHTML = shape.options.shapeData.userName;
 
             titleInput.value = shape.options.shapeData.title;
-            urlInput.value = shape.options.shapeData.url;
+            // urlInput.value = shape.options.shapeData.url;
             textInput.value = shape.options.shapeData.abstractDescription;
 
             if ((shape.options.shapeData.userId === prop.userId && prop.canAddAndUpdatePersonalShape) || prop.canUpdateAnyShapes) {
@@ -406,7 +410,7 @@ function createMap2 (prop) {
                     L.DomUtil.removeClass(titleNode,'hide');
                     L.DomUtil.removeClass(textNode,'hide');
                     L.DomUtil.addClass(titleInput,'hide');
-                    L.DomUtil.addClass(urlInput,'hide');
+                    // L.DomUtil.addClass(urlInput,'hide');
                     L.DomUtil.addClass(textInput,'hide');
                     L.DomUtil.addClass(saveButton,'hide');
                     L.DomUtil.addClass(cancelButton,'hide');
@@ -417,7 +421,7 @@ function createMap2 (prop) {
                     L.DomUtil.addClass(titleNode,'hide');
                     L.DomUtil.addClass(textNode,'hide');
                     L.DomUtil.removeClass(titleInput,'hide');
-                    L.DomUtil.removeClass(urlInput,'hide');
+                    // L.DomUtil.removeClass(urlInput,'hide');
                     L.DomUtil.removeClass(textInput,'hide');
                     L.DomUtil.removeClass(saveButton,'hide');
                     L.DomUtil.removeClass(cancelButton,'hide');
@@ -431,12 +435,13 @@ function createMap2 (prop) {
 
                 L.DomEvent.on(saveButton, 'click', function() {
                     shape.options.shapeData.title = titleInput.value;
-                    shape.options.shapeData.url = urlInput.value;
+                    // shape.options.shapeData.url = urlInput.value;
                     shape.options.shapeData.abstractDescription = textInput.value;
+                    var layer = document.getElementById('map-layers-select').value;
 
                     _Map2.updateShapeData(shape, function(res){
                             shape.options.shapeData.title = res.title;
-                            shape.options.shapeData.url = res.url;
+                            // shape.options.shapeData.url = res.url;
                             shape.options.shapeData.abstractDescription = res.abstractDescription;
 
                             L.DomUtil.addClass(titleNode,'hide');
@@ -451,13 +456,13 @@ function createMap2 (prop) {
                         },
                         function(){
                             shape.options.shapeData.title = titleNode.innerHTML;
-                            shape.options.shapeData.url = titleNode.href ? titleNode.href : '';
+                            // shape.options.shapeData.url = titleNode.href ? titleNode.href : '';
                             shape.options.shapeData.abstractDescription = textNode.innerHTML;
 
                             titleInput.value = shape.options.shapeData.title;
-                            urlInput.value = shape.options.shapeData.url;
+                            // urlInput.value = shape.options.shapeData.url;
                             textInput.value = shape.options.shapeData.abstractDescription;
-                        });
+                        }, layer);
                 });
 
                 L.DomEvent.on(cancelButton, 'click', function() {
@@ -471,7 +476,7 @@ function createMap2 (prop) {
             shape.bindPopup(popupObj);
         },
 
-        updateShapeData: function(shape, success, onError) {
+        updateShapeData: function(shape, success, onError, layer) {
             console.log('updateShapeData!');
             var data = shape.options.shapeData;
             Liferay.Service(
@@ -485,7 +490,7 @@ function createMap2 (prop) {
                     image: data.image,
                     shapeType: data.shapeType,
                     radius: data.radius,
-                    shapesLayer:prop.shapesLayer,
+                    shapesLayer: layer ? layer : prop.shapesLayer,
                     points: data.points || _Map2.parsePoints(shape)
                 },
                 successCallback = function(res) {
@@ -673,9 +678,6 @@ function createMap2 (prop) {
                 points: _Map2.parsePoints(layer)
             };
 
-            console.log("saveShape");
-            console.log(shapeData);
-
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/add-shape',
                 data = shapeData,
@@ -710,7 +712,6 @@ function createMap2 (prop) {
                             popupAnchor: [1, -34]
                         };
                     }
-
                 },
                 exceptionCallback = function(res) {
                     console.log('add shape fail:');

@@ -35,9 +35,9 @@ boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecke
 			<a class="leaflet-shape-title hide" target="_blank" href=""></a>
 			<input class="leaflet-shape-title hide" placeholder="<liferay-ui:message key="map2.shape-title-placeholder" />" />
 		</div>
-		<div class="leaflet-shape-url-wrap">
-			<input class="leaflet-shape-url hide" placeholder="<liferay-ui:message key="map2.shape-url-placeholder" />" />
-		</div>
+		<%--<div class="leaflet-shape-url-wrap">--%>
+			<%--<input class="leaflet-shape-url hide" placeholder="<liferay-ui:message key="map2.shape-url-placeholder" />" />--%>
+		<%--</div>--%>
 		<div class="leaflet-shape-text-wrap">
 			<span class="leaflet-shape-text"></span>
 			<input class="leaflet-shape-text hide" placeholder="<liferay-ui:message key="map2.shape-text-placeholder" />" />
