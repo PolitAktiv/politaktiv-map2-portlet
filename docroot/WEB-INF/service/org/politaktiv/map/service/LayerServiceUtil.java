@@ -63,26 +63,52 @@ public class LayerServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static boolean addLayer(long userId, java.lang.String shapesLayer)
+	public static boolean addLayer(long userId, java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
-		return getService().addLayer(userId, shapesLayer);
+		return getService()
+				   .addLayer(userId, shapesLayer, portletInstance, portletId,
+			primKey, groupId);
 	}
 
-	public static boolean deleteLayer(long userId, java.lang.String shapesLayer)
+	public static boolean deleteLayer(long userId,
+		java.lang.String shapesLayer, java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
-		return getService().deleteLayer(userId, shapesLayer);
+		return getService()
+				   .deleteLayer(userId, shapesLayer, portletInstance,
+			portletId, primKey, groupId);
 	}
 
-	public static java.util.List<org.politaktiv.map.model.Layer> findAllLayers(
+	public static java.util.List<org.politaktiv.map.model.Layer> getLayers(
+		long userId, java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		return getService()
+				   .getLayers(userId, portletInstance, portletId, primKey,
+			groupId);
+	}
+
+	public static java.util.List<java.lang.String> getInstances(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		return getService().getInstances(userId);
+	}
+
+	public static java.util.List<com.liferay.portal.model.User> getUsers(
 		long userId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
-		return getService().findAllLayers(userId);
+		return getService().getUsers(userId);
 	}
 
 	public static void clearService() {

@@ -1,4 +1,6 @@
-<%@ page import="org.politaktiv.map.service.permission.ShapePermission" %>
+<%@ page import="org.politaktiv.map.model.Layer" %>
+<%@ page import="org.politaktiv.map.service.permission.LayerPermission" %>
+<%@ page import="java.util.List" %>
 <%
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
@@ -23,7 +25,11 @@ String portletId = portletDisplay.getRootPortletId();
 String primKey = portletDisplay.getResourcePK();
 
 boolean canAddAndUpdatePersonalShape = ShapePermission.canAddAndUpdatePersonalShape(permissionChecker, portletGroupId, portletId, primKey);
+boolean addAndDeletePersonalLayer = LayerPermission.canAddAndDeletePersonalLayer(permissionChecker, portletGroupId, portletId, primKey);
 boolean canUpdateAnyShapes = ShapePermission.canUpdateAnyShapes(permissionChecker, portletGroupId, portletId, primKey);
+boolean isAdmin = LayerPermission.isAdmin(permissionChecker, portletGroupId);
+boolean	isSignedInUser = LayerPermission.isSignedInUser(permissionChecker);
+//List<Layer> getLayers = LayerPermission.getLayers();
 %>
 <%-- div contains map --%>
 <div id="<portlet:namespace />map" class="map"></div>
@@ -90,7 +96,8 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
 
 <%-- ajax calls details: /api/jsonws?contextPath=/politaktiv-map2-portlet --%>
     var map2 = createMap2({
-        wrapperId: '<portlet:namespace />map',
+		wrapper: '<portlet:namespace />',
+		wrapperId: '<portlet:namespace />map',
         popupTemplateId: '<portlet:namespace />PopupTemplate',
 		imageUploadId: '<portlet:namespace />ImageUpload',
         groupId: <%= portletGroupId %>,
@@ -100,6 +107,10 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
         shapesLayer: '<%= shapesLayer %>',
         userId: <%= themeDisplay.getUserId() %>,
         canAddAndUpdatePersonalShape: <%= canAddAndUpdatePersonalShape %>,
+		addAndDeletePersonalLayer: <%= addAndDeletePersonalLayer %>,
+		isAdmin: <%= isAdmin %>,
+		isSignedInUser: <%= isSignedInUser %>,
+		<%--getLayers: <%= getLayers %>,--%>
         canUpdateAnyShapes: <%= canUpdateAnyShapes %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,

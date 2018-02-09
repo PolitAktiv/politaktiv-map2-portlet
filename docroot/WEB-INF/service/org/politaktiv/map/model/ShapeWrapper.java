@@ -62,6 +62,7 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
 		attributes.put("layer", getLayer());
+		attributes.put("portletInstance", getPortletInstance());
 
 		return attributes;
 	}
@@ -145,6 +146,12 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 
 		if (layer != null) {
 			setLayer(layer);
+		}
+
+		String portletInstance = (String)attributes.get("portletInstance");
+
+		if (portletInstance != null) {
+			setPortletInstance(portletInstance);
 		}
 	}
 
@@ -448,6 +455,26 @@ public class ShapeWrapper implements Shape, ModelWrapper<Shape> {
 	@Override
 	public void setLayer(java.lang.String layer) {
 		_shape.setLayer(layer);
+	}
+
+	/**
+	* Returns the portlet instance of this shape.
+	*
+	* @return the portlet instance of this shape
+	*/
+	@Override
+	public java.lang.String getPortletInstance() {
+		return _shape.getPortletInstance();
+	}
+
+	/**
+	* Sets the portlet instance of this shape.
+	*
+	* @param portletInstance the portlet instance of this shape
+	*/
+	@Override
+	public void setPortletInstance(java.lang.String portletInstance) {
+		_shape.setPortletInstance(portletInstance);
 	}
 
 	@Override

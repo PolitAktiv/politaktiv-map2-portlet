@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.util.Date;
+
 /**
  * The cache model class for representing Layer in entity cache.
  *
@@ -35,14 +37,18 @@ import java.io.ObjectOutput;
 public class LayerCacheModel implements CacheModel<Layer>, Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{layerId=");
 		sb.append(layerId);
+		sb.append(", createDate=");
+		sb.append(createDate);
 		sb.append(", label=");
 		sb.append(label);
 		sb.append(", userId=");
 		sb.append(userId);
+		sb.append(", portletInstance=");
+		sb.append(portletInstance);
 		sb.append("}");
 
 		return sb.toString();
@@ -54,6 +60,13 @@ public class LayerCacheModel implements CacheModel<Layer>, Externalizable {
 
 		layerImpl.setLayerId(layerId);
 
+		if (createDate == Long.MIN_VALUE) {
+			layerImpl.setCreateDate(null);
+		}
+		else {
+			layerImpl.setCreateDate(new Date(createDate));
+		}
+
 		if (label == null) {
 			layerImpl.setLabel(StringPool.BLANK);
 		}
@@ -63,6 +76,13 @@ public class LayerCacheModel implements CacheModel<Layer>, Externalizable {
 
 		layerImpl.setUserId(userId);
 
+		if (portletInstance == null) {
+			layerImpl.setPortletInstance(StringPool.BLANK);
+		}
+		else {
+			layerImpl.setPortletInstance(portletInstance);
+		}
+
 		layerImpl.resetOriginalValues();
 
 		return layerImpl;
@@ -71,14 +91,17 @@ public class LayerCacheModel implements CacheModel<Layer>, Externalizable {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		layerId = objectInput.readLong();
+		createDate = objectInput.readLong();
 		label = objectInput.readUTF();
 		userId = objectInput.readLong();
+		portletInstance = objectInput.readUTF();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(layerId);
+		objectOutput.writeLong(createDate);
 
 		if (label == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -88,9 +111,18 @@ public class LayerCacheModel implements CacheModel<Layer>, Externalizable {
 		}
 
 		objectOutput.writeLong(userId);
+
+		if (portletInstance == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(portletInstance);
+		}
 	}
 
 	public long layerId;
+	public long createDate;
 	public String label;
 	public long userId;
+	public String portletInstance;
 }

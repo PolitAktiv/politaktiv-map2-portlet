@@ -17,13 +17,19 @@ package org.politaktiv.map.service.impl;
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import org.apache.log4j.Logger;
 import org.politaktiv.map.model.Layer;
 import org.politaktiv.map.service.LayerLocalServiceUtil;
 import org.politaktiv.map.service.base.LayerServiceBaseImpl;
+import org.politaktiv.map.service.permission.LayerPermission;
 import org.politaktiv.map.service.persistence.LayerUtil;
 
 import javax.portlet.ValidatorException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -41,6 +47,9 @@ import java.util.List;
  * @see org.politaktiv.map.service.LayerServiceUtil
  */
 public class LayerServiceImpl extends LayerServiceBaseImpl {
+
+    public static final String DEFAULT_LAYER = "Default layer";
+    public static final int USER_ROLE = 10168;
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -49,22 +58,25 @@ public class LayerServiceImpl extends LayerServiceBaseImpl {
 
     private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
 
-    public boolean addLayer(long userId, String shapesLayer) throws SystemException, ValidatorException, PortalException {
-
-//        User user = getPermissionChecker().getUser();
-//        long currentUserId = user.getUserId();
-//        System.out.println("currentUserId: " + userId);
+    public boolean addLayer(long userId, String shapesLayer, String portletInstance, String portletId, String primKey, long groupId)
+            throws SystemException, ValidatorException, PortalException {
 
         long layerId = CounterLocalServiceUtil.increment(Layer.class.getName());
+        Date currentDate = new Date();
         Layer layer = layerPersistence.create(layerId);
+        layer.setCreateDate(currentDate);
         layer.setLabel(shapesLayer);
         layer.setUserId(userId);
+        layer.setPortletInstance(portletInstance);
 
-        int count = layerPersistence.countByUserIdAndLabel(userId, shapesLayer);
+        LayerPermission.addAndDeletePersonalLayer(getPermissionChecker(), groupId, portletId, primKey);
+
+        int count = layerPersistence.countByUserIdAndLabelAndPortletInstance(userId, shapesLayer, portletInstance);
 
         if (count < 1){
             LayerLocalServiceUtil.updateLayer(layer);
-            LOGGER.info("Layer: " + layer.getLayerId() + " for user: " + getPermissionChecker().getUserId() + " has been created.");
+            LOGGER.info("Layer: " + layer.getLayerId() + " for user: " + getPermissionChecker().getUserId()
+                    + " for portlet instance: " + portletInstance + " has been created.");
             return true;
         }
 
@@ -72,23 +84,66 @@ public class LayerServiceImpl extends LayerServiceBaseImpl {
         return false;
     }
 
-    public boolean deleteLayer(long userId, String shapesLayer) throws SystemException, ValidatorException, PortalException {
+    public boolean deleteLayer(long userId, String shapesLayer, String portletInstance, String portletId, String primKey, long groupId) throws SystemException, ValidatorException, PortalException {
 
-        int count = layerPersistence.countByUserIdAndLabel(userId, shapesLayer);
+        LayerPermission.addAndDeletePersonalLayer(getPermissionChecker(), groupId, portletId, primKey);
+
+        int count = layerPersistence.countByUserIdAndLabelAndPortletInstance(userId, shapesLayer, portletInstance);
 
         if (count > 0){
-            layerPersistence.removeByUserIdAndLabel(userId, shapesLayer);
-            shapePersistence.removeByUserIdAndLayer(userId, shapesLayer);
-            LOGGER.info("Layer with label: " + shapesLayer + " for user: " + getPermissionChecker().getUserId() + " has been deleted.");
+            layerPersistence.removeByUserIdAndLabelAndPortletInstance(userId, shapesLayer, portletInstance);
+            shapePersistence.removeByUserIdAndLayerAndPortletInstance(userId, shapesLayer, portletInstance);
+            LOGGER.info("Layer with label: " + shapesLayer + " for user: " + getPermissionChecker().getUserId()
+                    + " for portlet instance: " + portletInstance + " has been deleted.");
             return true;
         }
 
         return false;
     }
 
-    public List<Layer> findAllLayers(long userId) throws SystemException, ValidatorException, PortalException {
+    public List<Layer> getLayers(long userId, String portletInstance, String portletId, String primKey, long groupId) throws SystemException, ValidatorException, PortalException {
+
+//        LayerPermission.getPersonalLayers(getPermissionChecker(), groupId, portletId, primKey);
+
+        LayerPermission.isAdmin(getPermissionChecker(), groupId);
+        List<Layer> layers = LayerUtil.findByUserIdAndPortletInstance(userId, portletInstance);
+
+        if (layers.size() == 0) {
+            addLayer(userId, DEFAULT_LAYER, portletInstance, portletId, primKey, groupId);
+            layers = LayerUtil.findByUserIdAndPortletInstance(userId, portletInstance);
+        }
+
+        return layers;
+    }
+
+    public List<String> getInstances(long userId) throws SystemException, ValidatorException, PortalException {
 
         List<Layer> layers = LayerUtil.findByUserId(userId);
-        return layers;
+
+        LinkedHashSet<String> set = new LinkedHashSet<String>();
+
+        for (Layer layer: layers) {
+            set.add(layer.getPortletInstance());
+        }
+
+        List<String> list = new ArrayList<String>(set);
+
+        for (String str: list) {
+            System.out.println(str);
+        }
+
+        return list;
+    }
+
+    public List<User> getUsers(long userId) throws SystemException, ValidatorException, PortalException {
+
+        List<User> users = UserLocalServiceUtil.getRoleUsers(USER_ROLE);
+        System.out.println("Total users: " + users.size());
+
+        for (User user: users) {
+            user.setScreenName(user.getEmailAddress());
+        }
+
+        return users;
     }
 }

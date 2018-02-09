@@ -35,36 +35,33 @@ public class ShapeServiceClp implements ShapeService {
 		_methodName3 = "addShape";
 
 		_methodParameterTypes3 = new String[] {
-				"java.lang.String", "java.lang.String", "long", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.lang.String", "java.util.List"
+				"long", "long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String", "java.util.List", "java.lang.String"
 			};
 
 		_methodName4 = "updateShape";
 
 		_methodParameterTypes4 = new String[] {
-				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.lang.String", "java.util.List"
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String", "java.util.List"
 			};
 
-		_methodName5 = "getAllShapes";
+		_methodName5 = "getShapes";
 
 		_methodParameterTypes5 = new String[] {
-				"java.lang.String", "java.lang.String", "java.lang.String"
-			};
-
-		_methodName6 = "getShapesByUserId";
-
-		_methodParameterTypes6 = new String[] {
 				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String"
 			};
 
-		_methodName7 = "deleteShapeById";
+		_methodName6 = "deleteShape";
 
-		_methodParameterTypes7 = new String[] {
-				"java.lang.String", "java.lang.String", "long"
+		_methodParameterTypes6 = new String[] {
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"long"
 			};
 	}
 
@@ -119,12 +116,14 @@ public class ShapeServiceClp implements ShapeService {
 	}
 
 	@Override
-	public org.politaktiv.map.model.Shape addShape(java.lang.String portletId,
+	public org.politaktiv.map.model.Shape addShape(
+		java.lang.String portletInstance, java.lang.String portletId,
 		java.lang.String primKey, long groupId, long companyId,
 		java.lang.String title, java.lang.String abstractDescription,
 		java.lang.String image, java.lang.String shapeType, long radius,
 		java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
+		java.util.List<java.util.List<java.lang.String>> points,
+		java.lang.String userId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
@@ -134,7 +133,9 @@ public class ShapeServiceClp implements ShapeService {
 			returnObj = _invokableService.invokeMethod(_methodName3,
 					_methodParameterTypes3,
 					new Object[] {
-						ClpSerializer.translateInput(portletId),
+						ClpSerializer.translateInput(portletInstance),
+						
+					ClpSerializer.translateInput(portletId),
 						
 					ClpSerializer.translateInput(primKey),
 						
@@ -154,7 +155,9 @@ public class ShapeServiceClp implements ShapeService {
 						
 					ClpSerializer.translateInput(shapesLayer),
 						
-					ClpSerializer.translateInput(points)
+					ClpSerializer.translateInput(points),
+						
+					ClpSerializer.translateInput(userId)
 					});
 		}
 		catch (Throwable t) {
@@ -186,10 +189,10 @@ public class ShapeServiceClp implements ShapeService {
 
 	@Override
 	public org.politaktiv.map.model.Shape updateShape(
-		java.lang.String portletId, java.lang.String primKey, long shapeId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String image, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long shapeId, java.lang.String title,
+		java.lang.String abstractDescription, java.lang.String image,
+		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
@@ -200,7 +203,9 @@ public class ShapeServiceClp implements ShapeService {
 			returnObj = _invokableService.invokeMethod(_methodName4,
 					_methodParameterTypes4,
 					new Object[] {
-						ClpSerializer.translateInput(portletId),
+						ClpSerializer.translateInput(portletInstance),
+						
+					ClpSerializer.translateInput(portletId),
 						
 					ClpSerializer.translateInput(primKey),
 						
@@ -249,55 +254,18 @@ public class ShapeServiceClp implements ShapeService {
 	}
 
 	@Override
-	public java.util.List<org.politaktiv.map.model.Shape> getAllShapes(
-		java.lang.String portletId, java.lang.String primKey,
-		java.lang.String shapesLayer)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public java.util.List<org.politaktiv.map.model.Shape> getShapes(
+		java.lang.String portletInstance, java.lang.String primKey,
+		long userId, java.lang.String shapesLayer)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.security.auth.PrincipalException {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableService.invokeMethod(_methodName5,
 					_methodParameterTypes5,
 					new Object[] {
-						ClpSerializer.translateInput(portletId),
-						
-					ClpSerializer.translateInput(primKey),
-						
-					ClpSerializer.translateInput(shapesLayer)
-					});
-		}
-		catch (Throwable t) {
-			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException)t;
-			}
-			else {
-				throw new RuntimeException(t.getClass().getName() +
-					" is not a valid exception");
-			}
-		}
-
-		return (java.util.List<org.politaktiv.map.model.Shape>)ClpSerializer.translateOutput(returnObj);
-	}
-
-	@Override
-	public java.util.List<org.politaktiv.map.model.Shape> getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId,
-		java.lang.String shapesLayer)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.security.auth.PrincipalException {
-		Object returnObj = null;
-
-		try {
-			returnObj = _invokableService.invokeMethod(_methodName6,
-					_methodParameterTypes6,
-					new Object[] {
-						ClpSerializer.translateInput(portletId),
+						ClpSerializer.translateInput(portletInstance),
 						
 					ClpSerializer.translateInput(primKey),
 						
@@ -330,15 +298,17 @@ public class ShapeServiceClp implements ShapeService {
 	}
 
 	@Override
-	public void deleteShapeById(java.lang.String portletId,
-		java.lang.String primKey, long shapeId)
+	public void deleteShape(java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long shapeId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		try {
-			_invokableService.invokeMethod(_methodName7,
-				_methodParameterTypes7,
+			_invokableService.invokeMethod(_methodName6,
+				_methodParameterTypes6,
 				new Object[] {
-					ClpSerializer.translateInput(portletId),
+					ClpSerializer.translateInput(portletInstance),
+					
+				ClpSerializer.translateInput(portletId),
 					
 				ClpSerializer.translateInput(primKey),
 					
@@ -379,6 +349,4 @@ public class ShapeServiceClp implements ShapeService {
 	private String[] _methodParameterTypes5;
 	private String _methodName6;
 	private String[] _methodParameterTypes6;
-	private String _methodName7;
-	private String[] _methodParameterTypes7;
 }

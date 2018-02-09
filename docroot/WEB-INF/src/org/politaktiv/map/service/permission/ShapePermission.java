@@ -27,18 +27,30 @@ public class ShapePermission {
 	}
 	
 	public static void checkAddAndUpdatePersonalShape(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) throws PortalException {
-		if (!canAddAndUpdatePersonalShape(permissionChecker, groupId, resourceName, primKey)) {
+
+        System.out.println("permissionChecker: " + permissionChecker);
+
+        if (!canAddAndUpdatePersonalShape(permissionChecker, groupId, resourceName, primKey)) {
 			throw new PrincipalException("User " + permissionChecker.getUserId() + " has no permission to make action " + ADD_AND_UPDATE_PERSONAL_SHAPE);
 		}
 	}
 
-
 	public static boolean canAddAndUpdatePersonalShape(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) {
-		return contains(permissionChecker, groupId, resourceName, primKey, ADD_AND_UPDATE_PERSONAL_SHAPE);
+
+        System.out.println("permissionChecker: " + permissionChecker);
+
+        return contains(permissionChecker, groupId, resourceName, primKey, ADD_AND_UPDATE_PERSONAL_SHAPE);
 	}
+
+
+
+
 	
 	public static boolean canUpdateAnyShapes(PermissionChecker permissionChecker, long groupId, String resourceName, String primKey) {
-		return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_ANY_SHAPE_ACTION);
+
+        System.out.println("permissionChecker: " + permissionChecker);
+
+        return contains(permissionChecker, groupId, resourceName, primKey, UPDATE_ANY_SHAPE_ACTION);
 	}
 	
     public static boolean canUpdateShape(PermissionChecker permissionChecker, Shape shape, String resourceName, String primKey) {

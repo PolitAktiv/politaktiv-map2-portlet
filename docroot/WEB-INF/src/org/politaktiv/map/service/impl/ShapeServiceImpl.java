@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.model.User;
-import com.liferay.portal.security.ac.AccessControlled;
 import com.liferay.portal.security.auth.PrincipalException;
 import org.apache.log4j.Logger;
 import org.politaktiv.map.model.Shape;
@@ -58,11 +57,9 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
     private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
 
 
-    public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
+    public Shape addShape(String portletInstance, String portletId, String primKey, long groupId, long companyId, String title,
+                          String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points, String userId)
             throws SystemException, ValidatorException, PortalException {
-
-        User user = getPermissionChecker().getUser();
-        long currentUserId = user.getUserId();
 
         ShapePermission.checkAddAndUpdatePersonalShape(getPermissionChecker(), groupId, portletId, primKey);
 
@@ -74,8 +71,22 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setGroupId(groupId);
         shape.setCompanyId(companyId);
 
+        long userIdInt = Integer.parseInt(userId);
+        long currentUserId;
+        String userName;
+
+        if(userIdInt > 0) {
+            currentUserId = userIdInt;
+            List <Shape> userShape = ShapeUtil.findByUserId(userIdInt);
+            userName = userShape.get(0).getUserName();
+        } else {
+            User user = getPermissionChecker().getUser();
+            currentUserId = user.getUserId();
+            userName = user.getFullName();
+        }
+
         shape.setUserId(currentUserId);
-        shape.setUserName(user.getFullName());
+        shape.setUserName(userName);
         shape.setCreateDate(currentDate);
         shape.setModifiedDate(currentDate);
 
@@ -85,18 +96,21 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setShapeType(shapeType);
         shape.setRadius(radius);
         shape.setLayer(shapesLayer);
+        shape.setPortletInstance(portletInstance);
 
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
 
         shape.validate(points);
-
         ShapeLocalServiceUtil.updateShape(shape);
 
-        LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been created.");
+        LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId()
+                + " for portlet instance: " + portletInstance + " has been created.");
+
         return shape;
     }
 
-    public Shape updateShape(String portletId, String primKey, long shapeId, String title, String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
+    public Shape updateShape(String portletInstance, String portletId, String primKey, long shapeId, String title,
+                             String abstractDescription, String image, String shapeType, long radius, String shapesLayer, List<List<String>> points)
             throws SystemException, ValidatorException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
@@ -112,6 +126,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setImage(image);
         shape.setRadius(radius);
         shape.setLayer(shapesLayer);
+        shape.setPortletInstance(portletInstance);
 
         CoordinateLocalServiceUtil.removeCoordinatesByShapeId(shapeId);
         CoordinateLocalServiceUtil.addCoordinates(shapeId, points);
@@ -120,29 +135,16 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
         ShapeLocalServiceUtil.updateShape(shape);
 
-        LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been updated.");
+        LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId()
+                + " for portlet instance: " + portletInstance + " has been updated.");
 
         return shape;
     }
 
+    public List<Shape> getShapes(String portletInstance, String primKey, long userId, String shapesLayer)
+            throws SystemException, PrincipalException {
 
-    @AccessControlled(guestAccessEnabled = true)
-    public List<Shape> getAllShapes(String portletId, String primKey, String shapesLayer) throws SystemException {
-
-        List<Shape> shapes = ShapeUtil.findByLayer(shapesLayer);
-
-        for (Shape shape : shapes) {
-
-            shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
-            shape.setTitle(HtmlUtil.escape(shape.getTitle()));
-        }
-
-        return shapes;
-    }
-
-    public List<Shape> getShapesByUserId(String portletId, String primKey, long userId, String shapesLayer) throws SystemException, PrincipalException {
-
-        List<Shape> shapes = ShapeUtil.findByUserIdAndLayer(userId, shapesLayer);
+        List<Shape> shapes = ShapeUtil.findByUserIdAndLayerAndPortletInstance(userId, shapesLayer, portletInstance);
 
         for (Shape shape : shapes) {
             shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
@@ -152,7 +154,8 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         return shapes;
     }
 
-    public void deleteShapeById(String portletId, String primKey, long shapeId) throws SystemException, PortalException {
+    public void deleteShape(String portletInstance, String portletId, String primKey, long shapeId)
+            throws SystemException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
 
@@ -161,7 +164,8 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
             ShapeUtil.remove(shapeId);
             CoordinateLocalServiceUtil.removeCoordinatesByShapeId(shapeId);
 
-            LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId() + " has been deleted.");
+            LOGGER.info("Shape: " + shape.getShapeId() + " for user: " + getPermissionChecker().getUserId()
+                    + " for portlet instance: " + portletInstance + " has been deleted.");
         }
     }
 }

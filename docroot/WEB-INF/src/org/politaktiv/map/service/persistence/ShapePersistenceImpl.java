@@ -1673,6 +1673,687 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	private static final String _FINDER_COLUMN_USERIDANDLAYER_LAYER_1 = "shape.layer IS NULL";
 	private static final String _FINDER_COLUMN_USERIDANDLAYER_LAYER_2 = "shape.layer = ?";
 	private static final String _FINDER_COLUMN_USERIDANDLAYER_LAYER_3 = "(shape.layer IS NULL OR shape.layer = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE =
+		new FinderPath(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+			ShapeModelImpl.FINDER_CACHE_ENABLED, ShapeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByUserIdAndLayerAndPortletInstance",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE =
+		new FinderPath(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+			ShapeModelImpl.FINDER_CACHE_ENABLED, ShapeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByUserIdAndLayerAndPortletInstance",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			ShapeModelImpl.USERID_COLUMN_BITMASK |
+			ShapeModelImpl.LAYER_COLUMN_BITMASK |
+			ShapeModelImpl.PORTLETINSTANCE_COLUMN_BITMASK |
+			ShapeModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_USERIDANDLAYERANDPORTLETINSTANCE =
+		new FinderPath(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+			ShapeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByUserIdAndLayerAndPortletInstance",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns all the shapes where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @return the matching shapes
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Shape> findByUserIdAndLayerAndPortletInstance(long userId,
+		String layer, String portletInstance) throws SystemException {
+		return findByUserIdAndLayerAndPortletInstance(userId, layer,
+			portletInstance, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the shapes where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param start the lower bound of the range of shapes
+	 * @param end the upper bound of the range of shapes (not inclusive)
+	 * @return the range of matching shapes
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Shape> findByUserIdAndLayerAndPortletInstance(long userId,
+		String layer, String portletInstance, int start, int end)
+		throws SystemException {
+		return findByUserIdAndLayerAndPortletInstance(userId, layer,
+			portletInstance, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the shapes where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param start the lower bound of the range of shapes
+	 * @param end the upper bound of the range of shapes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching shapes
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<Shape> findByUserIdAndLayerAndPortletInstance(long userId,
+		String layer, String portletInstance, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE;
+			finderArgs = new Object[] { userId, layer, portletInstance };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE;
+			finderArgs = new Object[] {
+					userId, layer, portletInstance,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Shape> list = (List<Shape>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (Shape shape : list) {
+				if ((userId != shape.getUserId()) ||
+						!Validator.equals(layer, shape.getLayer()) ||
+						!Validator.equals(portletInstance,
+							shape.getPortletInstance())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_SHAPE_WHERE);
+
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_USERID_2);
+
+			boolean bindLayer = false;
+
+			if (layer == null) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_1);
+			}
+			else if (layer.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_3);
+			}
+			else {
+				bindLayer = true;
+
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_2);
+			}
+
+			boolean bindPortletInstance = false;
+
+			if (portletInstance == null) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_1);
+			}
+			else if (portletInstance.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_3);
+			}
+			else {
+				bindPortletInstance = true;
+
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ShapeModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(userId);
+
+				if (bindLayer) {
+					qPos.add(layer);
+				}
+
+				if (bindPortletInstance) {
+					qPos.add(portletInstance);
+				}
+
+				if (!pagination) {
+					list = (List<Shape>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<Shape>(list);
+				}
+				else {
+					list = (List<Shape>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first shape in the ordered set where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching shape
+	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Shape findByUserIdAndLayerAndPortletInstance_First(long userId,
+		String layer, String portletInstance,
+		OrderByComparator orderByComparator)
+		throws NoSuchShapeException, SystemException {
+		Shape shape = fetchByUserIdAndLayerAndPortletInstance_First(userId,
+				layer, portletInstance, orderByComparator);
+
+		if (shape != null) {
+			return shape;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("userId=");
+		msg.append(userId);
+
+		msg.append(", layer=");
+		msg.append(layer);
+
+		msg.append(", portletInstance=");
+		msg.append(portletInstance);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchShapeException(msg.toString());
+	}
+
+	/**
+	 * Returns the first shape in the ordered set where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching shape, or <code>null</code> if a matching shape could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Shape fetchByUserIdAndLayerAndPortletInstance_First(long userId,
+		String layer, String portletInstance,
+		OrderByComparator orderByComparator) throws SystemException {
+		List<Shape> list = findByUserIdAndLayerAndPortletInstance(userId,
+				layer, portletInstance, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last shape in the ordered set where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching shape
+	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Shape findByUserIdAndLayerAndPortletInstance_Last(long userId,
+		String layer, String portletInstance,
+		OrderByComparator orderByComparator)
+		throws NoSuchShapeException, SystemException {
+		Shape shape = fetchByUserIdAndLayerAndPortletInstance_Last(userId,
+				layer, portletInstance, orderByComparator);
+
+		if (shape != null) {
+			return shape;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("userId=");
+		msg.append(userId);
+
+		msg.append(", layer=");
+		msg.append(layer);
+
+		msg.append(", portletInstance=");
+		msg.append(portletInstance);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchShapeException(msg.toString());
+	}
+
+	/**
+	 * Returns the last shape in the ordered set where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching shape, or <code>null</code> if a matching shape could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Shape fetchByUserIdAndLayerAndPortletInstance_Last(long userId,
+		String layer, String portletInstance,
+		OrderByComparator orderByComparator) throws SystemException {
+		int count = countByUserIdAndLayerAndPortletInstance(userId, layer,
+				portletInstance);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Shape> list = findByUserIdAndLayerAndPortletInstance(userId,
+				layer, portletInstance, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the shapes before and after the current shape in the ordered set where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param shapeId the primary key of the current shape
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next shape
+	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Shape[] findByUserIdAndLayerAndPortletInstance_PrevAndNext(
+		long shapeId, long userId, String layer, String portletInstance,
+		OrderByComparator orderByComparator)
+		throws NoSuchShapeException, SystemException {
+		Shape shape = findByPrimaryKey(shapeId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Shape[] array = new ShapeImpl[3];
+
+			array[0] = getByUserIdAndLayerAndPortletInstance_PrevAndNext(session,
+					shape, userId, layer, portletInstance, orderByComparator,
+					true);
+
+			array[1] = shape;
+
+			array[2] = getByUserIdAndLayerAndPortletInstance_PrevAndNext(session,
+					shape, userId, layer, portletInstance, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Shape getByUserIdAndLayerAndPortletInstance_PrevAndNext(
+		Session session, Shape shape, long userId, String layer,
+		String portletInstance, OrderByComparator orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_SHAPE_WHERE);
+
+		query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_USERID_2);
+
+		boolean bindLayer = false;
+
+		if (layer == null) {
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_1);
+		}
+		else if (layer.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_3);
+		}
+		else {
+			bindLayer = true;
+
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_2);
+		}
+
+		boolean bindPortletInstance = false;
+
+		if (portletInstance == null) {
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_1);
+		}
+		else if (portletInstance.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_3);
+		}
+		else {
+			bindPortletInstance = true;
+
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ShapeModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(userId);
+
+		if (bindLayer) {
+			qPos.add(layer);
+		}
+
+		if (bindPortletInstance) {
+			qPos.add(portletInstance);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(shape);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Shape> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the shapes where userId = &#63; and layer = &#63; and portletInstance = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByUserIdAndLayerAndPortletInstance(long userId,
+		String layer, String portletInstance) throws SystemException {
+		for (Shape shape : findByUserIdAndLayerAndPortletInstance(userId,
+				layer, portletInstance, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null)) {
+			remove(shape);
+		}
+	}
+
+	/**
+	 * Returns the number of shapes where userId = &#63; and layer = &#63; and portletInstance = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param portletInstance the portlet instance
+	 * @return the number of matching shapes
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByUserIdAndLayerAndPortletInstance(long userId,
+		String layer, String portletInstance) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_USERIDANDLAYERANDPORTLETINSTANCE;
+
+		Object[] finderArgs = new Object[] { userId, layer, portletInstance };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_SHAPE_WHERE);
+
+			query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_USERID_2);
+
+			boolean bindLayer = false;
+
+			if (layer == null) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_1);
+			}
+			else if (layer.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_3);
+			}
+			else {
+				bindLayer = true;
+
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_2);
+			}
+
+			boolean bindPortletInstance = false;
+
+			if (portletInstance == null) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_1);
+			}
+			else if (portletInstance.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_3);
+			}
+			else {
+				bindPortletInstance = true;
+
+				query.append(_FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(userId);
+
+				if (bindLayer) {
+					qPos.add(layer);
+				}
+
+				if (bindPortletInstance) {
+					qPos.add(portletInstance);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_USERID_2 =
+		"shape.userId = ? AND ";
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_1 =
+		"shape.layer IS NULL AND ";
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_2 =
+		"shape.layer = ? AND ";
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_LAYER_3 =
+		"(shape.layer IS NULL OR shape.layer = '') AND ";
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_1 =
+		"shape.portletInstance IS NULL";
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_2 =
+		"shape.portletInstance = ?";
+	private static final String _FINDER_COLUMN_USERIDANDLAYERANDPORTLETINSTANCE_PORTLETINSTANCE_3 =
+		"(shape.portletInstance IS NULL OR shape.portletInstance = '')";
 
 	public ShapePersistenceImpl() {
 		setModelClass(Shape.class);
@@ -1946,6 +2627,30 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYER,
 					args);
 			}
+
+			if ((shapeModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						shapeModelImpl.getOriginalUserId(),
+						shapeModelImpl.getOriginalLayer(),
+						shapeModelImpl.getOriginalPortletInstance()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYERANDPORTLETINSTANCE,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE,
+					args);
+
+				args = new Object[] {
+						shapeModelImpl.getUserId(), shapeModelImpl.getLayer(),
+						shapeModelImpl.getPortletInstance()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYERANDPORTLETINSTANCE,
+					args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYERANDPORTLETINSTANCE,
+					args);
+			}
 		}
 
 		EntityCacheUtil.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
@@ -1977,6 +2682,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		shapeImpl.setShapeType(shape.getShapeType());
 		shapeImpl.setRadius(shape.getRadius());
 		shapeImpl.setLayer(shape.getLayer());
+		shapeImpl.setPortletInstance(shape.getPortletInstance());
 
 		return shapeImpl;
 	}

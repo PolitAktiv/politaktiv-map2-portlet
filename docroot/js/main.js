@@ -1,6 +1,11 @@
 function createMap2 (prop) {
     var selectContainer = L.DomUtil.create('div', 'leaflet-control-drop-down');
+    var usersContainer = L.DomUtil.create('div', 'leaflet-users-drop-down');
+    var instancesContainer = L.DomUtil.create('div', 'leaflet-instances-drop-down');
     var layers;
+    var selectedUserId;
+    var notSignedInUserId;
+    var selectedInstance;
     var eventBind = false;
 
     var _Map2 = {
@@ -14,8 +19,10 @@ function createMap2 (prop) {
         shapeCancelClass: 'leaflet-shape-cancel',
 
         init: function(prop) {
+
             console.log('Map initializing');
             console.log(prop);
+            console.log(prop.isAdmin);
 
             _Map2.map = L.map(prop.wrapperId);
 
@@ -30,16 +37,33 @@ function createMap2 (prop) {
             _Map2.getDeleteLayerButton();
 
             _Map2.loadLayers().then(function(res) {
-                console.log(res);
                 _Map2.getLayers(res);
                 _Map2.getDropDownMenu();
+
+                prop.isAdmin && _Map2.loadUsers().then(function(res) {
+                    console.log('promise resolved with success', res);
+                    _Map2.createUsersSelect(res);
+                    _Map2.appendUsersSelect();
+                }, function(res) {
+                    console.log('error', res);
+                });
             });
 
             _Map2.map.setView([prop.center.lat, prop.center.lng], prop.zoomLevel);
         },
 
         getLayers: function(res) {
-            var options = '<option data-value="default">' + prop.translations.defaultLayer +'</option>';
+            console.log('EVERYTHING OK, UPDATE SELECT OF LAYERS WITH USER LAYERS');
+            console.log('+++', res);
+            var select = document.getElementById('map-layers-select');
+
+            if(select) {
+                console.log('CLEARING SELECT FOR NEW LAYERS');
+                select.innerHTML = '';
+            }
+
+            var options;
+            // var options = '<option data-value="default">' + prop.translations.defaultLayer +'</option>';
             var elem = '<select id="map-layers-select">{0}</select>';
 
             res.forEach(function(element) {
@@ -49,6 +73,42 @@ function createMap2 (prop) {
 
             elem = elem.replace('{0}', options);
             selectContainer.innerHTML = elem;
+        },
+
+        createUsersSelect: function(users) {
+            var userSelect = '<select id="map-users-select">{0}</select>';
+            var users = users.map(function(user) {
+                return {
+                    'id': user.userId,
+                    'email': user.screenName
+                }
+            }).sort(function(prev, next) {
+                if (prev.email > next.email) {
+                    return 1;
+                }
+                if (prev.email < next.email) {
+                    return -1;
+                }
+                return 0;
+            });
+
+            var adminUser = users.filter(function(user) {
+                return user.id === prop.userId;
+            });
+
+            users = users.filter(function(user) {
+                return user.id !== prop.userId;
+            });
+
+            var usersOptions = adminUser.concat(users).reduce(function(acum, user) {
+                var option = '<option data-id="' + user.id + '">' + user.email + '</option>';
+                acum += option;
+
+                return acum;
+            }, '');
+
+            userSelect = userSelect.replace('{0}', usersOptions);
+            usersContainer.innerHTML = userSelect;
         },
 
         getDropDownMenu: function() {
@@ -74,6 +134,26 @@ function createMap2 (prop) {
             el.dispatchEvent(ev);
         },
 
+        appendUsersSelect: function() {
+            var selector = L.control({
+                position: 'topleft'
+            });
+
+            selector.onAdd = function(map) {
+                L.DomEvent.addListener(usersContainer, 'change', function(e) {
+                    var instancesSelect = document.getElementById('map-instances-select');
+                    var usersSelect = document.getElementById('map-users-select');
+                    selectedUserId = '';
+                    selectedUserId = usersSelect.options[usersSelect.selectedIndex].getAttribute('data-id');
+
+                    _Map2.getUserInstances(selectedUserId);
+                });
+                return usersContainer;
+            };
+
+            selector.addTo(_Map2.map);
+        },
+
         initViewCenter: function() {
             var viewCenterOptions = {
                 position: 'topleft',
@@ -87,27 +167,119 @@ function createMap2 (prop) {
             _Map2.map.addControl(_Map2.viewCenter);
         },
 
+        trimString: function(string) {
+            return string.substring(1, string.length-1);
+        },
+
+        getUserInstances: function(userId) {
+            console.log('EVERYTHING OK, RUN REQUEST TO LOAD INSTANCES: ', userId);
+
+            var data = {
+                userId: userId
+            };
+
+            Liferay.Service(
+                '/politaktiv-map2-portlet.layer/get-instances',
+                data,
+                successCallback = function(res) {
+                    console.log('GET INSTANCES SUCCESS WITH RESPONSE:', res);
+
+                    _Map2.createInstancesSelect(res);
+                },
+                exceptionCallback = function(res) {
+                    console.log('Error during loading user layers');
+                }
+            );
+        },
+
+        createInstancesSelect: function(instances) {
+            console.log('CREATING INSTANCES SELECT');
+            var select = document.getElementById('map-instances-select');
+            var instancesSelect = '<select id="map-instances-select">{0}</select>';
+            var instanceOptions = instances.reduce(function(acum, instance, index) {
+                var option = '<option data-id="' + instance + '">' + 'Page №'+ ++index + '</option>';
+                acum += option;
+
+                return acum;
+            }, '');
+
+            if(select) {
+                console.log('CLEARING INSTANCES SELECT FOR NEW LAYERS');
+                select.innerHTML = '';
+                select.innerHTML = instanceOptions;
+            } else {
+                instancesSelect = instancesSelect.replace('{0}', instanceOptions);
+                instancesContainer.innerHTML = instancesSelect;
+                _Map2.appendInstancesSelect();
+            }
+
+            var el = document.getElementById('map-instances-select');
+            var ev = document.createEvent('Event');
+            ev.initEvent('change', true, false);
+            el.dispatchEvent(ev);
+        },
+
+        appendInstancesSelect: function() {
+            console.log('APPEND INSTANCES SELECT AND INIT EVENT ON CHANGE');
+            var selector = L.control({
+                position: 'topleft'
+            });
+
+            selector.onAdd = function(map) {
+                L.DomEvent.addListener(instancesContainer, 'change', function(e) {
+                    console.log('--- CHANGE');
+                    var instancesSelect = document.getElementById('map-instances-select');
+                    selectedInstance = instancesSelect.options[instancesSelect.selectedIndex].getAttribute('data-id');
+                    console.log('LOAD LAYERS FOR INSTANCE: ', selectedInstance);
+
+                    var data = {
+                        userId: selectedUserId,
+                        portletInstance: selectedInstance,
+                        portletId: prop.portletId,
+                        primKey: prop.primKey,
+                        groupId: prop.groupId
+                    };
+
+                    Liferay.Service(
+                        '/politaktiv-map2-portlet.layer/get-layers',
+                        data,
+                        successCallback = function(res) {
+                            console.log('SUCESS LOAD LAYERS FOR DISTINCT INSTANCE: ', res);
+                            _Map2.getLayers(res);
+                            if(selectedUserId) {
+                                var select = document.getElementById('map-layers-select');
+                                var selectContainer = select.parentNode;
+
+                                // set select value of created layer and trigger change event;
+                                selectContainer.dispatchEvent(new Event('change'));
+                            }
+                        }
+                    );
+
+                });
+                return instancesContainer;
+            };
+
+            selector.addTo(_Map2.map);
+        },
+
         getShapes: function(label) {
             Liferay.Service(
-                '/politaktiv-map2-portlet.shape/get-shapes-by-user-id',
+                '/politaktiv-map2-portlet.shape/get-shapes',
                 data = {
-                    portletId: prop.portletId,
+                    portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
                     primKey: prop.primKey,
-                    userId: prop.userId,
+                    userId: selectedUserId || prop.userId,
                     shapesLayer: label
                 },
                 successCallback = function(res) {
-
                     _Map2.cleanShapesAndControls();
-                    console.log(res);
                     _Map2.initShapes(res);
                     _Map2.initShapesList();
                     _Map2.initShapesControls();
 
                     !eventBind && _Map2.initMapEvents();
                     eventBind = true;
-                },
-                exceptionCallback = function(res) {
                 }
             );
         },
@@ -121,7 +293,6 @@ function createMap2 (prop) {
                     select = selectContainer.getElementsByTagName('select'),
                     label = select[0].value;
 
-                console.log('CREATED');
                 var shapeTitle = prompt(prop.translations.addTitleMessage);
 
                 if (shapeTitle && shapeTitle.length) {
@@ -143,8 +314,6 @@ function createMap2 (prop) {
                                     var maxFileSizeMb = prop.translations.maxFileSize;
 
                                     if(sizeMB < maxFileSizeMb) {
-                                        console.log("File size");
-                                        console.log(sizeMB);
                                         _Map2.saveShape(layer, label, type, shapeTitle, '', base64);
                                     } else {
                                         alert(prop.translations.caution3 + " " + prop.translations.maxFileSize + " " + prop.translations.caution4);
@@ -169,8 +338,6 @@ function createMap2 (prop) {
             });
 
             _Map2.map.on('draw:edited', function (e) {
-
-                console.log('EDITED');
                 var shapes = e.layers.getLayers();
 
                 for (var i=0, len=shapes.length; i<len; i++) {
@@ -186,10 +353,10 @@ function createMap2 (prop) {
             });
 
             _Map2.map.on('draw:deleted', function (e) {
-                console.log('DELETED');
                 var shapes = e.layers.getLayers();
 
                 for (var i=0, len=shapes.length; i<len; i++) {
+
                     _Map2.removeShape(shapes[i]);
                 }
             });
@@ -214,6 +381,7 @@ function createMap2 (prop) {
         },
 
         getAddLayerButton: function() {
+
             var customControl =  L.Control.extend({
                 options: {
                     position: 'topleft'
@@ -225,19 +393,23 @@ function createMap2 (prop) {
                     addButton.innerHTML= prop.translations.addLayer;
 
                     L.DomEvent.on(addButton, 'click', function() {
-                        var layersExists = document.getElementById('map-layers-select').querySelectorAll('option').length - 1;
-                        var maximumLayers = prop.translations.maximumLayers;
+                        if (prop.addAndDeletePersonalLayer) {
+                            var layersExists = document.getElementById('map-layers-select').querySelectorAll('option').length - 1;
+                            var maximumLayers = prop.translations.maximumLayers;
 
-                        if(layersExists < maximumLayers) {
-                            var label = prompt(prop.translations.addLabelMessage);
+                            if(layersExists < maximumLayers) {
+                                var label = prompt(prop.translations.addLabelMessage);
 
-                            if(label !== null && label.length) {
-                                _Map2.saveLayerContainer(label);
-                            } else if(label !== null) {
-                                alert(prop.translations.addLabelMessageAgain);
+                                if(label !== null && label.length) {
+                                    _Map2.saveLayerContainer(label);
+                                } else if(label !== null) {
+                                    alert(prop.translations.addLabelMessageAgain);
+                                }
+                            } else {
+                                alert(prop.translations.caution1 + " " + prop.translations.maximumLayers + " " + prop.translations.caution2);
                             }
                         } else {
-                            alert(prop.translations.caution1 + " " + prop.translations.maximumLayers + " " + prop.translations.caution2);
+                            alert("You have no permission to add a layer");
                         }
                     });
                     return addButton;
@@ -258,18 +430,23 @@ function createMap2 (prop) {
 
                     deleteButton.innerHTML= prop.translations.deleteLayer;
 
-                    L.DomEvent.on(deleteButton, 'click', function() {
-                        var currentOption = document.getElementById('map-layers-select').value;
-                        var defaultOption = document.querySelector('[data-value]').value;
+                    L.DomEvent.on(deleteButton, 'click', function(e) {
+                        if (prop.addAndDeletePersonalLayer) {
 
-                        if(currentOption === defaultOption) {
-                            alert(prop.translations.chooseLayer);
+                            var currentOption = document.getElementById('map-layers-select').value;
+
+                            if(currentOption === prop.translations.defaultLayer) {
+                                console.log("You can't delete default layer");
+                                alert(prop.translations.chooseLayer);
+                            } else {
+
+                                var confirmation = confirm(prop.translations.deleteConfirmation1 + " " + currentOption + " " + prop.translations.deleteConfirmation2);
+                                confirmation && _Map2.deleteLayerContainer(currentOption);
+                                confirmation && _Map2.cleanShapesAndControls();
+                                confirmation &&_Map2.getShapes(prop.translations.defaultLayer);
+                            }
                         } else {
-
-                            var confirmation = confirm(prop.translations.deleteConfirmation1 + " " + currentOption + " " + prop.translations.deleteConfirmation2);
-                            confirmation && _Map2.deleteLayerContainer(currentOption);
-                            confirmation && _Map2.cleanShapesAndControls();
-                            confirmation &&_Map2.getShapes(prop.translations.defaultLayer);
+                            alert("You have no permission to delete a layer");
                         }
                     });
                     return deleteButton;
@@ -332,7 +509,7 @@ function createMap2 (prop) {
             });
 
             var properties = { shapeData: shapeData };
-            if (shapeData.userId === prop.userId) {
+            // if (shapeData.userId === prop.userId) {
                 if(shapeData.shapeType === 'POINT') {
                     properties.icon = _Map2.ownIcon;
                 } else if(shapeData.shapeType === 'IMAGE') {
@@ -340,7 +517,7 @@ function createMap2 (prop) {
                 } else {
                     properties.color = '#d11';
                 }
-            }
+            // }
 
             switch (shapeData.shapeType) {
                 case 'POINT':
@@ -359,7 +536,6 @@ function createMap2 (prop) {
                     shape = L.rectangle(coordsFormatted, properties);
                     break;
                 case 'IMAGE':
-                    // TODO: check should we create L.image for this in leaflet-src
                     shape = L.marker(coordsFormatted[0], properties);
                     break;
             }
@@ -477,11 +653,11 @@ function createMap2 (prop) {
         },
 
         updateShapeData: function(shape, success, onError, layer) {
-            console.log('updateShapeData!');
             var data = shape.options.shapeData;
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/update-shape',
                 data = {
+                    portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
                     portletId: prop.portletId,
                     primKey: prop.primKey,
                     shapeId: data.shapeId,
@@ -494,13 +670,9 @@ function createMap2 (prop) {
                     points: data.points || _Map2.parsePoints(shape)
                 },
                 successCallback = function(res) {
-                    console.log('edit ok:');
-                    console.log(res);
                     if (typeof success === 'function') success(res);
                 },
                 exceptionCallback = function(res) {
-                    console.log('edit fail:');
-                    console.log(res);
                     alert(res);
                     if (typeof onError === 'function') onError(res);
                 }
@@ -574,8 +746,12 @@ function createMap2 (prop) {
 
         saveLayerContainer: function(label) {
             var layerData = {
-                userId: prop.userId,
-                shapesLayer: label
+                userId: selectedUserId || prop.userId,
+                shapesLayer: label,
+                portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
+                portletId: prop.portletId,
+                primKey: prop.primKey,
+                groupId: prop.groupId
             };
 
             Liferay.Service(
@@ -611,15 +787,20 @@ function createMap2 (prop) {
 
                 },
                 exceptionCallback = function(res) {
-                    console.log('add fail:');
+                    console.log('Adding layer failed');
                 }
             );
         },
 
         deleteLayerContainer: function(label) {
             var layerData = {
-                userId: prop.userId,
-                shapesLayer: label
+                userId: selectedUserId || prop.userId,
+                shapesLayer: label,
+                portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
+
+                portletId: prop.portletId,
+                primKey: prop.primKey,
+                groupId: prop.groupId
             };
 
             Liferay.Service(
@@ -641,20 +822,31 @@ function createMap2 (prop) {
         },
 
         loadLayers: function() {
+            console.log('LoadLayers');
+           if (!prop.isSignedInUser) {
+               notSignedInUserId=10771;
+               console.log(notSignedInUserId);
+           }
+
             var layerData = {
-                userId: prop.userId
+                userId: selectedUserId || prop.userId,
+                portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
+                portletId: prop.portletId,
+                primKey: prop.primKey,
+                groupId: prop.groupId
             };
 
             var fetchData = function () {
                 return new Promise(function (resolve, reject) {
 
                     Liferay.Service(
-                        '/politaktiv-map2-portlet.layer/find-all-layers',
+                        '/politaktiv-map2-portlet.layer/get-layers',
                         data = layerData,
                         successCallback = function(res) {
                             resolve(res);
                         },
                         exceptionCallback = function(res) {
+                            console.log('ZOPA');
                             reject(res);
                         }
                     );
@@ -663,8 +855,34 @@ function createMap2 (prop) {
             return fetchData();
         },
 
+        loadUsers: function() {
+            var fetchUsers = function () {
+                return new Promise(function (resolve, reject) {
+
+                    var userData = {
+                        userId: prop.userId
+                    };
+
+                    Liferay.Service(
+                        '/politaktiv-map2-portlet.layer/get-users',
+                        data = userData,
+                        successCallback = function(res) {
+                            console.log('----', res)
+                            resolve(res);
+                        },
+                        exceptionCallback = function(res) {
+                            reject(res);
+                        }
+                    );
+                });
+            };
+
+            return fetchUsers();
+        },
+
         saveShape: function(layer, label, type, title, description, image) {
             var shapeData = {
+                portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
                 portletId: prop.portletId,
                 primKey: prop.primKey,
                 groupId: prop.groupId,
@@ -672,12 +890,14 @@ function createMap2 (prop) {
                 title: title,
                 abstractDescription: description,
                 image: image,
-                shapeType: (type==='marker')?'POINT':type.toUpperCase(),
-                radius: (type==='circle')?layer.getRadius():0,
+                shapeType: (type === 'marker') ? 'POINT' : type.toUpperCase(),
+                radius: (type === 'circle') ? layer.getRadius() : 0,
                 shapesLayer: label,
-                points: _Map2.parsePoints(layer)
+                points: _Map2.parsePoints(layer),
+                userId: selectedUserId || 0
             };
 
+            console.log('*', shapeData);
             Liferay.Service(
                 '/politaktiv-map2-portlet.shape/add-shape',
                 data = shapeData,
@@ -697,7 +917,6 @@ function createMap2 (prop) {
                     _Map2.initPopup(layer);
                     _Map2.shapesList.update();
                     layer.openPopup();
-                    console.log(res);
 
                     if(res.image.length) {
                         var newIcon = layer.editing._marker._icon;
@@ -714,8 +933,6 @@ function createMap2 (prop) {
                     }
                 },
                 exceptionCallback = function(res) {
-                    console.log('add shape fail:');
-                    console.log(res);
                     _Map2.map.removeLayer(layer);
                 }
             );
@@ -723,14 +940,14 @@ function createMap2 (prop) {
 
         removeShape: function(shape) {
             Liferay.Service(
-                '/politaktiv-map2-portlet.shape/delete-shape-by-id',
+                '/politaktiv-map2-portlet.shape/delete-shape',
                 data = {
+                    portletInstance: selectedInstance || _Map2.trimString(prop.wrapper),
                     portletId: prop.portletId,
                     primKey: prop.primKey,
                     shapeId: shape.options.shapeData.shapeId
                 },
                 successCallback = function(res) {
-                    console.log(res);
                     if (shape.options.shapeData.userId === prop.userId) {
                         _Map2.ownLayers.removeLayer(shape);
                     } else {
@@ -739,8 +956,7 @@ function createMap2 (prop) {
                     _Map2.shapesList.update();
                 },
                 exceptionCallback = function(res) {
-                    console.log('del fail:');
-                    console.log(res);
+
                 }
             );
         }

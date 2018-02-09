@@ -63,16 +63,18 @@ import java.rmi.RemoteException;
  */
 public class ShapeServiceSoap {
 	public static org.politaktiv.map.model.ShapeSoap addShape(
-		java.lang.String portletId, java.lang.String primKey, long groupId,
-		long companyId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String image,
-		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws RemoteException {
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId, long companyId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String image, java.lang.String shapeType, long radius,
+		java.lang.String shapesLayer,
+		java.util.List<java.util.List<java.lang.String>> points,
+		java.lang.String userId) throws RemoteException {
 		try {
-			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.addShape(portletId,
-					primKey, groupId, companyId, title, abstractDescription,
-					image, shapeType, radius, shapesLayer, points);
+			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.addShape(portletInstance,
+					portletId, primKey, groupId, companyId, title,
+					abstractDescription, image, shapeType, radius, shapesLayer,
+					points, userId);
 
 			return org.politaktiv.map.model.ShapeSoap.toSoapModel(returnValue);
 		}
@@ -84,16 +86,16 @@ public class ShapeServiceSoap {
 	}
 
 	public static org.politaktiv.map.model.ShapeSoap updateShape(
-		java.lang.String portletId, java.lang.String primKey, long shapeId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String image, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long shapeId, java.lang.String title,
+		java.lang.String abstractDescription, java.lang.String image,
+		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
 		throws RemoteException {
 		try {
-			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.updateShape(portletId,
-					primKey, shapeId, title, abstractDescription, image,
-					shapeType, radius, shapesLayer, points);
+			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.updateShape(portletInstance,
+					portletId, primKey, shapeId, title, abstractDescription,
+					image, shapeType, radius, shapesLayer, points);
 
 			return org.politaktiv.map.model.ShapeSoap.toSoapModel(returnValue);
 		}
@@ -104,27 +106,11 @@ public class ShapeServiceSoap {
 		}
 	}
 
-	public static org.politaktiv.map.model.ShapeSoap[] getAllShapes(
-		java.lang.String portletId, java.lang.String primKey,
-		java.lang.String shapesLayer) throws RemoteException {
+	public static org.politaktiv.map.model.ShapeSoap[] getShapes(
+		java.lang.String portletInstance, java.lang.String primKey,
+		long userId, java.lang.String shapesLayer) throws RemoteException {
 		try {
-			java.util.List<org.politaktiv.map.model.Shape> returnValue = ShapeServiceUtil.getAllShapes(portletId,
-					primKey, shapesLayer);
-
-			return org.politaktiv.map.model.ShapeSoap.toSoapModels(returnValue);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	public static org.politaktiv.map.model.ShapeSoap[] getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId,
-		java.lang.String shapesLayer) throws RemoteException {
-		try {
-			java.util.List<org.politaktiv.map.model.Shape> returnValue = ShapeServiceUtil.getShapesByUserId(portletId,
+			java.util.List<org.politaktiv.map.model.Shape> returnValue = ShapeServiceUtil.getShapes(portletInstance,
 					primKey, userId, shapesLayer);
 
 			return org.politaktiv.map.model.ShapeSoap.toSoapModels(returnValue);
@@ -136,10 +122,12 @@ public class ShapeServiceSoap {
 		}
 	}
 
-	public static void deleteShapeById(java.lang.String portletId,
-		java.lang.String primKey, long shapeId) throws RemoteException {
+	public static void deleteShape(java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long shapeId)
+		throws RemoteException {
 		try {
-			ShapeServiceUtil.deleteShapeById(portletId, primKey, shapeId);
+			ShapeServiceUtil.deleteShape(portletInstance, portletId, primKey,
+				shapeId);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

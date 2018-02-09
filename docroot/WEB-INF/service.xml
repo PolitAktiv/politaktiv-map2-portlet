@@ -25,14 +25,16 @@
 
 		<!-- PK fields -->
 		<column name="layerId" type="long" primary="true"/>
+		<column name="createDate" type="Date" />
 
 		<!-- Data fields -->
 		<column name="label" type="String" />
 		<column name="userId" type="long" />
+		<column name="portletInstance" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
-			<order-column name="label" />
+			<order-column name="createDate" />
 		</order>
 
 		<!-- Finder methods -->
@@ -40,13 +42,15 @@
 			<finder-column name="userId" />
 		</finder>
 
-		<finder name="Label" return-type="Layer">
-			<finder-column name="label" />
-		</finder>
+		<finder name="UserIdAndPortletInstance" return-type="Collection">
+            <finder-column name="userId"/>
+            <finder-column name="portletInstance"/>
+        </finder>
 
-		<finder name="UserIdAndLabel" return-type="Layer">
+		<finder name="UserIdAndLabelAndPortletInstance" return-type="Layer">
 			<finder-column name="userId"/>
-			<finder-column name="label"/>
+			<finder-column name="label" />
+			<finder-column name="portletInstance"/>
 		</finder>
 
 	</entity>
@@ -73,6 +77,7 @@
 		<column name="shapeType" type="String" />
 		<column name="radius" type="long" />
 		<column name="layer" type="String"/>
+		<column name="portletInstance" type="String"/>
 
 		<!-- Order -->
 		<order by="asc">
@@ -91,6 +96,12 @@
 		<finder name="UserIdAndLayer" return-type="Collection">
 			<finder-column name="userId"/>
 			<finder-column name="layer"/>
+		</finder>
+
+		<finder name="UserIdAndLayerAndPortletInstance" return-type="Collection">
+			<finder-column name="userId"/>
+			<finder-column name="layer"/>
+			<finder-column name="portletInstance"/>
 		</finder>
 
 	</entity>

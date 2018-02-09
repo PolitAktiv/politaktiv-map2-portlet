@@ -34,15 +34,32 @@ public class LayerServiceClpInvoker {
 
 		_methodName36 = "addLayer";
 
-		_methodParameterTypes36 = new String[] { "long", "java.lang.String" };
+		_methodParameterTypes36 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long"
+			};
 
 		_methodName37 = "deleteLayer";
 
-		_methodParameterTypes37 = new String[] { "long", "java.lang.String" };
+		_methodParameterTypes37 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long"
+			};
 
-		_methodName38 = "findAllLayers";
+		_methodName38 = "getLayers";
 
-		_methodParameterTypes38 = new String[] { "long" };
+		_methodParameterTypes38 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "long"
+			};
+
+		_methodName39 = "getInstances";
+
+		_methodParameterTypes39 = new String[] { "long" };
+
+		_methodName40 = "getUsers";
+
+		_methodParameterTypes40 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -62,18 +79,34 @@ public class LayerServiceClpInvoker {
 		if (_methodName36.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes36, parameterTypes)) {
 			return LayerServiceUtil.addLayer(((Long)arguments[0]).longValue(),
-				(java.lang.String)arguments[1]);
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
+				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
+				((Long)arguments[5]).longValue());
 		}
 
 		if (_methodName37.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes37, parameterTypes)) {
 			return LayerServiceUtil.deleteLayer(((Long)arguments[0]).longValue(),
-				(java.lang.String)arguments[1]);
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
+				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
+				((Long)arguments[5]).longValue());
 		}
 
 		if (_methodName38.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes38, parameterTypes)) {
-			return LayerServiceUtil.findAllLayers(((Long)arguments[0]).longValue());
+			return LayerServiceUtil.getLayers(((Long)arguments[0]).longValue(),
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
+				(java.lang.String)arguments[3], ((Long)arguments[4]).longValue());
+		}
+
+		if (_methodName39.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes39, parameterTypes)) {
+			return LayerServiceUtil.getInstances(((Long)arguments[0]).longValue());
+		}
+
+		if (_methodName40.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes40, parameterTypes)) {
+			return LayerServiceUtil.getUsers(((Long)arguments[0]).longValue());
 		}
 
 		throw new UnsupportedOperationException();
@@ -89,4 +122,8 @@ public class LayerServiceClpInvoker {
 	private String[] _methodParameterTypes37;
 	private String _methodName38;
 	private String[] _methodParameterTypes38;
+	private String _methodName39;
+	private String[] _methodParameterTypes39;
+	private String _methodName40;
+	private String[] _methodParameterTypes40;
 }

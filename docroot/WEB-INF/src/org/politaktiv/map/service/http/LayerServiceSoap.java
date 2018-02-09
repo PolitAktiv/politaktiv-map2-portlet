@@ -62,10 +62,12 @@ import java.rmi.RemoteException;
  * @generated
  */
 public class LayerServiceSoap {
-	public static boolean addLayer(long userId, java.lang.String shapesLayer)
-		throws RemoteException {
+	public static boolean addLayer(long userId, java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId) throws RemoteException {
 		try {
-			boolean returnValue = LayerServiceUtil.addLayer(userId, shapesLayer);
+			boolean returnValue = LayerServiceUtil.addLayer(userId,
+					shapesLayer, portletInstance, portletId, primKey, groupId);
 
 			return returnValue;
 		}
@@ -76,11 +78,13 @@ public class LayerServiceSoap {
 		}
 	}
 
-	public static boolean deleteLayer(long userId, java.lang.String shapesLayer)
+	public static boolean deleteLayer(long userId,
+		java.lang.String shapesLayer, java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long groupId)
 		throws RemoteException {
 		try {
 			boolean returnValue = LayerServiceUtil.deleteLayer(userId,
-					shapesLayer);
+					shapesLayer, portletInstance, portletId, primKey, groupId);
 
 			return returnValue;
 		}
@@ -91,12 +95,42 @@ public class LayerServiceSoap {
 		}
 	}
 
-	public static org.politaktiv.map.model.LayerSoap[] findAllLayers(
-		long userId) throws RemoteException {
+	public static org.politaktiv.map.model.LayerSoap[] getLayers(long userId,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId) throws RemoteException {
 		try {
-			java.util.List<org.politaktiv.map.model.Layer> returnValue = LayerServiceUtil.findAllLayers(userId);
+			java.util.List<org.politaktiv.map.model.Layer> returnValue = LayerServiceUtil.getLayers(userId,
+					portletInstance, portletId, primKey, groupId);
 
 			return org.politaktiv.map.model.LayerSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static java.lang.String[] getInstances(long userId)
+		throws RemoteException {
+		try {
+			java.util.List<java.lang.String> returnValue = LayerServiceUtil.getInstances(userId);
+
+			return returnValue.toArray(new java.lang.String[returnValue.size()]);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.model.UserSoap[] getUsers(long userId)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.portal.model.User> returnValue = LayerServiceUtil.getUsers(userId);
+
+			return com.liferay.portal.model.UserSoap.toSoapModels(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

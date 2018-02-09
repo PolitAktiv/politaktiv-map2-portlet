@@ -21,8 +21,12 @@
 	<mapped-superclass class="org.politaktiv.map.model.impl.LayerModelImpl">
 		<attributes>
 			<id name="layerId" />
+			<basic name="createDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
 			<basic name="label" />
 			<basic name="userId" />
+			<basic name="portletInstance" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
@@ -48,6 +52,7 @@
 			<basic name="shapeType" />
 			<basic name="radius" />
 			<basic name="layer" />
+			<basic name="portletInstance" />
 			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />

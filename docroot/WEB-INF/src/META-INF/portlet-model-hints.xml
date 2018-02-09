@@ -13,8 +13,10 @@
 	</model>
 	<model name="org.politaktiv.map.model.Layer">
 		<field name="layerId" type="long" />
+		<field name="createDate" type="Date" />
 		<field name="label" type="String" />
 		<field name="userId" type="long" />
+		<field name="portletInstance" type="String" />
 	</model>
 	<model name="org.politaktiv.map.model.Shape">
 		<field name="shapeId" type="long" />
@@ -34,5 +36,6 @@
 		<field name="shapeType" type="String" />
 		<field name="radius" type="long" />
 		<field name="layer" type="String" />
+		<field name="portletInstance" type="String" />
 	</model>
 </model-hints>

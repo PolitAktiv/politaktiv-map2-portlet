@@ -16,6 +16,7 @@ package org.politaktiv.map.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
@@ -29,6 +30,7 @@ import java.io.Serializable;
 
 import java.lang.reflect.Method;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,8 +76,10 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("layerId", getLayerId());
+		attributes.put("createDate", getCreateDate());
 		attributes.put("label", getLabel());
 		attributes.put("userId", getUserId());
+		attributes.put("portletInstance", getPortletInstance());
 
 		return attributes;
 	}
@@ -88,6 +92,12 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 			setLayerId(layerId);
 		}
 
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
 		String label = (String)attributes.get("label");
 
 		if (label != null) {
@@ -98,6 +108,12 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 
 		if (userId != null) {
 			setUserId(userId);
+		}
+
+		String portletInstance = (String)attributes.get("portletInstance");
+
+		if (portletInstance != null) {
+			setPortletInstance(portletInstance);
 		}
 	}
 
@@ -117,6 +133,29 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 				Method method = clazz.getMethod("setLayerId", long.class);
 
 				method.invoke(_layerRemoteModel, layerId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	@Override
+	public void setCreateDate(Date createDate) {
+		_createDate = createDate;
+
+		if (_layerRemoteModel != null) {
+			try {
+				Class<?> clazz = _layerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_layerRemoteModel, createDate);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -178,6 +217,30 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
+	}
+
+	@Override
+	public String getPortletInstance() {
+		return _portletInstance;
+	}
+
+	@Override
+	public void setPortletInstance(String portletInstance) {
+		_portletInstance = portletInstance;
+
+		if (_layerRemoteModel != null) {
+			try {
+				Class<?> clazz = _layerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPortletInstance",
+						String.class);
+
+				method.invoke(_layerRemoteModel, portletInstance);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getLayerRemoteModel() {
@@ -250,8 +313,10 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 		LayerClp clone = new LayerClp();
 
 		clone.setLayerId(getLayerId());
+		clone.setCreateDate(getCreateDate());
 		clone.setLabel(getLabel());
 		clone.setUserId(getUserId());
+		clone.setPortletInstance(getPortletInstance());
 
 		return clone;
 	}
@@ -260,7 +325,7 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 	public int compareTo(Layer layer) {
 		int value = 0;
 
-		value = getLabel().compareTo(layer.getLabel());
+		value = DateUtil.compareTo(getCreateDate(), layer.getCreateDate());
 
 		if (value != 0) {
 			return value;
@@ -298,14 +363,18 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{layerId=");
 		sb.append(getLayerId());
+		sb.append(", createDate=");
+		sb.append(getCreateDate());
 		sb.append(", label=");
 		sb.append(getLabel());
 		sb.append(", userId=");
 		sb.append(getUserId());
+		sb.append(", portletInstance=");
+		sb.append(getPortletInstance());
 		sb.append("}");
 
 		return sb.toString();
@@ -313,7 +382,7 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("<model><model-name>");
 		sb.append("org.politaktiv.map.model.Layer");
@@ -324,12 +393,20 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 		sb.append(getLayerId());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>createDate</column-name><column-value><![CDATA[");
+		sb.append(getCreateDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>label</column-name><column-value><![CDATA[");
 		sb.append(getLabel());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>userId</column-name><column-value><![CDATA[");
 		sb.append(getUserId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>portletInstance</column-name><column-value><![CDATA[");
+		sb.append(getPortletInstance());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
@@ -338,8 +415,10 @@ public class LayerClp extends BaseModelImpl<Layer> implements Layer {
 	}
 
 	private long _layerId;
+	private Date _createDate;
 	private String _label;
 	private long _userId;
 	private String _userUuid;
+	private String _portletInstance;
 	private BaseModel<?> _layerRemoteModel;
 }
