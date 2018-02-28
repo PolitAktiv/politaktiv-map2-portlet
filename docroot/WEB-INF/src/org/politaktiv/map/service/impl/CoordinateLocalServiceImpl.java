@@ -14,15 +14,18 @@
 
 package org.politaktiv.map.service.impl;
 
-import com.liferay.counter.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.exception.SystemException;
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.portlet.ValidatorException;
+
 import org.politaktiv.map.model.Coordinate;
 import org.politaktiv.map.service.base.CoordinateLocalServiceBaseImpl;
 
-import javax.portlet.ValidatorException;
-import java.util.ArrayList;
-import java.util.List;
+import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 /**
  * The implementation of the coordinate local service.
@@ -47,7 +50,8 @@ public class CoordinateLocalServiceImpl extends CoordinateLocalServiceBaseImpl {
 	 * Never reference this interface directly. Always use {@link org.politaktiv.map.service.CoordinateLocalServiceUtil} to access the coordinate local service.
 	 */
 
-    private static final Logger LOGGER = Logger.getLogger(CoordinateLocalServiceImpl.class);
+    //private static final Logger LOGGER = Logger.getLogger(CoordinateLocalServiceImpl.class);
+    private static Log LOGGER = LogFactoryUtil.getLog(CoordinateLocalServiceImpl.class);
     public static final int POINT_SIZE = 2;
     public static final int COORDINATE_LONGITUDE = 0;
     public static final int COORDINATE_LATITUDE = 1;

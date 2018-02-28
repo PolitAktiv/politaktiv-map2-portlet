@@ -14,14 +14,11 @@
 
 package org.politaktiv.map.service.impl;
 
-import com.liferay.counter.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.ac.AccessControlled;
-import com.liferay.portal.security.auth.PrincipalException;
-import org.apache.log4j.Logger;
+import java.util.Date;
+import java.util.List;
+
+import javax.portlet.ValidatorException;
+
 import org.politaktiv.map.model.Shape;
 import org.politaktiv.map.service.CoordinateLocalServiceUtil;
 import org.politaktiv.map.service.ShapeLocalServiceUtil;
@@ -29,9 +26,15 @@ import org.politaktiv.map.service.base.ShapeServiceBaseImpl;
 import org.politaktiv.map.service.permission.ShapePermission;
 import org.politaktiv.map.service.persistence.ShapeUtil;
 
-import javax.portlet.ValidatorException;
-import java.util.Date;
-import java.util.List;
+import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.model.User;
+import com.liferay.portal.security.ac.AccessControlled;
+import com.liferay.portal.security.auth.PrincipalException;
 
 /**
  * The implementation of the shape remote service.
@@ -55,7 +58,8 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 	 */
 
 
-    private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
+    //private static final Logger LOGGER = Logger.getLogger(ShapeServiceImpl.class);
+    private static Log LOGGER = LogFactoryUtil.getLog(ShapeServiceBaseImpl.class);
 
 
     public Shape addShape(String portletId, String primKey, long groupId, long companyId, String title, String abstractDescription, String url, String shapeType, long radius, String shapesLayer, List<List<String>> points)
