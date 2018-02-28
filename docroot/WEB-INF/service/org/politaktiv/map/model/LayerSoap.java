@@ -17,6 +17,7 @@ package org.politaktiv.map.model;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,8 +32,10 @@ public class LayerSoap implements Serializable {
 		LayerSoap soapModel = new LayerSoap();
 
 		soapModel.setLayerId(model.getLayerId());
+		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setLabel(model.getLabel());
 		soapModel.setUserId(model.getUserId());
+		soapModel.setPortletInstance(model.getPortletInstance());
 
 		return soapModel;
 	}
@@ -93,6 +96,14 @@ public class LayerSoap implements Serializable {
 		_layerId = layerId;
 	}
 
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		_createDate = createDate;
+	}
+
 	public String getLabel() {
 		return _label;
 	}
@@ -109,7 +120,17 @@ public class LayerSoap implements Serializable {
 		_userId = userId;
 	}
 
+	public String getPortletInstance() {
+		return _portletInstance;
+	}
+
+	public void setPortletInstance(String portletInstance) {
+		_portletInstance = portletInstance;
+	}
+
 	private long _layerId;
+	private Date _createDate;
 	private String _label;
 	private long _userId;
+	private String _portletInstance;
 }

@@ -268,145 +268,280 @@ public class LayerUtil {
 	}
 
 	/**
-	* Returns the layer where label = &#63; or throws a {@link org.politaktiv.map.NoSuchLayerException} if it could not be found.
-	*
-	* @param label the label
-	* @return the matching layer
-	* @throws org.politaktiv.map.NoSuchLayerException if a matching layer could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static org.politaktiv.map.model.Layer findByLabel(
-		java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			org.politaktiv.map.NoSuchLayerException {
-		return getPersistence().findByLabel(label);
-	}
-
-	/**
-	* Returns the layer where label = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	*
-	* @param label the label
-	* @return the matching layer, or <code>null</code> if a matching layer could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static org.politaktiv.map.model.Layer fetchByLabel(
-		java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().fetchByLabel(label);
-	}
-
-	/**
-	* Returns the layer where label = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	*
-	* @param label the label
-	* @param retrieveFromCache whether to use the finder cache
-	* @return the matching layer, or <code>null</code> if a matching layer could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static org.politaktiv.map.model.Layer fetchByLabel(
-		java.lang.String label, boolean retrieveFromCache)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().fetchByLabel(label, retrieveFromCache);
-	}
-
-	/**
-	* Removes the layer where label = &#63; from the database.
-	*
-	* @param label the label
-	* @return the layer that was removed
-	* @throws SystemException if a system exception occurred
-	*/
-	public static org.politaktiv.map.model.Layer removeByLabel(
-		java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			org.politaktiv.map.NoSuchLayerException {
-		return getPersistence().removeByLabel(label);
-	}
-
-	/**
-	* Returns the number of layers where label = &#63;.
-	*
-	* @param label the label
-	* @return the number of matching layers
-	* @throws SystemException if a system exception occurred
-	*/
-	public static int countByLabel(java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByLabel(label);
-	}
-
-	/**
-	* Returns the layer where userId = &#63; and label = &#63; or throws a {@link org.politaktiv.map.NoSuchLayerException} if it could not be found.
+	* Returns all the layers where userId = &#63; and portletInstance = &#63;.
 	*
 	* @param userId the user ID
-	* @param label the label
-	* @return the matching layer
-	* @throws org.politaktiv.map.NoSuchLayerException if a matching layer could not be found
+	* @param portletInstance the portlet instance
+	* @return the matching layers
 	* @throws SystemException if a system exception occurred
 	*/
-	public static org.politaktiv.map.model.Layer findByUserIdAndLabel(
-		long userId, java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			org.politaktiv.map.NoSuchLayerException {
-		return getPersistence().findByUserIdAndLabel(userId, label);
-	}
-
-	/**
-	* Returns the layer where userId = &#63; and label = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	*
-	* @param userId the user ID
-	* @param label the label
-	* @return the matching layer, or <code>null</code> if a matching layer could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static org.politaktiv.map.model.Layer fetchByUserIdAndLabel(
-		long userId, java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().fetchByUserIdAndLabel(userId, label);
-	}
-
-	/**
-	* Returns the layer where userId = &#63; and label = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	*
-	* @param userId the user ID
-	* @param label the label
-	* @param retrieveFromCache whether to use the finder cache
-	* @return the matching layer, or <code>null</code> if a matching layer could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static org.politaktiv.map.model.Layer fetchByUserIdAndLabel(
-		long userId, java.lang.String label, boolean retrieveFromCache)
+	public static java.util.List<org.politaktiv.map.model.Layer> findByUserIdAndPortletInstance(
+		long userId, java.lang.String portletInstance)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getPersistence()
-				   .fetchByUserIdAndLabel(userId, label, retrieveFromCache);
+				   .findByUserIdAndPortletInstance(userId, portletInstance);
 	}
 
 	/**
-	* Removes the layer where userId = &#63; and label = &#63; from the database.
+	* Returns a range of all the layers where userId = &#63; and portletInstance = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.LayerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
 	*
 	* @param userId the user ID
-	* @param label the label
-	* @return the layer that was removed
+	* @param portletInstance the portlet instance
+	* @param start the lower bound of the range of layers
+	* @param end the upper bound of the range of layers (not inclusive)
+	* @return the range of matching layers
 	* @throws SystemException if a system exception occurred
 	*/
-	public static org.politaktiv.map.model.Layer removeByUserIdAndLabel(
-		long userId, java.lang.String label)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			org.politaktiv.map.NoSuchLayerException {
-		return getPersistence().removeByUserIdAndLabel(userId, label);
+	public static java.util.List<org.politaktiv.map.model.Layer> findByUserIdAndPortletInstance(
+		long userId, java.lang.String portletInstance, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByUserIdAndPortletInstance(userId, portletInstance,
+			start, end);
 	}
 
 	/**
-	* Returns the number of layers where userId = &#63; and label = &#63;.
+	* Returns an ordered range of all the layers where userId = &#63; and portletInstance = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.LayerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
 	*
 	* @param userId the user ID
-	* @param label the label
+	* @param portletInstance the portlet instance
+	* @param start the lower bound of the range of layers
+	* @param end the upper bound of the range of layers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching layers
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<org.politaktiv.map.model.Layer> findByUserIdAndPortletInstance(
+		long userId, java.lang.String portletInstance, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByUserIdAndPortletInstance(userId, portletInstance,
+			start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first layer in the ordered set where userId = &#63; and portletInstance = &#63;.
+	*
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching layer
+	* @throws org.politaktiv.map.NoSuchLayerException if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer findByUserIdAndPortletInstance_First(
+		long userId, java.lang.String portletInstance,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchLayerException {
+		return getPersistence()
+				   .findByUserIdAndPortletInstance_First(userId,
+			portletInstance, orderByComparator);
+	}
+
+	/**
+	* Returns the first layer in the ordered set where userId = &#63; and portletInstance = &#63;.
+	*
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching layer, or <code>null</code> if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer fetchByUserIdAndPortletInstance_First(
+		long userId, java.lang.String portletInstance,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByUserIdAndPortletInstance_First(userId,
+			portletInstance, orderByComparator);
+	}
+
+	/**
+	* Returns the last layer in the ordered set where userId = &#63; and portletInstance = &#63;.
+	*
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching layer
+	* @throws org.politaktiv.map.NoSuchLayerException if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer findByUserIdAndPortletInstance_Last(
+		long userId, java.lang.String portletInstance,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchLayerException {
+		return getPersistence()
+				   .findByUserIdAndPortletInstance_Last(userId,
+			portletInstance, orderByComparator);
+	}
+
+	/**
+	* Returns the last layer in the ordered set where userId = &#63; and portletInstance = &#63;.
+	*
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching layer, or <code>null</code> if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer fetchByUserIdAndPortletInstance_Last(
+		long userId, java.lang.String portletInstance,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByUserIdAndPortletInstance_Last(userId,
+			portletInstance, orderByComparator);
+	}
+
+	/**
+	* Returns the layers before and after the current layer in the ordered set where userId = &#63; and portletInstance = &#63;.
+	*
+	* @param layerId the primary key of the current layer
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next layer
+	* @throws org.politaktiv.map.NoSuchLayerException if a layer with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer[] findByUserIdAndPortletInstance_PrevAndNext(
+		long layerId, long userId, java.lang.String portletInstance,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchLayerException {
+		return getPersistence()
+				   .findByUserIdAndPortletInstance_PrevAndNext(layerId, userId,
+			portletInstance, orderByComparator);
+	}
+
+	/**
+	* Removes all the layers where userId = &#63; and portletInstance = &#63; from the database.
+	*
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByUserIdAndPortletInstance(long userId,
+		java.lang.String portletInstance)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence()
+			.removeByUserIdAndPortletInstance(userId, portletInstance);
+	}
+
+	/**
+	* Returns the number of layers where userId = &#63; and portletInstance = &#63;.
+	*
+	* @param userId the user ID
+	* @param portletInstance the portlet instance
 	* @return the number of matching layers
 	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByUserIdAndLabel(long userId, java.lang.String label)
+	public static int countByUserIdAndPortletInstance(long userId,
+		java.lang.String portletInstance)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByUserIdAndLabel(userId, label);
+		return getPersistence()
+				   .countByUserIdAndPortletInstance(userId, portletInstance);
+	}
+
+	/**
+	* Returns the layer where userId = &#63; and label = &#63; and portletInstance = &#63; or throws a {@link org.politaktiv.map.NoSuchLayerException} if it could not be found.
+	*
+	* @param userId the user ID
+	* @param label the label
+	* @param portletInstance the portlet instance
+	* @return the matching layer
+	* @throws org.politaktiv.map.NoSuchLayerException if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer findByUserIdAndLabelAndPortletInstance(
+		long userId, java.lang.String label, java.lang.String portletInstance)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchLayerException {
+		return getPersistence()
+				   .findByUserIdAndLabelAndPortletInstance(userId, label,
+			portletInstance);
+	}
+
+	/**
+	* Returns the layer where userId = &#63; and label = &#63; and portletInstance = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param userId the user ID
+	* @param label the label
+	* @param portletInstance the portlet instance
+	* @return the matching layer, or <code>null</code> if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer fetchByUserIdAndLabelAndPortletInstance(
+		long userId, java.lang.String label, java.lang.String portletInstance)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByUserIdAndLabelAndPortletInstance(userId, label,
+			portletInstance);
+	}
+
+	/**
+	* Returns the layer where userId = &#63; and label = &#63; and portletInstance = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param userId the user ID
+	* @param label the label
+	* @param portletInstance the portlet instance
+	* @param retrieveFromCache whether to use the finder cache
+	* @return the matching layer, or <code>null</code> if a matching layer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer fetchByUserIdAndLabelAndPortletInstance(
+		long userId, java.lang.String label, java.lang.String portletInstance,
+		boolean retrieveFromCache)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByUserIdAndLabelAndPortletInstance(userId, label,
+			portletInstance, retrieveFromCache);
+	}
+
+	/**
+	* Removes the layer where userId = &#63; and label = &#63; and portletInstance = &#63; from the database.
+	*
+	* @param userId the user ID
+	* @param label the label
+	* @param portletInstance the portlet instance
+	* @return the layer that was removed
+	* @throws SystemException if a system exception occurred
+	*/
+	public static org.politaktiv.map.model.Layer removeByUserIdAndLabelAndPortletInstance(
+		long userId, java.lang.String label, java.lang.String portletInstance)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			org.politaktiv.map.NoSuchLayerException {
+		return getPersistence()
+				   .removeByUserIdAndLabelAndPortletInstance(userId, label,
+			portletInstance);
+	}
+
+	/**
+	* Returns the number of layers where userId = &#63; and label = &#63; and portletInstance = &#63;.
+	*
+	* @param userId the user ID
+	* @param label the label
+	* @param portletInstance the portlet instance
+	* @return the number of matching layers
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByUserIdAndLabelAndPortletInstance(long userId,
+		java.lang.String label, java.lang.String portletInstance)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .countByUserIdAndLabelAndPortletInstance(userId, label,
+			portletInstance);
 	}
 
 	/**

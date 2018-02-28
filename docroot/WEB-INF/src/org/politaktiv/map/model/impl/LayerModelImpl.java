@@ -17,6 +17,7 @@ package org.politaktiv.map.model.impl;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -38,6 +39,7 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,13 +67,15 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 	public static final String TABLE_NAME = "politaktivmaptwo_Layer";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "layerId", Types.BIGINT },
+			{ "createDate", Types.TIMESTAMP },
 			{ "label", Types.VARCHAR },
-			{ "userId", Types.BIGINT }
+			{ "userId", Types.BIGINT },
+			{ "portletInstance", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Layer (layerId LONG not null primary key,label VARCHAR(75) null,userId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Layer (layerId LONG not null primary key,createDate DATE null,label VARCHAR(75) null,userId LONG,portletInstance VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table politaktivmaptwo_Layer";
-	public static final String ORDER_BY_JPQL = " ORDER BY layer.label ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Layer.label ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY layer.createDate ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Layer.createDate ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -85,7 +89,9 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 				"value.object.column.bitmask.enabled.org.politaktiv.map.model.Layer"),
 			true);
 	public static long LABEL_COLUMN_BITMASK = 1L;
-	public static long USERID_COLUMN_BITMASK = 2L;
+	public static long PORTLETINSTANCE_COLUMN_BITMASK = 2L;
+	public static long USERID_COLUMN_BITMASK = 4L;
+	public static long CREATEDATE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -101,8 +107,10 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 		Layer model = new LayerImpl();
 
 		model.setLayerId(soapModel.getLayerId());
+		model.setCreateDate(soapModel.getCreateDate());
 		model.setLabel(soapModel.getLabel());
 		model.setUserId(soapModel.getUserId());
+		model.setPortletInstance(soapModel.getPortletInstance());
 
 		return model;
 	}
@@ -168,8 +176,10 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("layerId", getLayerId());
+		attributes.put("createDate", getCreateDate());
 		attributes.put("label", getLabel());
 		attributes.put("userId", getUserId());
+		attributes.put("portletInstance", getPortletInstance());
 
 		return attributes;
 	}
@@ -182,6 +192,12 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 			setLayerId(layerId);
 		}
 
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
 		String label = (String)attributes.get("label");
 
 		if (label != null) {
@@ -192,6 +208,12 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 
 		if (userId != null) {
 			setUserId(userId);
+		}
+
+		String portletInstance = (String)attributes.get("portletInstance");
+
+		if (portletInstance != null) {
+			setPortletInstance(portletInstance);
 		}
 	}
 
@@ -208,6 +230,19 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 
 	@JSON
 	@Override
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	@Override
+	public void setCreateDate(Date createDate) {
+		_columnBitmask = -1L;
+
+		_createDate = createDate;
+	}
+
+	@JSON
+	@Override
 	public String getLabel() {
 		if (_label == null) {
 			return StringPool.BLANK;
@@ -219,7 +254,7 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 
 	@Override
 	public void setLabel(String label) {
-		_columnBitmask = -1L;
+		_columnBitmask |= LABEL_COLUMN_BITMASK;
 
 		if (_originalLabel == null) {
 			_originalLabel = _label;
@@ -265,6 +300,32 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 		return _originalUserId;
 	}
 
+	@JSON
+	@Override
+	public String getPortletInstance() {
+		if (_portletInstance == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _portletInstance;
+		}
+	}
+
+	@Override
+	public void setPortletInstance(String portletInstance) {
+		_columnBitmask |= PORTLETINSTANCE_COLUMN_BITMASK;
+
+		if (_originalPortletInstance == null) {
+			_originalPortletInstance = _portletInstance;
+		}
+
+		_portletInstance = portletInstance;
+	}
+
+	public String getOriginalPortletInstance() {
+		return GetterUtil.getString(_originalPortletInstance);
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -297,8 +358,10 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 		LayerImpl layerImpl = new LayerImpl();
 
 		layerImpl.setLayerId(getLayerId());
+		layerImpl.setCreateDate(getCreateDate());
 		layerImpl.setLabel(getLabel());
 		layerImpl.setUserId(getUserId());
+		layerImpl.setPortletInstance(getPortletInstance());
 
 		layerImpl.resetOriginalValues();
 
@@ -309,7 +372,7 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 	public int compareTo(Layer layer) {
 		int value = 0;
 
-		value = getLabel().compareTo(layer.getLabel());
+		value = DateUtil.compareTo(getCreateDate(), layer.getCreateDate());
 
 		if (value != 0) {
 			return value;
@@ -355,6 +418,8 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 
 		layerModelImpl._setOriginalUserId = false;
 
+		layerModelImpl._originalPortletInstance = layerModelImpl._portletInstance;
+
 		layerModelImpl._columnBitmask = 0;
 	}
 
@@ -363,6 +428,15 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 		LayerCacheModel layerCacheModel = new LayerCacheModel();
 
 		layerCacheModel.layerId = getLayerId();
+
+		Date createDate = getCreateDate();
+
+		if (createDate != null) {
+			layerCacheModel.createDate = createDate.getTime();
+		}
+		else {
+			layerCacheModel.createDate = Long.MIN_VALUE;
+		}
 
 		layerCacheModel.label = getLabel();
 
@@ -374,19 +448,31 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 
 		layerCacheModel.userId = getUserId();
 
+		layerCacheModel.portletInstance = getPortletInstance();
+
+		String portletInstance = layerCacheModel.portletInstance;
+
+		if ((portletInstance != null) && (portletInstance.length() == 0)) {
+			layerCacheModel.portletInstance = null;
+		}
+
 		return layerCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{layerId=");
 		sb.append(getLayerId());
+		sb.append(", createDate=");
+		sb.append(getCreateDate());
 		sb.append(", label=");
 		sb.append(getLabel());
 		sb.append(", userId=");
 		sb.append(getUserId());
+		sb.append(", portletInstance=");
+		sb.append(getPortletInstance());
 		sb.append("}");
 
 		return sb.toString();
@@ -394,7 +480,7 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("<model><model-name>");
 		sb.append("org.politaktiv.map.model.Layer");
@@ -405,12 +491,20 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 		sb.append(getLayerId());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>createDate</column-name><column-value><![CDATA[");
+		sb.append(getCreateDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>label</column-name><column-value><![CDATA[");
 		sb.append(getLabel());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>userId</column-name><column-value><![CDATA[");
 		sb.append(getUserId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>portletInstance</column-name><column-value><![CDATA[");
+		sb.append(getPortletInstance());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
@@ -421,12 +515,15 @@ public class LayerModelImpl extends BaseModelImpl<Layer> implements LayerModel {
 	private static ClassLoader _classLoader = Layer.class.getClassLoader();
 	private static Class<?>[] _escapedModelInterfaces = new Class[] { Layer.class };
 	private long _layerId;
+	private Date _createDate;
 	private String _label;
 	private String _originalLabel;
 	private long _userId;
 	private String _userUuid;
 	private long _originalUserId;
 	private boolean _setOriginalUserId;
+	private String _portletInstance;
+	private String _originalPortletInstance;
 	private long _columnBitmask;
 	private Layer _escapedModel;
 }

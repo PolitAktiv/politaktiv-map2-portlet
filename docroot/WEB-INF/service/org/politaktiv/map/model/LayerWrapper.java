@@ -17,6 +17,7 @@ package org.politaktiv.map.model;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ModelWrapper;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,8 +50,10 @@ public class LayerWrapper implements Layer, ModelWrapper<Layer> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("layerId", getLayerId());
+		attributes.put("createDate", getCreateDate());
 		attributes.put("label", getLabel());
 		attributes.put("userId", getUserId());
+		attributes.put("portletInstance", getPortletInstance());
 
 		return attributes;
 	}
@@ -63,6 +66,12 @@ public class LayerWrapper implements Layer, ModelWrapper<Layer> {
 			setLayerId(layerId);
 		}
 
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
 		String label = (String)attributes.get("label");
 
 		if (label != null) {
@@ -73,6 +82,12 @@ public class LayerWrapper implements Layer, ModelWrapper<Layer> {
 
 		if (userId != null) {
 			setUserId(userId);
+		}
+
+		String portletInstance = (String)attributes.get("portletInstance");
+
+		if (portletInstance != null) {
+			setPortletInstance(portletInstance);
 		}
 	}
 
@@ -114,6 +129,26 @@ public class LayerWrapper implements Layer, ModelWrapper<Layer> {
 	@Override
 	public void setLayerId(long layerId) {
 		_layer.setLayerId(layerId);
+	}
+
+	/**
+	* Returns the create date of this layer.
+	*
+	* @return the create date of this layer
+	*/
+	@Override
+	public java.util.Date getCreateDate() {
+		return _layer.getCreateDate();
+	}
+
+	/**
+	* Sets the create date of this layer.
+	*
+	* @param createDate the create date of this layer
+	*/
+	@Override
+	public void setCreateDate(java.util.Date createDate) {
+		_layer.setCreateDate(createDate);
 	}
 
 	/**
@@ -176,6 +211,26 @@ public class LayerWrapper implements Layer, ModelWrapper<Layer> {
 	@Override
 	public void setUserUuid(java.lang.String userUuid) {
 		_layer.setUserUuid(userUuid);
+	}
+
+	/**
+	* Returns the portlet instance of this layer.
+	*
+	* @return the portlet instance of this layer
+	*/
+	@Override
+	public java.lang.String getPortletInstance() {
+		return _layer.getPortletInstance();
+	}
+
+	/**
+	* Sets the portlet instance of this layer.
+	*
+	* @param portletInstance the portlet instance of this layer
+	*/
+	@Override
+	public void setPortletInstance(java.lang.String portletInstance) {
+		_layer.setPortletInstance(portletInstance);
 	}
 
 	@Override

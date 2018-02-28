@@ -44,6 +44,7 @@ public class ShapeSoap implements Serializable {
 		soapModel.setShapeType(model.getShapeType());
 		soapModel.setRadius(model.getRadius());
 		soapModel.setLayer(model.getLayer());
+		soapModel.setPortletInstance(model.getPortletInstance());
 
 		return soapModel;
 	}
@@ -200,6 +201,14 @@ public class ShapeSoap implements Serializable {
 		_layer = layer;
 	}
 
+	public String getPortletInstance() {
+		return _portletInstance;
+	}
+
+	public void setPortletInstance(String portletInstance) {
+		_portletInstance = portletInstance;
+	}
+
 	private long _shapeId;
 	private long _groupId;
 	private long _companyId;
@@ -213,4 +222,5 @@ public class ShapeSoap implements Serializable {
 	private String _shapeType;
 	private long _radius;
 	private String _layer;
+	private String _portletInstance;
 }

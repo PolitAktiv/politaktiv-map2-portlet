@@ -19,8 +19,10 @@
 		<id name="layerId" type="long">
 			<generator class="assigned" />
 		</id>
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="label" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="portletInstance" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.politaktiv.map.model.impl.ShapeImpl" table="politaktivmaptwo_Shape">
 		<cache usage="read-write" />
@@ -39,5 +41,6 @@
 		<property name="shapeType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="radius" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="layer" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="portletInstance" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>

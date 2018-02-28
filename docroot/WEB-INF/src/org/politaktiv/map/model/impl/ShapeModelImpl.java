@@ -78,9 +78,10 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			{ "image", Types.CLOB },
 			{ "shapeType", Types.VARCHAR },
 			{ "radius", Types.BIGINT },
-			{ "layer", Types.VARCHAR }
+			{ "layer", Types.VARCHAR },
+			{ "portletInstance", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,image TEXT null,shapeType VARCHAR(75) null,radius LONG,layer VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Shape (shapeId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,abstractDescription VARCHAR(1024) null,image TEXT null,shapeType VARCHAR(75) null,radius LONG,layer VARCHAR(75) null,portletInstance VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table politaktivmaptwo_Shape";
 	public static final String ORDER_BY_JPQL = " ORDER BY shape.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Shape.createDate ASC";
@@ -97,8 +98,9 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 				"value.object.column.bitmask.enabled.org.politaktiv.map.model.Shape"),
 			true);
 	public static long LAYER_COLUMN_BITMASK = 1L;
-	public static long USERID_COLUMN_BITMASK = 2L;
-	public static long CREATEDATE_COLUMN_BITMASK = 4L;
+	public static long PORTLETINSTANCE_COLUMN_BITMASK = 2L;
+	public static long USERID_COLUMN_BITMASK = 4L;
+	public static long CREATEDATE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -126,6 +128,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		model.setShapeType(soapModel.getShapeType());
 		model.setRadius(soapModel.getRadius());
 		model.setLayer(soapModel.getLayer());
+		model.setPortletInstance(soapModel.getPortletInstance());
 
 		return model;
 	}
@@ -203,6 +206,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
 		attributes.put("layer", getLayer());
+		attributes.put("portletInstance", getPortletInstance());
 
 		return attributes;
 	}
@@ -286,6 +290,12 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 
 		if (layer != null) {
 			setLayer(layer);
+		}
+
+		String portletInstance = (String)attributes.get("portletInstance");
+
+		if (portletInstance != null) {
+			setPortletInstance(portletInstance);
 		}
 	}
 
@@ -496,6 +506,32 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		return GetterUtil.getString(_originalLayer);
 	}
 
+	@JSON
+	@Override
+	public String getPortletInstance() {
+		if (_portletInstance == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _portletInstance;
+		}
+	}
+
+	@Override
+	public void setPortletInstance(String portletInstance) {
+		_columnBitmask |= PORTLETINSTANCE_COLUMN_BITMASK;
+
+		if (_originalPortletInstance == null) {
+			_originalPortletInstance = _portletInstance;
+		}
+
+		_portletInstance = portletInstance;
+	}
+
+	public String getOriginalPortletInstance() {
+		return GetterUtil.getString(_originalPortletInstance);
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -540,6 +576,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		shapeImpl.setShapeType(getShapeType());
 		shapeImpl.setRadius(getRadius());
 		shapeImpl.setLayer(getLayer());
+		shapeImpl.setPortletInstance(getPortletInstance());
 
 		shapeImpl.resetOriginalValues();
 
@@ -595,6 +632,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		shapeModelImpl._setOriginalUserId = false;
 
 		shapeModelImpl._originalLayer = shapeModelImpl._layer;
+
+		shapeModelImpl._originalPortletInstance = shapeModelImpl._portletInstance;
 
 		shapeModelImpl._columnBitmask = 0;
 	}
@@ -680,12 +719,20 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			shapeCacheModel.layer = null;
 		}
 
+		shapeCacheModel.portletInstance = getPortletInstance();
+
+		String portletInstance = shapeCacheModel.portletInstance;
+
+		if ((portletInstance != null) && (portletInstance.length() == 0)) {
+			shapeCacheModel.portletInstance = null;
+		}
+
 		return shapeCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{shapeId=");
 		sb.append(getShapeId());
@@ -713,6 +760,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 		sb.append(getRadius());
 		sb.append(", layer=");
 		sb.append(getLayer());
+		sb.append(", portletInstance=");
+		sb.append(getPortletInstance());
 		sb.append("}");
 
 		return sb.toString();
@@ -720,7 +769,7 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("org.politaktiv.map.model.Shape");
@@ -778,6 +827,10 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 			"<column><column-name>layer</column-name><column-value><![CDATA[");
 		sb.append(getLayer());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>portletInstance</column-name><column-value><![CDATA[");
+		sb.append(getPortletInstance());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -803,6 +856,8 @@ public class ShapeModelImpl extends BaseModelImpl<Shape> implements ShapeModel {
 	private long _radius;
 	private String _layer;
 	private String _originalLayer;
+	private String _portletInstance;
+	private String _originalPortletInstance;
 	private long _columnBitmask;
 	private Shape _escapedModel;
 }

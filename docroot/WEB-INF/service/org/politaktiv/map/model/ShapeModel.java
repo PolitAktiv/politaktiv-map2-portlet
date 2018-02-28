@@ -278,6 +278,21 @@ public interface ShapeModel extends BaseModel<Shape>, GroupedModel {
 	 */
 	public void setLayer(String layer);
 
+	/**
+	 * Returns the portlet instance of this shape.
+	 *
+	 * @return the portlet instance of this shape
+	 */
+	@AutoEscape
+	public String getPortletInstance();
+
+	/**
+	 * Sets the portlet instance of this shape.
+	 *
+	 * @param portletInstance the portlet instance of this shape
+	 */
+	public void setPortletInstance(String portletInstance);
+
 	@Override
 	public boolean isNew();
 

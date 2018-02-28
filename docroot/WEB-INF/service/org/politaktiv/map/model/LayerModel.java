@@ -24,6 +24,8 @@ import com.liferay.portlet.expando.model.ExpandoBridge;
 
 import java.io.Serializable;
 
+import java.util.Date;
+
 /**
  * The base model interface for the Layer service. Represents a row in the &quot;politaktivmaptwo_Layer&quot; database table, with each column mapped to a property of this class.
  *
@@ -73,6 +75,20 @@ public interface LayerModel extends BaseModel<Layer> {
 	public void setLayerId(long layerId);
 
 	/**
+	 * Returns the create date of this layer.
+	 *
+	 * @return the create date of this layer
+	 */
+	public Date getCreateDate();
+
+	/**
+	 * Sets the create date of this layer.
+	 *
+	 * @param createDate the create date of this layer
+	 */
+	public void setCreateDate(Date createDate);
+
+	/**
 	 * Returns the label of this layer.
 	 *
 	 * @return the label of this layer
@@ -115,6 +131,21 @@ public interface LayerModel extends BaseModel<Layer> {
 	 * @param userUuid the user uuid of this layer
 	 */
 	public void setUserUuid(String userUuid);
+
+	/**
+	 * Returns the portlet instance of this layer.
+	 *
+	 * @return the portlet instance of this layer
+	 */
+	@AutoEscape
+	public String getPortletInstance();
+
+	/**
+	 * Sets the portlet instance of this layer.
+	 *
+	 * @param portletInstance the portlet instance of this layer
+	 */
+	public void setPortletInstance(String portletInstance);
 
 	@Override
 	public boolean isNew();

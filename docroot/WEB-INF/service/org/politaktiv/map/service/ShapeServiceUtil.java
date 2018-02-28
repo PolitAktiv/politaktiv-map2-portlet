@@ -64,8 +64,25 @@ public class ShapeServiceUtil {
 	}
 
 	public static org.politaktiv.map.model.Shape addShape(
-		java.lang.String portletId, java.lang.String primKey, long groupId,
-		long companyId, java.lang.String title,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId, long companyId,
+		java.lang.String title, java.lang.String abstractDescription,
+		java.lang.String image, java.lang.String shapeType, long radius,
+		java.lang.String shapesLayer,
+		java.util.List<java.util.List<java.lang.String>> points,
+		java.lang.String userId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		return getService()
+				   .addShape(portletInstance, portletId, primKey, groupId,
+			companyId, title, abstractDescription, image, shapeType, radius,
+			shapesLayer, points, userId);
+	}
+
+	public static org.politaktiv.map.model.Shape updateShape(
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long shapeId, java.lang.String title,
 		java.lang.String abstractDescription, java.lang.String image,
 		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
 		java.util.List<java.util.List<java.lang.String>> points)
@@ -73,45 +90,25 @@ public class ShapeServiceUtil {
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
 		return getService()
-				   .addShape(portletId, primKey, groupId, companyId, title,
-			abstractDescription, image, shapeType, radius, shapesLayer, points);
+				   .updateShape(portletInstance, portletId, primKey, shapeId,
+			title, abstractDescription, image, shapeType, radius, shapesLayer,
+			points);
 	}
 
-	public static org.politaktiv.map.model.Shape updateShape(
-		java.lang.String portletId, java.lang.String primKey, long shapeId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String image, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException {
-		return getService()
-				   .updateShape(portletId, primKey, shapeId, title,
-			abstractDescription, image, shapeType, radius, shapesLayer, points);
-	}
-
-	public static java.util.List<org.politaktiv.map.model.Shape> getAllShapes(
-		java.lang.String portletId, java.lang.String primKey,
-		java.lang.String shapesLayer)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getAllShapes(portletId, primKey, shapesLayer);
-	}
-
-	public static java.util.List<org.politaktiv.map.model.Shape> getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId,
-		java.lang.String shapesLayer)
+	public static java.util.List<org.politaktiv.map.model.Shape> getShapes(
+		java.lang.String portletInstance, java.lang.String primKey,
+		long userId, java.lang.String shapesLayer)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.security.auth.PrincipalException {
 		return getService()
-				   .getShapesByUserId(portletId, primKey, userId, shapesLayer);
+				   .getShapes(portletInstance, primKey, userId, shapesLayer);
 	}
 
-	public static void deleteShapeById(java.lang.String portletId,
-		java.lang.String primKey, long shapeId)
+	public static void deleteShape(java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long shapeId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		getService().deleteShapeById(portletId, primKey, shapeId);
+		getService().deleteShape(portletInstance, portletId, primKey, shapeId);
 	}
 
 	public static void clearService() {

@@ -35,36 +35,33 @@ public class ShapeServiceClpInvoker {
 		_methodName36 = "addShape";
 
 		_methodParameterTypes36 = new String[] {
-				"java.lang.String", "java.lang.String", "long", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.lang.String", "java.util.List"
+				"long", "long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String", "java.util.List", "java.lang.String"
 			};
 
 		_methodName37 = "updateShape";
 
 		_methodParameterTypes37 = new String[] {
-				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String", "long", "java.lang.String", "java.util.List"
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long",
+				"java.lang.String", "java.util.List"
 			};
 
-		_methodName38 = "getAllShapes";
+		_methodName38 = "getShapes";
 
 		_methodParameterTypes38 = new String[] {
-				"java.lang.String", "java.lang.String", "java.lang.String"
-			};
-
-		_methodName39 = "getShapesByUserId";
-
-		_methodParameterTypes39 = new String[] {
 				"java.lang.String", "java.lang.String", "long",
 				"java.lang.String"
 			};
 
-		_methodName40 = "deleteShapeById";
+		_methodName39 = "deleteShape";
 
-		_methodParameterTypes40 = new String[] {
-				"java.lang.String", "java.lang.String", "long"
+		_methodParameterTypes39 = new String[] {
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"long"
 			};
 	}
 
@@ -85,8 +82,21 @@ public class ShapeServiceClpInvoker {
 		if (_methodName36.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes36, parameterTypes)) {
 			return ShapeServiceUtil.addShape((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1],
-				((Long)arguments[2]).longValue(),
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
+				((Long)arguments[3]).longValue(),
+				((Long)arguments[4]).longValue(),
+				(java.lang.String)arguments[5], (java.lang.String)arguments[6],
+				(java.lang.String)arguments[7], (java.lang.String)arguments[8],
+				((Long)arguments[9]).longValue(),
+				(java.lang.String)arguments[10],
+				(java.util.List<java.util.List<java.lang.String>>)arguments[11],
+				(java.lang.String)arguments[12]);
+		}
+
+		if (_methodName37.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes37, parameterTypes)) {
+			return ShapeServiceUtil.updateShape((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
 				((Long)arguments[3]).longValue(),
 				(java.lang.String)arguments[4], (java.lang.String)arguments[5],
 				(java.lang.String)arguments[6], (java.lang.String)arguments[7],
@@ -95,35 +105,18 @@ public class ShapeServiceClpInvoker {
 				(java.util.List<java.util.List<java.lang.String>>)arguments[10]);
 		}
 
-		if (_methodName37.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes37, parameterTypes)) {
-			return ShapeServiceUtil.updateShape((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1],
-				((Long)arguments[2]).longValue(),
-				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
-				(java.lang.String)arguments[5], (java.lang.String)arguments[6],
-				((Long)arguments[7]).longValue(),
-				(java.lang.String)arguments[8],
-				(java.util.List<java.util.List<java.lang.String>>)arguments[9]);
-		}
-
 		if (_methodName38.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes38, parameterTypes)) {
-			return ShapeServiceUtil.getAllShapes((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1], (java.lang.String)arguments[2]);
-		}
-
-		if (_methodName39.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes39, parameterTypes)) {
-			return ShapeServiceUtil.getShapesByUserId((java.lang.String)arguments[0],
+			return ShapeServiceUtil.getShapes((java.lang.String)arguments[0],
 				(java.lang.String)arguments[1],
 				((Long)arguments[2]).longValue(), (java.lang.String)arguments[3]);
 		}
 
-		if (_methodName40.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes40, parameterTypes)) {
-			ShapeServiceUtil.deleteShapeById((java.lang.String)arguments[0],
-				(java.lang.String)arguments[1], ((Long)arguments[2]).longValue());
+		if (_methodName39.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes39, parameterTypes)) {
+			ShapeServiceUtil.deleteShape((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
+				((Long)arguments[3]).longValue());
 
 			return null;
 		}
@@ -143,6 +136,4 @@ public class ShapeServiceClpInvoker {
 	private String[] _methodParameterTypes38;
 	private String _methodName39;
 	private String[] _methodParameterTypes39;
-	private String _methodName40;
-	private String[] _methodParameterTypes40;
 }

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.security.ac.AccessControlled;
 import com.liferay.portal.service.BaseService;
@@ -64,18 +65,36 @@ public interface LayerService extends BaseService, InvokableService {
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public boolean addLayer(long userId, java.lang.String shapesLayer)
+	public boolean addLayer(long userId, java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;
 
-	public boolean deleteLayer(long userId, java.lang.String shapesLayer)
+	public boolean deleteLayer(long userId, java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;
 
-	public java.util.List<org.politaktiv.map.model.Layer> findAllLayers(
-		long userId)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<org.politaktiv.map.model.Layer> getLayers(
+		long userId, java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<java.lang.String> getInstances(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portal.model.User> getUsers(long userId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException;

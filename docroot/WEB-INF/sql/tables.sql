@@ -7,8 +7,10 @@ create table politaktivmaptwo_Coordinate (
 
 create table politaktivmaptwo_Layer (
 	layerId LONG not null primary key,
+	createDate DATE null,
 	label VARCHAR(75) null,
-	userId LONG
+	userId LONG,
+	portletInstance VARCHAR(75) null
 );
 
 create table politaktivmaptwo_Shape (
@@ -24,5 +26,6 @@ create table politaktivmaptwo_Shape (
 	image TEXT null,
 	shapeType VARCHAR(75) null,
 	radius LONG,
-	layer VARCHAR(75) null
+	layer VARCHAR(75) null,
+	portletInstance VARCHAR(75) null
 );

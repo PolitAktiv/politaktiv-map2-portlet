@@ -34,15 +34,32 @@ public class LayerServiceClp implements LayerService {
 
 		_methodName3 = "addLayer";
 
-		_methodParameterTypes3 = new String[] { "long", "java.lang.String" };
+		_methodParameterTypes3 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long"
+			};
 
 		_methodName4 = "deleteLayer";
 
-		_methodParameterTypes4 = new String[] { "long", "java.lang.String" };
+		_methodParameterTypes4 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "long"
+			};
 
-		_methodName5 = "findAllLayers";
+		_methodName5 = "getLayers";
 
-		_methodParameterTypes5 = new String[] { "long" };
+		_methodParameterTypes5 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "long"
+			};
+
+		_methodName6 = "getInstances";
+
+		_methodParameterTypes6 = new String[] { "long" };
+
+		_methodName7 = "getUsers";
+
+		_methodParameterTypes7 = new String[] { "long" };
 	}
 
 	@Override
@@ -96,7 +113,9 @@ public class LayerServiceClp implements LayerService {
 	}
 
 	@Override
-	public boolean addLayer(long userId, java.lang.String shapesLayer)
+	public boolean addLayer(long userId, java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
@@ -108,7 +127,15 @@ public class LayerServiceClp implements LayerService {
 					new Object[] {
 						userId,
 						
-					ClpSerializer.translateInput(shapesLayer)
+					ClpSerializer.translateInput(shapesLayer),
+						
+					ClpSerializer.translateInput(portletInstance),
+						
+					ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					groupId
 					});
 		}
 		catch (Throwable t) {
@@ -139,7 +166,9 @@ public class LayerServiceClp implements LayerService {
 	}
 
 	@Override
-	public boolean deleteLayer(long userId, java.lang.String shapesLayer)
+	public boolean deleteLayer(long userId, java.lang.String shapesLayer,
+		java.lang.String portletInstance, java.lang.String portletId,
+		java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
@@ -151,7 +180,15 @@ public class LayerServiceClp implements LayerService {
 					new Object[] {
 						userId,
 						
-					ClpSerializer.translateInput(shapesLayer)
+					ClpSerializer.translateInput(shapesLayer),
+						
+					ClpSerializer.translateInput(portletInstance),
+						
+					ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					groupId
 					});
 		}
 		catch (Throwable t) {
@@ -182,8 +219,9 @@ public class LayerServiceClp implements LayerService {
 	}
 
 	@Override
-	public java.util.List<org.politaktiv.map.model.Layer> findAllLayers(
-		long userId)
+	public java.util.List<org.politaktiv.map.model.Layer> getLayers(
+		long userId, java.lang.String portletInstance,
+		java.lang.String portletId, java.lang.String primKey, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException,
 			javax.portlet.ValidatorException {
@@ -191,7 +229,18 @@ public class LayerServiceClp implements LayerService {
 
 		try {
 			returnObj = _invokableService.invokeMethod(_methodName5,
-					_methodParameterTypes5, new Object[] { userId });
+					_methodParameterTypes5,
+					new Object[] {
+						userId,
+						
+					ClpSerializer.translateInput(portletInstance),
+						
+					ClpSerializer.translateInput(portletId),
+						
+					ClpSerializer.translateInput(primKey),
+						
+					groupId
+					});
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -220,6 +269,82 @@ public class LayerServiceClp implements LayerService {
 		return (java.util.List<org.politaktiv.map.model.Layer>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
+	public java.util.List<java.lang.String> getInstances(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableService.invokeMethod(_methodName6,
+					_methodParameterTypes6, new Object[] { userId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
+			}
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof javax.portlet.ValidatorException) {
+				throw (javax.portlet.ValidatorException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<java.lang.String>)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.model.User> getUsers(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableService.invokeMethod(_methodName7,
+					_methodParameterTypes7, new Object[] { userId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
+			}
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof javax.portlet.ValidatorException) {
+				throw (javax.portlet.ValidatorException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.util.List<com.liferay.portal.model.User>)ClpSerializer.translateOutput(returnObj);
+	}
+
 	private InvokableService _invokableService;
 	private String _methodName0;
 	private String[] _methodParameterTypes0;
@@ -231,4 +356,8 @@ public class LayerServiceClp implements LayerService {
 	private String[] _methodParameterTypes4;
 	private String _methodName5;
 	private String[] _methodParameterTypes5;
+	private String _methodName6;
+	private String[] _methodParameterTypes6;
+	private String _methodName7;
+	private String[] _methodParameterTypes7;
 }

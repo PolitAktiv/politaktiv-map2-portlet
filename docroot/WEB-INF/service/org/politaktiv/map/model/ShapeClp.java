@@ -88,6 +88,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		attributes.put("shapeType", getShapeType());
 		attributes.put("radius", getRadius());
 		attributes.put("layer", getLayer());
+		attributes.put("portletInstance", getPortletInstance());
 
 		return attributes;
 	}
@@ -171,6 +172,12 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 
 		if (layer != null) {
 			setLayer(layer);
+		}
+
+		String portletInstance = (String)attributes.get("portletInstance");
+
+		if (portletInstance != null) {
+			setPortletInstance(portletInstance);
 		}
 	}
 
@@ -485,6 +492,30 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	}
 
 	@Override
+	public String getPortletInstance() {
+		return _portletInstance;
+	}
+
+	@Override
+	public void setPortletInstance(String portletInstance) {
+		_portletInstance = portletInstance;
+
+		if (_shapeRemoteModel != null) {
+			try {
+				Class<?> clazz = _shapeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPortletInstance",
+						String.class);
+
+				method.invoke(_shapeRemoteModel, portletInstance);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates() {
 		try {
 			String methodName = "getCoordinates";
@@ -602,6 +633,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		clone.setShapeType(getShapeType());
 		clone.setRadius(getRadius());
 		clone.setLayer(getLayer());
+		clone.setPortletInstance(getPortletInstance());
 
 		return clone;
 	}
@@ -648,7 +680,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{shapeId=");
 		sb.append(getShapeId());
@@ -676,6 +708,8 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 		sb.append(getRadius());
 		sb.append(", layer=");
 		sb.append(getLayer());
+		sb.append(", portletInstance=");
+		sb.append(getPortletInstance());
 		sb.append("}");
 
 		return sb.toString();
@@ -683,7 +717,7 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("org.politaktiv.map.model.Shape");
@@ -741,6 +775,10 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 			"<column><column-name>layer</column-name><column-value><![CDATA[");
 		sb.append(getLayer());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>portletInstance</column-name><column-value><![CDATA[");
+		sb.append(getPortletInstance());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -761,5 +799,6 @@ public class ShapeClp extends BaseModelImpl<Shape> implements Shape {
 	private String _shapeType;
 	private long _radius;
 	private String _layer;
+	private String _portletInstance;
 	private BaseModel<?> _shapeRemoteModel;
 }
