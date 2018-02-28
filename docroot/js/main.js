@@ -36,6 +36,17 @@ function createMap2 (prop) {
             });
 
             _Map2.map.setView([prop.center.lat, prop.center.lng], prop.zoomLevel);
+            
+            
+        	// hack hack
+            var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+            imageBounds = [[40.712216, -74.22655], [40.773941, -74.12544]];
+            imageOptions = { opacity : 0.5 };
+        L.imageOverlay(imageUrl, imageBounds, imageOptions).addTo(_Map2.map);
+        
+      //  window.alert(imageBounds);
+            
+            
         },
 
         getLayers: function(res) {
@@ -193,6 +204,14 @@ function createMap2 (prop) {
                     _Map2.removeShape(shapes[i]);
                 }
             });
+            
+            
+            
+            
+            
+            
+            
+            
         },
 
         cleanShapesAndControls: function() {
@@ -747,4 +766,10 @@ function createMap2 (prop) {
     };
 
     _Map2.init(prop);
+    
+    
+
+    
+    
+    
 }

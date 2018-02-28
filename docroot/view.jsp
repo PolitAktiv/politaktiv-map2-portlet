@@ -15,7 +15,7 @@
  */
 %>
 
-<%@ include file="/init.jsp" %>
+<%@ include file="init.jsp" %>
 
 
 <%
@@ -129,5 +129,14 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
 		deleteConfirmation2: '<liferay-ui:message key="map2.delete-confirmation2" />',
 		defaultLayer: '<liferay-ui:message key="map2.default-layer" />'
 		}
+		
     });
+    
+    		
+		// hack hack
+    var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+    imageBounds = [[40.712216, -74.22655], [40.773941, -74.12544]];
+L.imageOverlay(imageUrl, imageBounds).addTo(map2);
+    
+    
 </aui:script>
