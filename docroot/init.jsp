@@ -46,6 +46,8 @@
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_CENTER_LATITUDE" %>
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_ZOOM_LEVEL" %>
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_SHAPES_LAYER" %>
+<%@ page import="static org.politaktiv.map.Constants.OVERLAY_HACK" %>
+<%@ page import="static org.politaktiv.map.Constants.DEFAULT_OVERLAY_HACK" %>
 
 
 <portlet:defineObjects />
@@ -56,14 +58,6 @@
 	String centerLatitude = PrefsParamUtil.getString(portletPreferences, renderRequest, CENTER_LATITUDE, DEFAULT_CENTER_LATITUDE);
 	String zoomLevel = PrefsParamUtil.getString(portletPreferences, renderRequest, ZOOM_LEVEL, DEFAULT_ZOOM_LEVEL);
 	String shapesLayer = PrefsParamUtil.getString(portletPreferences, renderRequest, SHAPES_LAYER, DEFAULT_SHAPES_LAYER);
+	String overlayHack = PrefsParamUtil.getString(portletPreferences, renderRequest, OVERLAY_HACK, DEFAULT_OVERLAY_HACK);
 %>
 
-<script type="text/javascript">
-/*<![CDATA[*/
-	var centerLongtitude = <%= centerLongtitude %>
-	var centerLatitude = <%= centerLatitude %>
-	var zoomLevel = <%= zoomLevel %>
-	var shapesLayer = <%= shapesLayer %>
-
-/*]]>*/
-</script>

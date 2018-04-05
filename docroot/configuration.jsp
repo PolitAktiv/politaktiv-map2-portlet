@@ -36,6 +36,13 @@
 					</aui:input>
                     <aui:input label="shapes-layer" name="preferences--shapesLayer--" value="<%=shapesLayer%>"></aui:input>
 				</aui:fieldset>
+				
+				
+		<aui:input type="textarea"
+			name="preferences--overlayHack--"
+			label="Overlay Hack" value="<%=overlayHack%>"
+			width="800" ></aui:input>				
+				
 		
 			<aui:button-row>
 				<aui:button type="submit" />

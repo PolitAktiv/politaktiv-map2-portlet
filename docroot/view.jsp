@@ -1,3 +1,4 @@
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@ page import="org.politaktiv.map.service.permission.ShapePermission" %>
 <%
 /**
@@ -100,6 +101,7 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
         canUpdateAnyShapes: <%= canUpdateAnyShapes %>,
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,
+        overlayHack: '<%= HtmlUtil.escapeJS(overlayHack) %>',
         translations: {
             resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
             yourShapes: '<liferay-ui:message key="map2.your-shapes" />',

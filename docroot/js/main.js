@@ -28,12 +28,47 @@ function createMap2 (prop) {
              * Hack von Niels:
              * 
              */
-            var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+            /*var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
             imageBounds = [[40.712216, -74.22655], [40.773941, -74.12544]];
             imageOptions = { opacity : 0.5 };
-            L.imageOverlay(imageUrl, imageBounds, imageOptions).addTo(_Map2.map);
+            L.imageOverlay(imageUrl, imageBounds, imageOptions).addTo(_Map2.map);*/
+            //window.alert(prop.overlayHack);
+            _Map2.applyOverlayHack(prop.overlayHack);
             
             
+        },
+        
+        applyOverlayHack: function(hackData) {
+        	
+        	// split text box into lines, ignoring empty lines
+        	var lines = hackData.trim().split(/\s*[\r\n]+\s*/g);
+        	
+        	// loop over lines
+        	for (var l = 0; l < lines.length; l++) {
+        		var line = lines[l].trim();
+        		if (! line.startsWith('#')) { // skip comments
+        			
+        			// parse line (no error handling here, might just fail)
+        			var args = line.split(/,/g);
+        			var x1 = args[0].trim();
+        			var y1 = args[1].trim();
+        			var x2 = args[2].trim();
+        			var y2 = args[3].trim();
+        			var opa = args[4].trim();
+        			var url = args[5].trim();
+        			
+        			// construct image overlay and add to map
+                    imageBounds = [[x1, y1], [x2, y2]];
+                    imageOptions = { opacity : opa };
+                    L.imageOverlay(url, imageBounds, imageOptions).addTo(_Map2.map);
+        			
+        			
+        		}
+        		
+        	}
+        	
+        	
+        	
         },
 
         initViewCenter: function() {
