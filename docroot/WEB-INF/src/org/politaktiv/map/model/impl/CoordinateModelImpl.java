@@ -68,7 +68,7 @@ public class CoordinateModelImpl extends BaseModelImpl<Coordinate>
 			{ "longitude", Types.VARCHAR },
 			{ "latitude", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Coordinate (coordinateId LONG not null primary key,shapeId LONG,longitude VARCHAR(11) null,latitude VARCHAR(11) null)";
+	public static final String TABLE_SQL_CREATE = "create table politaktivmaptwo_Coordinate (coordinateId LONG not null primary key,shapeId LONG,longitude VARCHAR(75) null,latitude VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table politaktivmaptwo_Coordinate";
 	public static final String ORDER_BY_JPQL = " ORDER BY coordinate.coordinateId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY politaktivmaptwo_Coordinate.coordinateId ASC";

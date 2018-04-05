@@ -1,8 +1,8 @@
 create table politaktivmaptwo_Coordinate (
 	coordinateId LONG not null primary key,
 	shapeId LONG,
-	longitude VARCHAR(11) null,
-	latitude VARCHAR(11) null
+	longitude VARCHAR(75) null,
+	latitude VARCHAR(75) null
 );
 
 create table politaktivmaptwo_Shape (
@@ -14,8 +14,8 @@ create table politaktivmaptwo_Shape (
 	createDate DATE null,
 	modifiedDate DATE null,
 	title VARCHAR(75) null,
-	abstractDescription VARCHAR(1024) null,
-	url VARCHAR(256) null,
+	abstractDescription VARCHAR(75) null,
+	url VARCHAR(75) null,
 	shapeType VARCHAR(75) null,
 	radius LONG,
 	layer VARCHAR(75) null
