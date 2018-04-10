@@ -1,3 +1,4 @@
+<%@page import="org.politaktiv.map.TileServerHelper"%>
 <%
 /**
  * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
@@ -48,7 +49,8 @@
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_SHAPES_LAYER" %>
 <%@ page import="static org.politaktiv.map.Constants.OVERLAY_HACK" %>
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_OVERLAY_HACK" %>
-
+<%@ page import="static org.politaktiv.map.Constants.TILE_SERVER_KEY" %>
+<%@ page import="static org.politaktiv.map.Constants.DEFAULT_TILE_SERVER_KEY" %>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
@@ -59,5 +61,9 @@
 	String zoomLevel = PrefsParamUtil.getString(portletPreferences, renderRequest, ZOOM_LEVEL, DEFAULT_ZOOM_LEVEL);
 	String shapesLayer = PrefsParamUtil.getString(portletPreferences, renderRequest, SHAPES_LAYER, DEFAULT_SHAPES_LAYER);
 	String overlayHack = PrefsParamUtil.getString(portletPreferences, renderRequest, OVERLAY_HACK, DEFAULT_OVERLAY_HACK);
+	String tileServerKey = PrefsParamUtil.getString(portletPreferences, renderRequest, TILE_SERVER_KEY, DEFAULT_TILE_SERVER_KEY);
+	TileServerHelper.ServerEntry tileServer = TileServerHelper.getInstance().getEntry(tileServerKey);
+	
+	
 %>
 

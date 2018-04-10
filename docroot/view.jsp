@@ -102,6 +102,8 @@ L.drawLocal.edit.handlers.remove.tooltip.text = '<liferay-ui:message key="drawLo
         center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
         zoomLevel: <%= zoomLevel %>,
         overlayHack: '<%= HtmlUtil.escapeJS(overlayHack) %>',
+        tileServer: '<%= HtmlUtil.escapeJS(tileServer.getUrl()) %>',
+        tileCredits: '<%= HtmlUtil.escapeJS(tileServer.getCredits()) %>',
         translations: {
             resetZoom: '<liferay-ui:message key="map2.reset-zoom" />',
             yourShapes: '<liferay-ui:message key="map2.your-shapes" />',

@@ -1,3 +1,5 @@
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
+<%@page import="java.util.Set"%>
 <%@ include file="/init.jsp"%>
 
 <%
@@ -37,6 +39,17 @@
                     <aui:input label="shapes-layer" name="preferences--shapesLayer--" value="<%=shapesLayer%>"></aui:input>
 				</aui:fieldset>
 				
+			<aui:select name="preferences--tileServerKey--" label="Stil der Basiskarte / Kartenserver">
+			<%
+				TileServerHelper tileHelper = TileServerHelper.getInstance();
+				for (String key : tileHelper.keySet() ) {
+			%>
+    			<aui:option value="<%= key %>" selected="<%= tileServerKey.equals(key) %>"><%= tileHelper.getEntry(key).getDisplayName()  %></aui:option>
+    		<%
+				}
+    		%>	
+			</aui:select>				
+				
 				
 		<aui:input type="textarea"
 			name="preferences--overlayHack--"
@@ -61,8 +74,9 @@
 	initMapConfig({
 		wrapperId: '<portlet:namespace />configMapForm',
 		center: { lat:<%= centerLatitude %>, lng:<%= centerLongtitude %> },
-		zoomLevel: <%= zoomLevel %>
-	});
+		zoomLevel: <%= zoomLevel %>,
+        tileServer: '<%= HtmlUtil.escapeJS(tileServer.getUrl()) %>',
+        tileCredits: '<%= HtmlUtil.escapeJS(tileServer.getCredits()) %>',	});
 
 	function initMapConfig(prop) {
 		var wrap = L.DomUtil.get(prop.wrapperId);
@@ -71,8 +85,8 @@
 		var latInput = wrap.querySelector('.map-center-latitude');
 		var lngInput = wrap.querySelector('.map-center-longtitude');
 
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-						attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+		L.tileLayer(prop.tileServer, {
+                attribution: prop.tileCredits
 					}).addTo(configMap);
 		configMap.setView([prop.center.lat, prop.center.lng], prop.zoomLevel);
 		configMap.addLayer(center);

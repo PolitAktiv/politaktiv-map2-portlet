@@ -14,8 +14,8 @@ function createMap2 (prop) {
 
             _Map2.map = L.map(prop.wrapperId);
 
-            _Map2.firstLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            _Map2.firstLayer = L.tileLayer(prop.tileServer, {
+                attribution: prop.tileCredits
             }).addTo(_Map2.map);
 
             _Map2.initViewCenter();
