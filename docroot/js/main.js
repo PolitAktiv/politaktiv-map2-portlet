@@ -40,6 +40,11 @@ function createMap2 (prop) {
         
         applyOverlayHack: function(hackData) {
         	
+        	// nothing defined? give up
+        	if (hackData.trim() == "" ) {
+        		return;
+        	}
+        	
         	// split text box into lines, ignoring empty lines
         	var lines = hackData.trim().split(/\s*[\r\n]+\s*/g);
         	
