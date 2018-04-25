@@ -12,7 +12,10 @@ function createMap2 (prop) {
         init: function(prop) {
             if (console) console.log(prop);
 
-            _Map2.map = L.map(prop.wrapperId);
+            _Map2.map = L.map(prop.wrapperId,{
+                minZoom: prop.minZoomLevel,
+                maxZoom: prop.maxZoomLevel
+            });
 
             _Map2.firstLayer = L.tileLayer(prop.tileServer, {
                 attribution: prop.tileCredits

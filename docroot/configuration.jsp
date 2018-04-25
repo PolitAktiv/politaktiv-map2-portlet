@@ -36,6 +36,25 @@
 						<aui:validator name="min">1</aui:validator>
 						<aui:validator name="max">18</aui:validator>
 					</aui:input>
+					
+					<liferay-ui:error key="minZoomLevel"  />
+					<aui:input cssClass="map-zoom-level" label="Kleinstes mögliches Zoom-Level" name="preferences--minZoomLevel--" value="<%= minZoomLevel %>" >
+						<aui:validator name="digits"></aui:validator>
+						<aui:validator name="required"/>
+						<aui:validator name="min">1</aui:validator>
+						<aui:validator name="max">18</aui:validator>
+					</aui:input>
+
+					<liferay-ui:error key="maxZoomLevel"  />
+					<aui:input cssClass="map-zoom-level" label="Größtes mögliches Zoom-Level" name="preferences--maxZoomLevel--" value="<%= maxZoomLevel %>" >
+						<aui:validator name="digits"></aui:validator>
+						<aui:validator name="required"/>
+						<aui:validator name="min">1</aui:validator>
+						<aui:validator name="max">18</aui:validator>
+					</aui:input>
+					
+					
+					
                     <aui:input label="shapes-layer" name="preferences--shapesLayer--" value="<%=shapesLayer%>"></aui:input>
 				</aui:fieldset>
 				

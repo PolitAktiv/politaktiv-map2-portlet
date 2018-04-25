@@ -51,6 +51,10 @@
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_OVERLAY_HACK" %>
 <%@ page import="static org.politaktiv.map.Constants.TILE_SERVER_KEY" %>
 <%@ page import="static org.politaktiv.map.Constants.DEFAULT_TILE_SERVER_KEY" %>
+<%@ page import="static org.politaktiv.map.Constants.DEFAULT_MAX_ZOOM_LEVEL" %>
+<%@ page import="static org.politaktiv.map.Constants.DEFAULT_MIN_ZOOM_LEVEL" %>
+<%@ page import="static org.politaktiv.map.Constants.MIN_ZOOM_LEVEL" %>
+<%@ page import="static org.politaktiv.map.Constants.MAX_ZOOM_LEVEL" %>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
@@ -62,6 +66,8 @@
 	String shapesLayer = PrefsParamUtil.getString(portletPreferences, renderRequest, SHAPES_LAYER, DEFAULT_SHAPES_LAYER);
 	String overlayHack = PrefsParamUtil.getString(portletPreferences, renderRequest, OVERLAY_HACK, DEFAULT_OVERLAY_HACK);
 	String tileServerKey = PrefsParamUtil.getString(portletPreferences, renderRequest, TILE_SERVER_KEY, DEFAULT_TILE_SERVER_KEY);
+	String minZoomLevel = PrefsParamUtil.getString(portletPreferences, renderRequest, MIN_ZOOM_LEVEL, DEFAULT_MIN_ZOOM_LEVEL);
+	String maxZoomLevel = PrefsParamUtil.getString(portletPreferences, renderRequest, MAX_ZOOM_LEVEL, DEFAULT_MAX_ZOOM_LEVEL);	
 	TileServerHelper.ServerEntry tileServer = TileServerHelper.getInstance().getEntry(tileServerKey);
 	
 	
