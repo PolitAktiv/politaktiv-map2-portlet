@@ -9,3 +9,4 @@ Configuration:
 	Map center longtitude, latitude and zoom level can be configured from portlet's configuration page. After updating values page should be refreshed.
 
 # Test Commit
+# And me to
