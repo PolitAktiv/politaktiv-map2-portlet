@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: politaktiv-map2-portlet
+Bundle-SymbolicName: politaktiv-map2-portlet
+Bundle-Version: 1.0.0.qualifier
+Export-Package: content,
+ org.politaktiv.map,
+ org.politaktiv.map.action,
+ org.politaktiv.map.model,
+ org.politaktiv.map.model.impl,
+ org.politaktiv.map.service,
+ org.politaktiv.map.service.base,
+ org.politaktiv.map.service.http,
+ org.politaktiv.map.service.impl,
+ org.politaktiv.map.service.messaging,
+ org.politaktiv.map.service.permission,
+ org.politaktiv.map.service.persistence
