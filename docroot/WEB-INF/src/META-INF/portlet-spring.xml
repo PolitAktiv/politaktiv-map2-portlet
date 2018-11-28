@@ -1,10 +1,16 @@
 <?xml version="1.0"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	<bean id="org.politaktiv.map.service.CoordinateLocalService" class="org.politaktiv.map.service.impl.CoordinateLocalServiceImpl" />
-	<bean id="org.politaktiv.map.service.CoordinateService" class="org.politaktiv.map.service.impl.CoordinateServiceImpl" />
-	<bean id="org.politaktiv.map.service.persistence.CoordinatePersistence" class="org.politaktiv.map.service.persistence.CoordinatePersistenceImpl" parent="basePersistence" />
-	<bean id="org.politaktiv.map.service.ShapeLocalService" class="org.politaktiv.map.service.impl.ShapeLocalServiceImpl" />
-	<bean id="org.politaktiv.map.service.ShapeService" class="org.politaktiv.map.service.impl.ShapeServiceImpl" />
-	<bean id="org.politaktiv.map.service.persistence.ShapePersistence" class="org.politaktiv.map.service.persistence.ShapePersistenceImpl" parent="basePersistence" />
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="org.politaktiv.map.service.impl.CoordinateLocalServiceImpl" id="org.politaktiv.map.service.CoordinateLocalService" />
+	<bean class="org.politaktiv.map.service.impl.CoordinateServiceImpl" id="org.politaktiv.map.service.CoordinateService" />
+	<bean class="org.politaktiv.map.service.persistence.impl.CoordinatePersistenceImpl" id="org.politaktiv.map.service.persistence.CoordinatePersistence" parent="basePersistence" />
+	<bean class="org.politaktiv.map.service.impl.ShapeLocalServiceImpl" id="org.politaktiv.map.service.ShapeLocalService" />
+	<bean class="org.politaktiv.map.service.impl.ShapeServiceImpl" id="org.politaktiv.map.service.ShapeService" />
+	<bean class="org.politaktiv.map.service.persistence.impl.ShapePersistenceImpl" id="org.politaktiv.map.service.persistence.ShapePersistence" parent="basePersistence" />
 </beans>

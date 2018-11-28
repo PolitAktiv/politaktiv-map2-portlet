@@ -14,7 +14,7 @@
 
 package org.politaktiv.map.service.impl;
 
-import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import org.apache.log4j.Logger;
 import org.politaktiv.map.model.Coordinate;

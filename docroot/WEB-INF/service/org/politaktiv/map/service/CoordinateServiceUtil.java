@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,10 @@
 
 package org.politaktiv.map.service;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
-import com.liferay.portal.service.InvokableService;
 
 /**
  * Provides the remote service utility for Coordinate. This utility wraps
@@ -26,12 +27,13 @@ import com.liferay.portal.service.InvokableService;
  * checks based on the propagated JAAS credentials because this service can be
  * accessed remotely.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see CoordinateService
  * @see org.politaktiv.map.service.base.CoordinateServiceBaseImpl
  * @see org.politaktiv.map.service.impl.CoordinateServiceImpl
  * @generated
  */
+@ProviderType
 public class CoordinateServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -40,27 +42,12 @@ public class CoordinateServiceUtil {
 	 */
 
 	/**
-	* Returns the Spring bean ID for this bean.
+	* Returns the OSGi service identifier.
 	*
-	* @return the Spring bean ID for this bean
+	* @return the OSGi service identifier
 	*/
-	public static java.lang.String getBeanIdentifier() {
-		return getService().getBeanIdentifier();
-	}
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
-		getService().setBeanIdentifier(beanIdentifier);
-	}
-
-	public static java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable {
-		return getService().invokeMethod(name, parameterTypes, arguments);
+	public static String getOSGiServiceIdentifier() {
+		return getService().getOSGiServiceIdentifier();
 	}
 
 	public static void clearService() {
@@ -69,27 +56,14 @@ public class CoordinateServiceUtil {
 
 	public static CoordinateService getService() {
 		if (_service == null) {
-			InvokableService invokableService = (InvokableService)PortletBeanLocatorUtil.locate(ClpSerializer.getServletContextName(),
+			_service = (CoordinateService)PortletBeanLocatorUtil.locate(ServletContextUtil.getServletContextName(),
 					CoordinateService.class.getName());
-
-			if (invokableService instanceof CoordinateService) {
-				_service = (CoordinateService)invokableService;
-			}
-			else {
-				_service = new CoordinateServiceClp(invokableService);
-			}
 
 			ReferenceRegistry.registerReference(CoordinateServiceUtil.class,
 				"_service");
 		}
 
 		return _service;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	public void setService(CoordinateService service) {
 	}
 
 	private static CoordinateService _service;

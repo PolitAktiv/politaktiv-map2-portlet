@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,10 @@
 
 package org.politaktiv.map.service;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
-import com.liferay.portal.service.InvokableService;
 
 /**
  * Provides the remote service utility for Shape. This utility wraps
@@ -26,92 +27,71 @@ import com.liferay.portal.service.InvokableService;
  * checks based on the propagated JAAS credentials because this service can be
  * accessed remotely.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see ShapeService
  * @see org.politaktiv.map.service.base.ShapeServiceBaseImpl
  * @see org.politaktiv.map.service.impl.ShapeServiceImpl
  * @generated
  */
+@ProviderType
 public class ShapeServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.politaktiv.map.service.impl.ShapeServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	public static java.lang.String getBeanIdentifier() {
-		return getService().getBeanIdentifier();
-	}
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
-		getService().setBeanIdentifier(beanIdentifier);
-	}
-
-	public static java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable {
-		return getService().invokeMethod(name, parameterTypes, arguments);
-	}
-
-	public static org.politaktiv.map.model.Shape addShape(
-		java.lang.String portletId, java.lang.String primKey, long groupId,
-		long companyId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException {
+	public static org.politaktiv.map.model.Shape addShape(String portletId,
+		String primKey, long groupId, long companyId, String title,
+		String abstractDescription, String url, String shapeType, long radius,
+		String shapesLayer, java.util.List<java.util.List<String>> points)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException,
+			com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addShape(portletId, primKey, groupId, companyId, title,
 			abstractDescription, url, shapeType, radius, shapesLayer, points);
 	}
 
-	public static org.politaktiv.map.model.Shape updateShape(
-		java.lang.String portletId, java.lang.String primKey, long shapeId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String url, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException {
-		return getService()
-				   .updateShape(portletId, primKey, shapeId, title,
-			abstractDescription, url, shapeType, radius, shapesLayer, points);
+	public static void deleteShapeById(String portletId, String primKey,
+		long shapeId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.kernel.exception.PortalException {
+		getService().deleteShapeById(portletId, primKey, shapeId);
 	}
 
 	public static java.util.List<org.politaktiv.map.model.Shape> getAllShapes(
-		java.lang.String portletId, java.lang.String primKey,
-		java.lang.String shapesLayer)
+		String portletId, String primKey, String shapesLayer)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().getAllShapes(portletId, primKey, shapesLayer);
 	}
 
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	public static String getOSGiServiceIdentifier() {
+		return getService().getOSGiServiceIdentifier();
+	}
+
 	public static java.util.List<org.politaktiv.map.model.Shape> getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId,
-		java.lang.String shapesLayer)
+		String portletId, String primKey, long userId, String shapesLayer)
 		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.security.auth.PrincipalException {
+			com.liferay.portal.kernel.security.auth.PrincipalException {
 		return getService()
 				   .getShapesByUserId(portletId, primKey, userId, shapesLayer);
 	}
 
-	public static void deleteShapeById(java.lang.String portletId,
-		java.lang.String primKey, long shapeId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		getService().deleteShapeById(portletId, primKey, shapeId);
+	public static org.politaktiv.map.model.Shape updateShape(String portletId,
+		String primKey, long shapeId, String title, String abstractDescription,
+		String url, String shapeType, long radius, String shapesLayer,
+		java.util.List<java.util.List<String>> points)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			javax.portlet.ValidatorException,
+			com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateShape(portletId, primKey, shapeId, title,
+			abstractDescription, url, shapeType, radius, shapesLayer, points);
 	}
 
 	public static void clearService() {
@@ -120,27 +100,14 @@ public class ShapeServiceUtil {
 
 	public static ShapeService getService() {
 		if (_service == null) {
-			InvokableService invokableService = (InvokableService)PortletBeanLocatorUtil.locate(ClpSerializer.getServletContextName(),
+			_service = (ShapeService)PortletBeanLocatorUtil.locate(ServletContextUtil.getServletContextName(),
 					ShapeService.class.getName());
-
-			if (invokableService instanceof ShapeService) {
-				_service = (ShapeService)invokableService;
-			}
-			else {
-				_service = new ShapeServiceClp(invokableService);
-			}
 
 			ReferenceRegistry.registerReference(ShapeServiceUtil.class,
 				"_service");
 		}
 
 		return _service;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	public void setService(ShapeService service) {
 	}
 
 	private static ShapeService _service;

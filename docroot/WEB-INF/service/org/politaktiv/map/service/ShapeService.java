@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,22 +14,30 @@
 
 package org.politaktiv.map.service;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
+import com.liferay.portal.kernel.security.access.control.AccessControlled;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.security.ac.AccessControlled;
-import com.liferay.portal.service.BaseService;
-import com.liferay.portal.service.InvokableService;
+
+import org.politaktiv.map.model.Shape;
+
+import java.util.List;
+
+import javax.portlet.ValidatorException;
 
 /**
  * Provides the remote service interface for Shape. Methods of this
  * service are expected to have security checks based on the propagated JAAS
  * credentials because this service can be accessed remotely.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see ShapeServiceUtil
  * @see org.politaktiv.map.service.base.ShapeServiceBaseImpl
  * @see org.politaktiv.map.service.impl.ShapeServiceImpl
@@ -37,69 +45,43 @@ import com.liferay.portal.service.InvokableService;
  */
 @AccessControlled
 @JSONWebService
+@ProviderType
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface ShapeService extends BaseService, InvokableService {
+public interface ShapeService extends BaseService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify or reference this interface directly. Always use {@link ShapeServiceUtil} to access the shape remote service. Add custom service methods to {@link org.politaktiv.map.service.impl.ShapeServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public Shape addShape(String portletId, String primKey, long groupId,
+		long companyId, String title, String abstractDescription, String url,
+		String shapeType, long radius, String shapesLayer,
+		List<List<String>> points)
+		throws SystemException, ValidatorException, PortalException;
+
+	public void deleteShapeById(String portletId, String primKey, long shapeId)
+		throws SystemException, PortalException;
+
+	@AccessControlled(guestAccessEnabled = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Shape> getAllShapes(String portletId, String primKey,
+		String shapesLayer) throws SystemException;
 
 	/**
-	* Returns the Spring bean ID for this bean.
+	* Returns the OSGi service identifier.
 	*
-	* @return the Spring bean ID for this bean
+	* @return the OSGi service identifier
 	*/
-	public java.lang.String getBeanIdentifier();
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public void setBeanIdentifier(java.lang.String beanIdentifier);
-
-	@Override
-	public java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable;
-
-	public org.politaktiv.map.model.Shape addShape(java.lang.String portletId,
-		java.lang.String primKey, long groupId, long companyId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String url, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException;
-
-	public org.politaktiv.map.model.Shape updateShape(
-		java.lang.String portletId, java.lang.String primKey, long shapeId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String url, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException;
+	public String getOSGiServiceIdentifier();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<org.politaktiv.map.model.Shape> getAllShapes(
-		java.lang.String portletId, java.lang.String primKey,
-		java.lang.String shapesLayer)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public List<Shape> getShapesByUserId(String portletId, String primKey,
+		long userId, String shapesLayer)
+		throws SystemException, PrincipalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<org.politaktiv.map.model.Shape> getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId,
-		java.lang.String shapesLayer)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.security.auth.PrincipalException;
-
-	public void deleteShapeById(java.lang.String portletId,
-		java.lang.String primKey, long shapeId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException;
+	public Shape updateShape(String portletId, String primKey, long shapeId,
+		String title, String abstractDescription, String url, String shapeType,
+		long radius, String shapesLayer, List<List<String>> points)
+		throws SystemException, ValidatorException, PortalException;
 }

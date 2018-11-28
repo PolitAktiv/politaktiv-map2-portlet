@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,29 +14,51 @@
 
 package org.politaktiv.map.model;
 
-import com.liferay.portal.model.PersistedModel;
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.annotation.ImplementationClassName;
+import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.util.Accessor;
 
 /**
  * The extended model interface for the Shape service. Represents a row in the &quot;politaktivmaptwo_Shape&quot; database table, with each column mapped to a property of this class.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see ShapeModel
  * @see org.politaktiv.map.model.impl.ShapeImpl
  * @see org.politaktiv.map.model.impl.ShapeModelImpl
  * @generated
  */
+@ImplementationClassName("org.politaktiv.map.model.impl.ShapeImpl")
+@ProviderType
 public interface Shape extends ShapeModel, PersistedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify this interface directly. Add methods to {@link org.politaktiv.map.model.impl.ShapeImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public static final Accessor<Shape, Long> SHAPE_ID_ACCESSOR = new Accessor<Shape, Long>() {
+			@Override
+			public Long get(Shape shape) {
+				return shape.getShapeId();
+			}
+
+			@Override
+			public Class<Long> getAttributeClass() {
+				return Long.class;
+			}
+
+			@Override
+			public Class<Shape> getTypeClass() {
+				return Shape.class;
+			}
+		};
+
 	@com.liferay.portal.kernel.json.JSON()
-	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates()
+	public java.util.List<Coordinate> getCoordinates()
 		throws com.liferay.portal.kernel.exception.SystemException;
 
-	public void validate(
-		java.util.List<java.util.List<java.lang.String>> points)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException;
+	public void validate(java.util.List<java.util.List<String>> points)
+		throws javax.portlet.ValidatorException,
+			com.liferay.portal.kernel.exception.SystemException;
 }

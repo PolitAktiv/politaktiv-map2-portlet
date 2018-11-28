@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,11 @@
 
 package org.politaktiv.map.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
 
 import org.politaktiv.map.model.Coordinate;
 
@@ -28,12 +30,37 @@ import java.io.ObjectOutput;
 /**
  * The cache model class for representing Coordinate in entity cache.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see Coordinate
  * @generated
  */
+@ProviderType
 public class CoordinateCacheModel implements CacheModel<Coordinate>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof CoordinateCacheModel)) {
+			return false;
+		}
+
+		CoordinateCacheModel coordinateCacheModel = (CoordinateCacheModel)obj;
+
+		if (coordinateId == coordinateCacheModel.coordinateId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, coordinateId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(9);
@@ -59,14 +86,14 @@ public class CoordinateCacheModel implements CacheModel<Coordinate>,
 		coordinateImpl.setShapeId(shapeId);
 
 		if (longitude == null) {
-			coordinateImpl.setLongitude(StringPool.BLANK);
+			coordinateImpl.setLongitude("");
 		}
 		else {
 			coordinateImpl.setLongitude(longitude);
 		}
 
 		if (latitude == null) {
-			coordinateImpl.setLatitude(StringPool.BLANK);
+			coordinateImpl.setLatitude("");
 		}
 		else {
 			coordinateImpl.setLatitude(latitude);
@@ -80,6 +107,7 @@ public class CoordinateCacheModel implements CacheModel<Coordinate>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		coordinateId = objectInput.readLong();
+
 		shapeId = objectInput.readLong();
 		longitude = objectInput.readUTF();
 		latitude = objectInput.readUTF();
@@ -89,17 +117,18 @@ public class CoordinateCacheModel implements CacheModel<Coordinate>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(coordinateId);
+
 		objectOutput.writeLong(shapeId);
 
 		if (longitude == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(longitude);
 		}
 
 		if (latitude == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(latitude);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,14 +14,31 @@
 
 package org.politaktiv.map.service;
 
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.BaseLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.service.BaseLocalService;
-import com.liferay.portal.service.InvokableLocalService;
-import com.liferay.portal.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.util.OrderByComparator;
+
+import org.politaktiv.map.model.Coordinate;
+
+import java.io.Serializable;
+
+import java.util.List;
+
+import javax.portlet.ValidatorException;
 
 /**
  * Provides the local service interface for Coordinate. Methods of this
@@ -29,16 +46,17 @@ import com.liferay.portal.service.PersistedModelLocalService;
  * credentials because this service can only be accessed from within the same
  * VM.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see CoordinateLocalServiceUtil
  * @see org.politaktiv.map.service.base.CoordinateLocalServiceBaseImpl
  * @see org.politaktiv.map.service.impl.CoordinateLocalServiceImpl
  * @generated
  */
+@ProviderType
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
 public interface CoordinateLocalService extends BaseLocalService,
-	InvokableLocalService, PersistedModelLocalService {
+	PersistedModelLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -50,11 +68,16 @@ public interface CoordinateLocalService extends BaseLocalService,
 	*
 	* @param coordinate the coordinate
 	* @return the coordinate that was added
-	* @throws SystemException if a system exception occurred
 	*/
-	public org.politaktiv.map.model.Coordinate addCoordinate(
-		org.politaktiv.map.model.Coordinate coordinate)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	@Indexable(type = IndexableType.REINDEX)
+	public Coordinate addCoordinate(Coordinate coordinate);
+
+	public Coordinate addCoordinate(long shapeId, String longitude,
+		String latitude) throws SystemException, ValidatorException;
+
+	public List<Coordinate> addCoordinates(long shapeId,
+		List<List<String>> coordinatesList)
+		throws ValidatorException, SystemException;
 
 	/**
 	* Creates a new coordinate with the primary key. Does not add the coordinate to the database.
@@ -62,8 +85,17 @@ public interface CoordinateLocalService extends BaseLocalService,
 	* @param coordinateId the primary key for the new coordinate
 	* @return the new coordinate
 	*/
-	public org.politaktiv.map.model.Coordinate createCoordinate(
-		long coordinateId);
+	@Transactional(enabled = false)
+	public Coordinate createCoordinate(long coordinateId);
+
+	/**
+	* Deletes the coordinate from the database. Also notifies the appropriate model listeners.
+	*
+	* @param coordinate the coordinate
+	* @return the coordinate that was removed
+	*/
+	@Indexable(type = IndexableType.DELETE)
+	public Coordinate deleteCoordinate(Coordinate coordinate);
 
 	/**
 	* Deletes the coordinate with the primary key from the database. Also notifies the appropriate model listeners.
@@ -71,37 +103,27 @@ public interface CoordinateLocalService extends BaseLocalService,
 	* @param coordinateId the primary key of the coordinate
 	* @return the coordinate that was removed
 	* @throws PortalException if a coordinate with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
-	public org.politaktiv.map.model.Coordinate deleteCoordinate(
-		long coordinateId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException;
+	@Indexable(type = IndexableType.DELETE)
+	public Coordinate deleteCoordinate(long coordinateId)
+		throws PortalException;
 
 	/**
-	* Deletes the coordinate from the database. Also notifies the appropriate model listeners.
-	*
-	* @param coordinate the coordinate
-	* @return the coordinate that was removed
-	* @throws SystemException if a system exception occurred
+	* @throws PortalException
 	*/
-	public org.politaktiv.map.model.Coordinate deleteCoordinate(
-		org.politaktiv.map.model.Coordinate coordinate)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException;
 
-	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery();
+	public DynamicQuery dynamicQuery();
 
 	/**
 	* Performs a dynamic query on the database and returns the matching rows.
 	*
 	* @param dynamicQuery the dynamic query
 	* @return the matching rows
-	* @throws SystemException if a system exception occurred
 	*/
-	@SuppressWarnings("rawtypes")
-	public java.util.List dynamicQuery(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery);
 
 	/**
 	* Performs a dynamic query on the database and returns a range of the matching rows.
@@ -114,12 +136,9 @@ public interface CoordinateLocalService extends BaseLocalService,
 	* @param start the lower bound of the range of model instances
 	* @param end the upper bound of the range of model instances (not inclusive)
 	* @return the range of matching rows
-	* @throws SystemException if a system exception occurred
 	*/
-	@SuppressWarnings("rawtypes")
-	public java.util.List dynamicQuery(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
-		int end) throws com.liferay.portal.kernel.exception.SystemException;
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end);
 
 	/**
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
@@ -133,43 +152,37 @@ public interface CoordinateLocalService extends BaseLocalService,
 	* @param end the upper bound of the range of model instances (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching rows
-	* @throws SystemException if a system exception occurred
 	*/
-	@SuppressWarnings("rawtypes")
-	public java.util.List dynamicQuery(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator);
 
 	/**
-	* Returns the number of rows that match the dynamic query.
+	* Returns the number of rows matching the dynamic query.
 	*
 	* @param dynamicQuery the dynamic query
-	* @return the number of rows that match the dynamic query
-	* @throws SystemException if a system exception occurred
+	* @return the number of rows matching the dynamic query
 	*/
-	public long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public long dynamicQueryCount(DynamicQuery dynamicQuery);
 
 	/**
-	* Returns the number of rows that match the dynamic query.
+	* Returns the number of rows matching the dynamic query.
 	*
 	* @param dynamicQuery the dynamic query
 	* @param projection the projection to apply to the query
-	* @return the number of rows that match the dynamic query
-	* @throws SystemException if a system exception occurred
+	* @return the number of rows matching the dynamic query
 	*/
-	public long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
-		com.liferay.portal.kernel.dao.orm.Projection projection)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public long dynamicQueryCount(DynamicQuery dynamicQuery,
+		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public org.politaktiv.map.model.Coordinate fetchCoordinate(
-		long coordinateId)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public Coordinate fetchCoordinate(long coordinateId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Coordinate> getAllCoordinatesByShapeId(long shapeId)
+		throws SystemException;
 
 	/**
 	* Returns the coordinate with the primary key.
@@ -177,19 +190,10 @@ public interface CoordinateLocalService extends BaseLocalService,
 	* @param coordinateId the primary key of the coordinate
 	* @return the coordinate
 	* @throws PortalException if a coordinate with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public org.politaktiv.map.model.Coordinate getCoordinate(long coordinateId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException;
-
-	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public com.liferay.portal.model.PersistedModel getPersistedModel(
-		java.io.Serializable primaryKeyObj)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException;
+	public Coordinate getCoordinate(long coordinateId)
+		throws PortalException;
 
 	/**
 	* Returns a range of all the coordinates.
@@ -201,69 +205,42 @@ public interface CoordinateLocalService extends BaseLocalService,
 	* @param start the lower bound of the range of coordinates
 	* @param end the upper bound of the range of coordinates (not inclusive)
 	* @return the range of coordinates
-	* @throws SystemException if a system exception occurred
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<org.politaktiv.map.model.Coordinate> getCoordinates(
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public List<Coordinate> getCoordinates(int start, int end);
 
 	/**
 	* Returns the number of coordinates.
 	*
 	* @return the number of coordinates
-	* @throws SystemException if a system exception occurred
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCoordinatesCount()
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public int getCoordinatesCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	public String getOSGiServiceIdentifier();
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	public void removeCoordinatesByShapeId(long shapeId)
+		throws SystemException;
 
 	/**
 	* Updates the coordinate in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
 	* @param coordinate the coordinate
 	* @return the coordinate that was updated
-	* @throws SystemException if a system exception occurred
 	*/
-	public org.politaktiv.map.model.Coordinate updateCoordinate(
-		org.politaktiv.map.model.Coordinate coordinate)
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	public java.lang.String getBeanIdentifier();
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public void setBeanIdentifier(java.lang.String beanIdentifier);
-
-	@Override
-	public java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable;
-
-	public org.politaktiv.map.model.Coordinate addCoordinate(long shapeId,
-		java.lang.String longitude, java.lang.String latitude)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException;
-
-	public java.util.List<org.politaktiv.map.model.Coordinate> addCoordinates(
-		long shapeId,
-		java.util.List<java.util.List<java.lang.String>> coordinatesList)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			javax.portlet.ValidatorException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<org.politaktiv.map.model.Coordinate> getAllCoordinatesByShapeId(
-		long shapeId)
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	public void removeCoordinatesByShapeId(long shapeId)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	@Indexable(type = IndexableType.REINDEX)
+	public Coordinate updateCoordinate(Coordinate coordinate);
 }

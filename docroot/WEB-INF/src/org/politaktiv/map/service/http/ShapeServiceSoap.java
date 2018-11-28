@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package org.politaktiv.map.service.http;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -23,7 +25,7 @@ import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link org.politaktiv.map.service.ShapeServiceUtil} service utility. The
+ * {@link ShapeServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -55,19 +57,19 @@ import java.rmi.RemoteException;
  * The SOAP utility is only generated for remote services.
  * </p>
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see ShapeServiceHttp
  * @see org.politaktiv.map.model.ShapeSoap
- * @see org.politaktiv.map.service.ShapeServiceUtil
+ * @see ShapeServiceUtil
  * @generated
  */
+@ProviderType
 public class ShapeServiceSoap {
 	public static org.politaktiv.map.model.ShapeSoap addShape(
-		java.lang.String portletId, java.lang.String primKey, long groupId,
-		long companyId, java.lang.String title,
-		java.lang.String abstractDescription, java.lang.String url,
-		java.lang.String shapeType, long radius, java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
+		String portletId, String primKey, long groupId, long companyId,
+		String title, String abstractDescription, String url, String shapeType,
+		long radius, String shapesLayer,
+		java.util.List<java.util.List<String>> points)
 		throws RemoteException {
 		try {
 			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.addShape(portletId,
@@ -84,11 +86,9 @@ public class ShapeServiceSoap {
 	}
 
 	public static org.politaktiv.map.model.ShapeSoap updateShape(
-		java.lang.String portletId, java.lang.String primKey, long shapeId,
-		java.lang.String title, java.lang.String abstractDescription,
-		java.lang.String url, java.lang.String shapeType, long radius,
-		java.lang.String shapesLayer,
-		java.util.List<java.util.List<java.lang.String>> points)
+		String portletId, String primKey, long shapeId, String title,
+		String abstractDescription, String url, String shapeType, long radius,
+		String shapesLayer, java.util.List<java.util.List<String>> points)
 		throws RemoteException {
 		try {
 			org.politaktiv.map.model.Shape returnValue = ShapeServiceUtil.updateShape(portletId,
@@ -105,8 +105,8 @@ public class ShapeServiceSoap {
 	}
 
 	public static org.politaktiv.map.model.ShapeSoap[] getAllShapes(
-		java.lang.String portletId, java.lang.String primKey,
-		java.lang.String shapesLayer) throws RemoteException {
+		String portletId, String primKey, String shapesLayer)
+		throws RemoteException {
 		try {
 			java.util.List<org.politaktiv.map.model.Shape> returnValue = ShapeServiceUtil.getAllShapes(portletId,
 					primKey, shapesLayer);
@@ -121,8 +121,8 @@ public class ShapeServiceSoap {
 	}
 
 	public static org.politaktiv.map.model.ShapeSoap[] getShapesByUserId(
-		java.lang.String portletId, java.lang.String primKey, long userId,
-		java.lang.String shapesLayer) throws RemoteException {
+		String portletId, String primKey, long userId, String shapesLayer)
+		throws RemoteException {
 		try {
 			java.util.List<org.politaktiv.map.model.Shape> returnValue = ShapeServiceUtil.getShapesByUserId(portletId,
 					primKey, userId, shapesLayer);
@@ -136,8 +136,8 @@ public class ShapeServiceSoap {
 		}
 	}
 
-	public static void deleteShapeById(java.lang.String portletId,
-		java.lang.String primKey, long shapeId) throws RemoteException {
+	public static void deleteShapeById(String portletId, String primKey,
+		long shapeId) throws RemoteException {
 		try {
 			ShapeServiceUtil.deleteShapeById(portletId, primKey, shapeId);
 		}

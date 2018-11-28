@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package org.politaktiv.map.service.http;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * Provides the SOAP utility for the
@@ -48,11 +50,12 @@ package org.politaktiv.map.service.http;
  * The SOAP utility is only generated for remote services.
  * </p>
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see CoordinateServiceHttp
  * @see org.politaktiv.map.model.CoordinateSoap
  * @see org.politaktiv.map.service.CoordinateServiceUtil
  * @generated
  */
+@ProviderType
 public class CoordinateServiceSoap {
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -12,42 +12,43 @@
  * details.
  */
 
-package org.politaktiv.map.service.persistence;
+package org.politaktiv.map.service.persistence.impl;
 
-import com.liferay.portal.kernel.cache.CacheRegistryUtil;
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.InstanceFactory;
+import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnmodifiableList;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
-import org.politaktiv.map.NoSuchCoordinateException;
+import org.politaktiv.map.exception.NoSuchCoordinateException;
 import org.politaktiv.map.model.Coordinate;
 import org.politaktiv.map.model.impl.CoordinateImpl;
 import org.politaktiv.map.model.impl.CoordinateModelImpl;
+import org.politaktiv.map.service.persistence.CoordinatePersistence;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationHandler;
+
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The persistence implementation for the coordinate service.
@@ -56,11 +57,12 @@ import java.util.List;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see CoordinatePersistence
- * @see CoordinateUtil
+ * @see org.politaktiv.map.service.persistence.CoordinateUtil
  * @generated
  */
+@ProviderType
 public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	implements CoordinatePersistence {
 	/*
@@ -107,11 +109,9 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 *
 	 * @param shapeId the shape ID
 	 * @return the matching coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Coordinate> findByShapeId(long shapeId)
-		throws SystemException {
+	public List<Coordinate> findByShapeId(long shapeId) {
 		return findByShapeId(shapeId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
@@ -119,18 +119,16 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Returns a range of all the coordinates where shapeId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param shapeId the shape ID
 	 * @param start the lower bound of the range of coordinates
 	 * @param end the upper bound of the range of coordinates (not inclusive)
 	 * @return the range of matching coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Coordinate> findByShapeId(long shapeId, int start, int end)
-		throws SystemException {
+	public List<Coordinate> findByShapeId(long shapeId, int start, int end) {
 		return findByShapeId(shapeId, start, end, null);
 	}
 
@@ -138,7 +136,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Returns an ordered range of all the coordinates where shapeId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param shapeId the shape ID
@@ -146,11 +144,31 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * @param end the upper bound of the range of coordinates (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Coordinate> findByShapeId(long shapeId, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Coordinate> orderByComparator) {
+		return findByShapeId(shapeId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the coordinates where shapeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param shapeId the shape ID
+	 * @param start the lower bound of the range of coordinates
+	 * @param end the upper bound of the range of coordinates (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching coordinates
+	 */
+	@Override
+	public List<Coordinate> findByShapeId(long shapeId, int start, int end,
+		OrderByComparator<Coordinate> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -166,15 +184,19 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 			finderArgs = new Object[] { shapeId, start, end, orderByComparator };
 		}
 
-		List<Coordinate> list = (List<Coordinate>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<Coordinate> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (Coordinate coordinate : list) {
-				if ((shapeId != coordinate.getShapeId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<Coordinate>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (Coordinate coordinate : list) {
+					if ((shapeId != coordinate.getShapeId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -184,7 +206,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -222,7 +244,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 					Collections.sort(list);
 
-					list = new UnmodifiableList<Coordinate>(list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
 					list = (List<Coordinate>)QueryUtil.list(q, getDialect(),
@@ -231,10 +253,10 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -252,13 +274,12 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * @param shapeId the shape ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching coordinate
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a matching coordinate could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a matching coordinate could not be found
 	 */
 	@Override
 	public Coordinate findByShapeId_First(long shapeId,
-		OrderByComparator orderByComparator)
-		throws NoSuchCoordinateException, SystemException {
+		OrderByComparator<Coordinate> orderByComparator)
+		throws NoSuchCoordinateException {
 		Coordinate coordinate = fetchByShapeId_First(shapeId, orderByComparator);
 
 		if (coordinate != null) {
@@ -272,7 +293,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 		msg.append("shapeId=");
 		msg.append(shapeId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCoordinateException(msg.toString());
 	}
@@ -283,11 +304,10 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * @param shapeId the shape ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching coordinate, or <code>null</code> if a matching coordinate could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Coordinate fetchByShapeId_First(long shapeId,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Coordinate> orderByComparator) {
 		List<Coordinate> list = findByShapeId(shapeId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -303,13 +323,12 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * @param shapeId the shape ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching coordinate
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a matching coordinate could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a matching coordinate could not be found
 	 */
 	@Override
 	public Coordinate findByShapeId_Last(long shapeId,
-		OrderByComparator orderByComparator)
-		throws NoSuchCoordinateException, SystemException {
+		OrderByComparator<Coordinate> orderByComparator)
+		throws NoSuchCoordinateException {
 		Coordinate coordinate = fetchByShapeId_Last(shapeId, orderByComparator);
 
 		if (coordinate != null) {
@@ -323,7 +342,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 		msg.append("shapeId=");
 		msg.append(shapeId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchCoordinateException(msg.toString());
 	}
@@ -334,11 +353,10 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * @param shapeId the shape ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching coordinate, or <code>null</code> if a matching coordinate could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Coordinate fetchByShapeId_Last(long shapeId,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Coordinate> orderByComparator) {
 		int count = countByShapeId(shapeId);
 
 		if (count == 0) {
@@ -362,13 +380,12 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * @param shapeId the shape ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next coordinate
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a coordinate with the primary key could not be found
 	 */
 	@Override
 	public Coordinate[] findByShapeId_PrevAndNext(long coordinateId,
-		long shapeId, OrderByComparator orderByComparator)
-		throws NoSuchCoordinateException, SystemException {
+		long shapeId, OrderByComparator<Coordinate> orderByComparator)
+		throws NoSuchCoordinateException {
 		Coordinate coordinate = findByPrimaryKey(coordinateId);
 
 		Session session = null;
@@ -398,12 +415,13 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 	protected Coordinate getByShapeId_PrevAndNext(Session session,
 		Coordinate coordinate, long shapeId,
-		OrderByComparator orderByComparator, boolean previous) {
+		OrderByComparator<Coordinate> orderByComparator, boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -505,10 +523,9 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Removes all the coordinates where shapeId = &#63; from the database.
 	 *
 	 * @param shapeId the shape ID
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeByShapeId(long shapeId) throws SystemException {
+	public void removeByShapeId(long shapeId) {
 		for (Coordinate coordinate : findByShapeId(shapeId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(coordinate);
@@ -520,16 +537,14 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 *
 	 * @param shapeId the shape ID
 	 * @return the number of matching coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countByShapeId(long shapeId) throws SystemException {
+	public int countByShapeId(long shapeId) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_SHAPEID;
 
 		Object[] finderArgs = new Object[] { shapeId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -553,10 +568,10 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -581,7 +596,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 */
 	@Override
 	public void cacheResult(Coordinate coordinate) {
-		EntityCacheUtil.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
 			CoordinateImpl.class, coordinate.getPrimaryKey(), coordinate);
 
 		coordinate.resetOriginalValues();
@@ -595,7 +610,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	@Override
 	public void cacheResult(List<Coordinate> coordinates) {
 		for (Coordinate coordinate : coordinates) {
-			if (EntityCacheUtil.getResult(
+			if (entityCache.getResult(
 						CoordinateModelImpl.ENTITY_CACHE_ENABLED,
 						CoordinateImpl.class, coordinate.getPrimaryKey()) == null) {
 				cacheResult(coordinate);
@@ -610,45 +625,41 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Clears the cache for all coordinates.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache() {
-		if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
-			CacheRegistryUtil.clear(CoordinateImpl.class.getName());
-		}
+		entityCache.clearCache(CoordinateImpl.class);
 
-		EntityCacheUtil.clearCache(CoordinateImpl.class.getName());
-
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	/**
 	 * Clears the cache for the coordinate.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(Coordinate coordinate) {
-		EntityCacheUtil.removeResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.removeResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
 			CoordinateImpl.class, coordinate.getPrimaryKey());
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	@Override
 	public void clearCache(List<Coordinate> coordinates) {
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (Coordinate coordinate : coordinates) {
-			EntityCacheUtil.removeResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+			entityCache.removeResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
 				CoordinateImpl.class, coordinate.getPrimaryKey());
 		}
 	}
@@ -674,12 +685,11 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 *
 	 * @param coordinateId the primary key of the coordinate
 	 * @return the coordinate that was removed
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a coordinate with the primary key could not be found
 	 */
 	@Override
 	public Coordinate remove(long coordinateId)
-		throws NoSuchCoordinateException, SystemException {
+		throws NoSuchCoordinateException {
 		return remove((Serializable)coordinateId);
 	}
 
@@ -688,12 +698,11 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 *
 	 * @param primaryKey the primary key of the coordinate
 	 * @return the coordinate that was removed
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a coordinate with the primary key could not be found
 	 */
 	@Override
 	public Coordinate remove(Serializable primaryKey)
-		throws NoSuchCoordinateException, SystemException {
+		throws NoSuchCoordinateException {
 		Session session = null;
 
 		try {
@@ -703,8 +712,8 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 					primaryKey);
 
 			if (coordinate == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+				if (_log.isDebugEnabled()) {
+					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
 				throw new NoSuchCoordinateException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
@@ -725,10 +734,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	}
 
 	@Override
-	protected Coordinate removeImpl(Coordinate coordinate)
-		throws SystemException {
-		coordinate = toUnwrappedModel(coordinate);
-
+	protected Coordinate removeImpl(Coordinate coordinate) {
 		Session session = null;
 
 		try {
@@ -758,11 +764,24 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	}
 
 	@Override
-	public Coordinate updateImpl(org.politaktiv.map.model.Coordinate coordinate)
-		throws SystemException {
-		coordinate = toUnwrappedModel(coordinate);
-
+	public Coordinate updateImpl(Coordinate coordinate) {
 		boolean isNew = coordinate.isNew();
+
+		if (!(coordinate instanceof CoordinateModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(coordinate.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(coordinate);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in coordinate proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom Coordinate implementation " +
+				coordinate.getClass());
+		}
 
 		CoordinateModelImpl coordinateModelImpl = (CoordinateModelImpl)coordinate;
 
@@ -777,7 +796,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 				coordinate.setNew(false);
 			}
 			else {
-				session.merge(coordinate);
+				coordinate = (Coordinate)session.merge(coordinate);
 			}
 		}
 		catch (Exception e) {
@@ -787,10 +806,22 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
-		if (isNew || !CoordinateModelImpl.COLUMN_BITMASK_ENABLED) {
-			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		if (!CoordinateModelImpl.COLUMN_BITMASK_ENABLED) {
+			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		}
+		else
+		 if (isNew) {
+			Object[] args = new Object[] { coordinateModelImpl.getShapeId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SHAPEID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SHAPEID,
+				args);
+
+			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
+				FINDER_ARGS_EMPTY);
 		}
 
 		else {
@@ -800,58 +831,41 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 						coordinateModelImpl.getOriginalShapeId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SHAPEID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SHAPEID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_SHAPEID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SHAPEID,
 					args);
 
 				args = new Object[] { coordinateModelImpl.getShapeId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SHAPEID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SHAPEID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_SHAPEID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SHAPEID,
 					args);
 			}
 		}
 
-		EntityCacheUtil.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
-			CoordinateImpl.class, coordinate.getPrimaryKey(), coordinate);
+		entityCache.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+			CoordinateImpl.class, coordinate.getPrimaryKey(), coordinate, false);
+
+		coordinate.resetOriginalValues();
 
 		return coordinate;
 	}
 
-	protected Coordinate toUnwrappedModel(Coordinate coordinate) {
-		if (coordinate instanceof CoordinateImpl) {
-			return coordinate;
-		}
-
-		CoordinateImpl coordinateImpl = new CoordinateImpl();
-
-		coordinateImpl.setNew(coordinate.isNew());
-		coordinateImpl.setPrimaryKey(coordinate.getPrimaryKey());
-
-		coordinateImpl.setCoordinateId(coordinate.getCoordinateId());
-		coordinateImpl.setShapeId(coordinate.getShapeId());
-		coordinateImpl.setLongitude(coordinate.getLongitude());
-		coordinateImpl.setLatitude(coordinate.getLatitude());
-
-		return coordinateImpl;
-	}
-
 	/**
-	 * Returns the coordinate with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the coordinate with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the coordinate
 	 * @return the coordinate
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a coordinate with the primary key could not be found
 	 */
 	@Override
 	public Coordinate findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchCoordinateException, SystemException {
+		throws NoSuchCoordinateException {
 		Coordinate coordinate = fetchByPrimaryKey(primaryKey);
 
 		if (coordinate == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			if (_log.isDebugEnabled()) {
+				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
 			throw new NoSuchCoordinateException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
@@ -862,16 +876,15 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	}
 
 	/**
-	 * Returns the coordinate with the primary key or throws a {@link org.politaktiv.map.NoSuchCoordinateException} if it could not be found.
+	 * Returns the coordinate with the primary key or throws a {@link NoSuchCoordinateException} if it could not be found.
 	 *
 	 * @param coordinateId the primary key of the coordinate
 	 * @return the coordinate
-	 * @throws org.politaktiv.map.NoSuchCoordinateException if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchCoordinateException if a coordinate with the primary key could not be found
 	 */
 	@Override
 	public Coordinate findByPrimaryKey(long coordinateId)
-		throws NoSuchCoordinateException, SystemException {
+		throws NoSuchCoordinateException {
 		return findByPrimaryKey((Serializable)coordinateId);
 	}
 
@@ -880,17 +893,17 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 *
 	 * @param primaryKey the primary key of the coordinate
 	 * @return the coordinate, or <code>null</code> if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Coordinate fetchByPrimaryKey(Serializable primaryKey)
-		throws SystemException {
-		Coordinate coordinate = (Coordinate)EntityCacheUtil.getResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+	public Coordinate fetchByPrimaryKey(Serializable primaryKey) {
+		Serializable serializable = entityCache.getResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
 				CoordinateImpl.class, primaryKey);
 
-		if (coordinate == _nullCoordinate) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		Coordinate coordinate = (Coordinate)serializable;
 
 		if (coordinate == null) {
 			Session session = null;
@@ -905,12 +918,12 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 					cacheResult(coordinate);
 				}
 				else {
-					EntityCacheUtil.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
-						CoordinateImpl.class, primaryKey, _nullCoordinate);
+					entityCache.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+						CoordinateImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
-				EntityCacheUtil.removeResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.removeResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
 					CoordinateImpl.class, primaryKey);
 
 				throw processException(e);
@@ -928,22 +941,113 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 *
 	 * @param coordinateId the primary key of the coordinate
 	 * @return the coordinate, or <code>null</code> if a coordinate with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Coordinate fetchByPrimaryKey(long coordinateId)
-		throws SystemException {
+	public Coordinate fetchByPrimaryKey(long coordinateId) {
 		return fetchByPrimaryKey((Serializable)coordinateId);
+	}
+
+	@Override
+	public Map<Serializable, Coordinate> fetchByPrimaryKeys(
+		Set<Serializable> primaryKeys) {
+		if (primaryKeys.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		Map<Serializable, Coordinate> map = new HashMap<Serializable, Coordinate>();
+
+		if (primaryKeys.size() == 1) {
+			Iterator<Serializable> iterator = primaryKeys.iterator();
+
+			Serializable primaryKey = iterator.next();
+
+			Coordinate coordinate = fetchByPrimaryKey(primaryKey);
+
+			if (coordinate != null) {
+				map.put(primaryKey, coordinate);
+			}
+
+			return map;
+		}
+
+		Set<Serializable> uncachedPrimaryKeys = null;
+
+		for (Serializable primaryKey : primaryKeys) {
+			Serializable serializable = entityCache.getResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+					CoordinateImpl.class, primaryKey);
+
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
+
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (Coordinate)serializable);
+				}
+			}
+		}
+
+		if (uncachedPrimaryKeys == null) {
+			return map;
+		}
+
+		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
+				1);
+
+		query.append(_SQL_SELECT_COORDINATE_WHERE_PKS_IN);
+
+		for (Serializable primaryKey : uncachedPrimaryKeys) {
+			query.append((long)primaryKey);
+
+			query.append(",");
+		}
+
+		query.setIndex(query.index() - 1);
+
+		query.append(")");
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = session.createQuery(sql);
+
+			for (Coordinate coordinate : (List<Coordinate>)q.list()) {
+				map.put(coordinate.getPrimaryKeyObj(), coordinate);
+
+				cacheResult(coordinate);
+
+				uncachedPrimaryKeys.remove(coordinate.getPrimaryKeyObj());
+			}
+
+			for (Serializable primaryKey : uncachedPrimaryKeys) {
+				entityCache.putResult(CoordinateModelImpl.ENTITY_CACHE_ENABLED,
+					CoordinateImpl.class, primaryKey, nullModel);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return map;
 	}
 
 	/**
 	 * Returns all the coordinates.
 	 *
 	 * @return the coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Coordinate> findAll() throws SystemException {
+	public List<Coordinate> findAll() {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
@@ -951,17 +1055,15 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Returns a range of all the coordinates.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of coordinates
 	 * @param end the upper bound of the range of coordinates (not inclusive)
 	 * @return the range of coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Coordinate> findAll(int start, int end)
-		throws SystemException {
+	public List<Coordinate> findAll(int start, int end) {
 		return findAll(start, end, null);
 	}
 
@@ -969,18 +1071,37 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Returns an ordered range of all the coordinates.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of coordinates
 	 * @param end the upper bound of the range of coordinates (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Coordinate> findAll(int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Coordinate> orderByComparator) {
+		return findAll(start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the coordinates.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CoordinateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param start the lower bound of the range of coordinates
+	 * @param end the upper bound of the range of coordinates (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of coordinates
+	 */
+	@Override
+	public List<Coordinate> findAll(int start, int end,
+		OrderByComparator<Coordinate> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -996,8 +1117,12 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 			finderArgs = new Object[] { start, end, orderByComparator };
 		}
 
-		List<Coordinate> list = (List<Coordinate>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<Coordinate> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Coordinate>)finderCache.getResult(finderPath,
+					finderArgs, this);
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -1005,7 +1130,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_COORDINATE);
 
@@ -1035,7 +1160,7 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 					Collections.sort(list);
 
-					list = new UnmodifiableList<Coordinate>(list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
 					list = (List<Coordinate>)QueryUtil.list(q, getDialect(),
@@ -1044,10 +1169,10 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1062,10 +1187,9 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	/**
 	 * Removes all the coordinates from the database.
 	 *
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeAll() throws SystemException {
+	public void removeAll() {
 		for (Coordinate coordinate : findAll()) {
 			remove(coordinate);
 		}
@@ -1075,11 +1199,10 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 	 * Returns the number of coordinates.
 	 *
 	 * @return the number of coordinates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countAll() throws SystemException {
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
+	public int countAll() {
+		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -1092,11 +1215,11 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY, count);
+				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
+					count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY);
 
 				throw processException(e);
@@ -1109,64 +1232,33 @@ public class CoordinatePersistenceImpl extends BasePersistenceImpl<Coordinate>
 		return count.intValue();
 	}
 
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return CoordinateModelImpl.TABLE_COLUMNS_MAP;
+	}
+
 	/**
 	 * Initializes the coordinate persistence.
 	 */
 	public void afterPropertiesSet() {
-		String[] listenerClassNames = StringUtil.split(GetterUtil.getString(
-					com.liferay.util.service.ServiceProps.get(
-						"value.object.listener.org.politaktiv.map.model.Coordinate")));
-
-		if (listenerClassNames.length > 0) {
-			try {
-				List<ModelListener<Coordinate>> listenersList = new ArrayList<ModelListener<Coordinate>>();
-
-				for (String listenerClassName : listenerClassNames) {
-					listenersList.add((ModelListener<Coordinate>)InstanceFactory.newInstance(
-							getClassLoader(), listenerClassName));
-				}
-
-				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
-			}
-			catch (Exception e) {
-				_log.error(e);
-			}
-		}
 	}
 
 	public void destroy() {
-		EntityCacheUtil.removeCache(CoordinateImpl.class.getName());
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		entityCache.removeCache(CoordinateImpl.class.getName());
+		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	protected EntityCache entityCache = EntityCacheUtil.getEntityCache();
+	protected FinderCache finderCache = FinderCacheUtil.getFinderCache();
 	private static final String _SQL_SELECT_COORDINATE = "SELECT coordinate FROM Coordinate coordinate";
+	private static final String _SQL_SELECT_COORDINATE_WHERE_PKS_IN = "SELECT coordinate FROM Coordinate coordinate WHERE coordinateId IN (";
 	private static final String _SQL_SELECT_COORDINATE_WHERE = "SELECT coordinate FROM Coordinate coordinate WHERE ";
 	private static final String _SQL_COUNT_COORDINATE = "SELECT COUNT(coordinate) FROM Coordinate coordinate";
 	private static final String _SQL_COUNT_COORDINATE_WHERE = "SELECT COUNT(coordinate) FROM Coordinate coordinate WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "coordinate.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Coordinate exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Coordinate exists with the key {";
-	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
-				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
-	private static Log _log = LogFactoryUtil.getLog(CoordinatePersistenceImpl.class);
-	private static Coordinate _nullCoordinate = new CoordinateImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<Coordinate> toCacheModel() {
-				return _nullCoordinateCacheModel;
-			}
-		};
-
-	private static CacheModel<Coordinate> _nullCoordinateCacheModel = new CacheModel<Coordinate>() {
-			@Override
-			public Coordinate toEntityModel() {
-				return _nullCoordinate;
-			}
-		};
+	private static final Log _log = LogFactoryUtil.getLog(CoordinatePersistenceImpl.class);
 }

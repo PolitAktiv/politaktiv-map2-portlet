@@ -119,10 +119,14 @@ function createMap2 (prop) {
             var i, len = shapesData.length;
 
             _Map2.ownIcon = L.icon({
-                iconUrl: '/politaktiv-map2-portlet/images/marker-icon-red.png',
-                iconRetinaUrl: '/politaktiv-map2-portlet/images/marker-icon-red-2x.png',
-                shadowUrl: '/politaktiv-map2-portlet/images/marker-shadow.png',
+              //  iconUrl: '/politaktiv-map2-portlet/images/marker-icon-red.png',
+              //  iconRetinaUrl: '/politaktiv-map2-portlet/images/marker-icon-red-2x.png',
+              //  shadowUrl: '/politaktiv-map2-portlet/images/marker-shadow.png',
 
+               iconUrl: '/o/politaktiv-map2-portlet/images/marker-icon-red.png',
+               iconRetinaUrl: '/o/politaktiv-map2-portlet/images/marker-icon-red-2x.png',
+               shadowUrl: '/o/politaktiv-map2-portlet/images/marker-shadow.png',
+                
                 iconSize: [25, 41],
                 shadowSize: [41, 41],
                 iconAnchor: [12, 41],

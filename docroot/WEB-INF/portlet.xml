@@ -4,10 +4,14 @@
 	<portlet>
 		<portlet-name>politaktiv-map2-portlet</portlet-name>
 		<display-name>PolitAktiv Map2 Portlet</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/view.jsp</value>
+		</init-param>
+		<init-param>
+			<name>copy-request-parameters</name>
+			<value>false</value>
 		</init-param>
 		<expiration-cache>0</expiration-cache>
 		<supports>

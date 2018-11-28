@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,11 @@
 
 package org.politaktiv.map.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
 
 import org.politaktiv.map.model.Shape;
 
@@ -30,11 +32,36 @@ import java.util.Date;
 /**
  * The cache model class for representing Shape in entity cache.
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see Shape
  * @generated
  */
+@ProviderType
 public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ShapeCacheModel)) {
+			return false;
+		}
+
+		ShapeCacheModel shapeCacheModel = (ShapeCacheModel)obj;
+
+		if (shapeId == shapeCacheModel.shapeId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, shapeId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(27);
@@ -80,7 +107,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		shapeImpl.setUserId(userId);
 
 		if (userName == null) {
-			shapeImpl.setUserName(StringPool.BLANK);
+			shapeImpl.setUserName("");
 		}
 		else {
 			shapeImpl.setUserName(userName);
@@ -101,28 +128,28 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		}
 
 		if (title == null) {
-			shapeImpl.setTitle(StringPool.BLANK);
+			shapeImpl.setTitle("");
 		}
 		else {
 			shapeImpl.setTitle(title);
 		}
 
 		if (abstractDescription == null) {
-			shapeImpl.setAbstractDescription(StringPool.BLANK);
+			shapeImpl.setAbstractDescription("");
 		}
 		else {
 			shapeImpl.setAbstractDescription(abstractDescription);
 		}
 
 		if (url == null) {
-			shapeImpl.setUrl(StringPool.BLANK);
+			shapeImpl.setUrl("");
 		}
 		else {
 			shapeImpl.setUrl(url);
 		}
 
 		if (shapeType == null) {
-			shapeImpl.setShapeType(StringPool.BLANK);
+			shapeImpl.setShapeType("");
 		}
 		else {
 			shapeImpl.setShapeType(shapeType);
@@ -131,7 +158,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		shapeImpl.setRadius(radius);
 
 		if (layer == null) {
-			shapeImpl.setLayer(StringPool.BLANK);
+			shapeImpl.setLayer("");
 		}
 		else {
 			shapeImpl.setLayer(layer);
@@ -145,8 +172,11 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		shapeId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
@@ -155,6 +185,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		abstractDescription = objectInput.readUTF();
 		url = objectInput.readUTF();
 		shapeType = objectInput.readUTF();
+
 		radius = objectInput.readLong();
 		layer = objectInput.readUTF();
 	}
@@ -163,12 +194,15 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(shapeId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(userName);
@@ -178,28 +212,28 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		objectOutput.writeLong(modifiedDate);
 
 		if (title == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(title);
 		}
 
 		if (abstractDescription == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(abstractDescription);
 		}
 
 		if (url == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(url);
 		}
 
 		if (shapeType == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(shapeType);
@@ -208,7 +242,7 @@ public class ShapeCacheModel implements CacheModel<Shape>, Externalizable {
 		objectOutput.writeLong(radius);
 
 		if (layer == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
+			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(layer);

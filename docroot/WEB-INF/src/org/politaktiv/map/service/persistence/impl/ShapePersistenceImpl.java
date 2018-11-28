@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -12,43 +12,50 @@
  * details.
  */
 
-package org.politaktiv.map.service.persistence;
+package org.politaktiv.map.service.persistence.impl;
 
-import com.liferay.portal.kernel.cache.CacheRegistryUtil;
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.InstanceFactory;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.persistence.CompanyProvider;
+import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
+import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnmodifiableList;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
-import org.politaktiv.map.NoSuchShapeException;
+import org.politaktiv.map.exception.NoSuchShapeException;
 import org.politaktiv.map.model.Shape;
 import org.politaktiv.map.model.impl.ShapeImpl;
 import org.politaktiv.map.model.impl.ShapeModelImpl;
+import org.politaktiv.map.service.persistence.ShapePersistence;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationHandler;
+
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The persistence implementation for the shape service.
@@ -57,11 +64,12 @@ import java.util.List;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Paul Butenko
+ * @author Aleksandar Lukic
  * @see ShapePersistence
- * @see ShapeUtil
+ * @see org.politaktiv.map.service.persistence.ShapeUtil
  * @generated
  */
+@ProviderType
 public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	implements ShapePersistence {
 	/*
@@ -109,10 +117,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param userId the user ID
 	 * @return the matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findByUserId(long userId) throws SystemException {
+	public List<Shape> findByUserId(long userId) {
 		return findByUserId(userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
@@ -120,18 +127,16 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns a range of all the shapes where userId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param userId the user ID
 	 * @param start the lower bound of the range of shapes
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @return the range of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findByUserId(long userId, int start, int end)
-		throws SystemException {
+	public List<Shape> findByUserId(long userId, int start, int end) {
 		return findByUserId(userId, start, end, null);
 	}
 
@@ -139,7 +144,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns an ordered range of all the shapes where userId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param userId the user ID
@@ -147,11 +152,30 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Shape> findByUserId(long userId, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
+		return findByUserId(userId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the shapes where userId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param start the lower bound of the range of shapes
+	 * @param end the upper bound of the range of shapes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching shapes
+	 */
+	@Override
+	public List<Shape> findByUserId(long userId, int start, int end,
+		OrderByComparator<Shape> orderByComparator, boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -167,15 +191,19 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			finderArgs = new Object[] { userId, start, end, orderByComparator };
 		}
 
-		List<Shape> list = (List<Shape>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<Shape> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (Shape shape : list) {
-				if ((userId != shape.getUserId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<Shape>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (Shape shape : list) {
+					if ((userId != shape.getUserId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -185,7 +213,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -223,7 +251,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 					Collections.sort(list);
 
-					list = new UnmodifiableList<Shape>(list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
 					list = (List<Shape>)QueryUtil.list(q, getDialect(), start,
@@ -232,10 +260,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -253,13 +281,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a matching shape could not be found
 	 */
 	@Override
 	public Shape findByUserId_First(long userId,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = fetchByUserId_First(userId, orderByComparator);
 
 		if (shape != null) {
@@ -273,7 +299,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		msg.append("userId=");
 		msg.append(userId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchShapeException(msg.toString());
 	}
@@ -284,11 +310,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shape, or <code>null</code> if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Shape fetchByUserId_First(long userId,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
 		List<Shape> list = findByUserId(userId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -304,13 +329,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a matching shape could not be found
 	 */
 	@Override
 	public Shape findByUserId_Last(long userId,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = fetchByUserId_Last(userId, orderByComparator);
 
 		if (shape != null) {
@@ -324,7 +347,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		msg.append("userId=");
 		msg.append(userId);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchShapeException(msg.toString());
 	}
@@ -335,11 +358,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shape, or <code>null</code> if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Shape fetchByUserId_Last(long userId,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
 		int count = countByUserId(userId);
 
 		if (count == 0) {
@@ -363,13 +385,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
 	public Shape[] findByUserId_PrevAndNext(long shapeId, long userId,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = findByPrimaryKey(shapeId);
 
 		Session session = null;
@@ -398,12 +418,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	}
 
 	protected Shape getByUserId_PrevAndNext(Session session, Shape shape,
-		long userId, OrderByComparator orderByComparator, boolean previous) {
+		long userId, OrderByComparator<Shape> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -505,10 +527,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Removes all the shapes where userId = &#63; from the database.
 	 *
 	 * @param userId the user ID
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeByUserId(long userId) throws SystemException {
+	public void removeByUserId(long userId) {
 		for (Shape shape : findByUserId(userId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(shape);
@@ -520,16 +541,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param userId the user ID
 	 * @return the number of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countByUserId(long userId) throws SystemException {
+	public int countByUserId(long userId) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_USERID;
 
 		Object[] finderArgs = new Object[] { userId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -553,10 +572,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -594,10 +613,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param layer the layer
 	 * @return the matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findByLayer(String layer) throws SystemException {
+	public List<Shape> findByLayer(String layer) {
 		return findByLayer(layer, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
@@ -605,18 +623,16 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns a range of all the shapes where layer = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param layer the layer
 	 * @param start the lower bound of the range of shapes
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @return the range of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findByLayer(String layer, int start, int end)
-		throws SystemException {
+	public List<Shape> findByLayer(String layer, int start, int end) {
 		return findByLayer(layer, start, end, null);
 	}
 
@@ -624,7 +640,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns an ordered range of all the shapes where layer = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param layer the layer
@@ -632,11 +648,30 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Shape> findByLayer(String layer, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
+		return findByLayer(layer, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the shapes where layer = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param layer the layer
+	 * @param start the lower bound of the range of shapes
+	 * @param end the upper bound of the range of shapes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching shapes
+	 */
+	@Override
+	public List<Shape> findByLayer(String layer, int start, int end,
+		OrderByComparator<Shape> orderByComparator, boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -652,15 +687,19 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			finderArgs = new Object[] { layer, start, end, orderByComparator };
 		}
 
-		List<Shape> list = (List<Shape>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<Shape> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (Shape shape : list) {
-				if (!Validator.equals(layer, shape.getLayer())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<Shape>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (Shape shape : list) {
+					if (!Objects.equals(layer, shape.getLayer())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -670,7 +709,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -683,7 +722,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			if (layer == null) {
 				query.append(_FINDER_COLUMN_LAYER_LAYER_1);
 			}
-			else if (layer.equals(StringPool.BLANK)) {
+			else if (layer.equals("")) {
 				query.append(_FINDER_COLUMN_LAYER_LAYER_3);
 			}
 			else {
@@ -722,7 +761,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 					Collections.sort(list);
 
-					list = new UnmodifiableList<Shape>(list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
 					list = (List<Shape>)QueryUtil.list(q, getDialect(), start,
@@ -731,10 +770,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -752,13 +791,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a matching shape could not be found
 	 */
 	@Override
 	public Shape findByLayer_First(String layer,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = fetchByLayer_First(layer, orderByComparator);
 
 		if (shape != null) {
@@ -772,7 +809,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		msg.append("layer=");
 		msg.append(layer);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchShapeException(msg.toString());
 	}
@@ -783,11 +820,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shape, or <code>null</code> if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Shape fetchByLayer_First(String layer,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
 		List<Shape> list = findByLayer(layer, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -803,13 +839,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a matching shape could not be found
 	 */
 	@Override
 	public Shape findByLayer_Last(String layer,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = fetchByLayer_Last(layer, orderByComparator);
 
 		if (shape != null) {
@@ -823,7 +857,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		msg.append("layer=");
 		msg.append(layer);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchShapeException(msg.toString());
 	}
@@ -834,11 +868,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shape, or <code>null</code> if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Shape fetchByLayer_Last(String layer,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
 		int count = countByLayer(layer);
 
 		if (count == 0) {
@@ -862,13 +895,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
 	public Shape[] findByLayer_PrevAndNext(long shapeId, String layer,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = findByPrimaryKey(shapeId);
 
 		Session session = null;
@@ -897,12 +928,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	}
 
 	protected Shape getByLayer_PrevAndNext(Session session, Shape shape,
-		String layer, OrderByComparator orderByComparator, boolean previous) {
+		String layer, OrderByComparator<Shape> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -915,7 +948,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		if (layer == null) {
 			query.append(_FINDER_COLUMN_LAYER_LAYER_1);
 		}
-		else if (layer.equals(StringPool.BLANK)) {
+		else if (layer.equals("")) {
 			query.append(_FINDER_COLUMN_LAYER_LAYER_3);
 		}
 		else {
@@ -1018,10 +1051,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Removes all the shapes where layer = &#63; from the database.
 	 *
 	 * @param layer the layer
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeByLayer(String layer) throws SystemException {
+	public void removeByLayer(String layer) {
 		for (Shape shape : findByLayer(layer, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(shape);
@@ -1033,16 +1065,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param layer the layer
 	 * @return the number of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countByLayer(String layer) throws SystemException {
+	public int countByLayer(String layer) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_LAYER;
 
 		Object[] finderArgs = new Object[] { layer };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -1054,7 +1084,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			if (layer == null) {
 				query.append(_FINDER_COLUMN_LAYER_LAYER_1);
 			}
-			else if (layer.equals(StringPool.BLANK)) {
+			else if (layer.equals("")) {
 				query.append(_FINDER_COLUMN_LAYER_LAYER_3);
 			}
 			else {
@@ -1080,10 +1110,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1127,11 +1157,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param layer the layer
 	 * @return the matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findByUserIdAndLayer(long userId, String layer)
-		throws SystemException {
+	public List<Shape> findByUserIdAndLayer(long userId, String layer) {
 		return findByUserIdAndLayer(userId, layer, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, null);
 	}
@@ -1140,7 +1168,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns a range of all the shapes where userId = &#63; and layer = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param userId the user ID
@@ -1148,11 +1176,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param start the lower bound of the range of shapes
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @return the range of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Shape> findByUserIdAndLayer(long userId, String layer,
-		int start, int end) throws SystemException {
+		int start, int end) {
 		return findByUserIdAndLayer(userId, layer, start, end, null);
 	}
 
@@ -1160,7 +1187,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns an ordered range of all the shapes where userId = &#63; and layer = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param userId the user ID
@@ -1169,12 +1196,33 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Shape> findByUserIdAndLayer(long userId, String layer,
-		int start, int end, OrderByComparator orderByComparator)
-		throws SystemException {
+		int start, int end, OrderByComparator<Shape> orderByComparator) {
+		return findByUserIdAndLayer(userId, layer, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the shapes where userId = &#63; and layer = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param layer the layer
+	 * @param start the lower bound of the range of shapes
+	 * @param end the upper bound of the range of shapes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching shapes
+	 */
+	@Override
+	public List<Shape> findByUserIdAndLayer(long userId, String layer,
+		int start, int end, OrderByComparator<Shape> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -1194,16 +1242,20 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 				};
 		}
 
-		List<Shape> list = (List<Shape>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<Shape> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (Shape shape : list) {
-				if ((userId != shape.getUserId()) ||
-						!Validator.equals(layer, shape.getLayer())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<Shape>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (Shape shape : list) {
+					if ((userId != shape.getUserId()) ||
+							!Objects.equals(layer, shape.getLayer())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -1213,7 +1265,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1228,7 +1280,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			if (layer == null) {
 				query.append(_FINDER_COLUMN_USERIDANDLAYER_LAYER_1);
 			}
-			else if (layer.equals(StringPool.BLANK)) {
+			else if (layer.equals("")) {
 				query.append(_FINDER_COLUMN_USERIDANDLAYER_LAYER_3);
 			}
 			else {
@@ -1269,7 +1321,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 					Collections.sort(list);
 
-					list = new UnmodifiableList<Shape>(list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
 					list = (List<Shape>)QueryUtil.list(q, getDialect(), start,
@@ -1278,10 +1330,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1300,13 +1352,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a matching shape could not be found
 	 */
 	@Override
 	public Shape findByUserIdAndLayer_First(long userId, String layer,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = fetchByUserIdAndLayer_First(userId, layer,
 				orderByComparator);
 
@@ -1324,7 +1374,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		msg.append(", layer=");
 		msg.append(layer);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchShapeException(msg.toString());
 	}
@@ -1336,11 +1386,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shape, or <code>null</code> if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Shape fetchByUserIdAndLayer_First(long userId, String layer,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
 		List<Shape> list = findByUserIdAndLayer(userId, layer, 0, 1,
 				orderByComparator);
 
@@ -1358,13 +1407,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a matching shape could not be found
 	 */
 	@Override
 	public Shape findByUserIdAndLayer_Last(long userId, String layer,
-		OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		OrderByComparator<Shape> orderByComparator) throws NoSuchShapeException {
 		Shape shape = fetchByUserIdAndLayer_Last(userId, layer,
 				orderByComparator);
 
@@ -1382,7 +1429,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		msg.append(", layer=");
 		msg.append(layer);
 
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
+		msg.append("}");
 
 		throw new NoSuchShapeException(msg.toString());
 	}
@@ -1394,11 +1441,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shape, or <code>null</code> if a matching shape could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Shape fetchByUserIdAndLayer_Last(long userId, String layer,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
 		int count = countByUserIdAndLayer(userId, layer);
 
 		if (count == 0) {
@@ -1423,13 +1469,12 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param layer the layer
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
 	public Shape[] findByUserIdAndLayer_PrevAndNext(long shapeId, long userId,
-		String layer, OrderByComparator orderByComparator)
-		throws NoSuchShapeException, SystemException {
+		String layer, OrderByComparator<Shape> orderByComparator)
+		throws NoSuchShapeException {
 		Shape shape = findByPrimaryKey(shapeId);
 
 		Session session = null;
@@ -1459,15 +1504,16 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 	protected Shape getByUserIdAndLayer_PrevAndNext(Session session,
 		Shape shape, long userId, String layer,
-		OrderByComparator orderByComparator, boolean previous) {
+		OrderByComparator<Shape> orderByComparator, boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_SHAPE_WHERE);
@@ -1479,7 +1525,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		if (layer == null) {
 			query.append(_FINDER_COLUMN_USERIDANDLAYER_LAYER_1);
 		}
-		else if (layer.equals(StringPool.BLANK)) {
+		else if (layer.equals("")) {
 			query.append(_FINDER_COLUMN_USERIDANDLAYER_LAYER_3);
 		}
 		else {
@@ -1585,11 +1631,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param userId the user ID
 	 * @param layer the layer
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeByUserIdAndLayer(long userId, String layer)
-		throws SystemException {
+	public void removeByUserIdAndLayer(long userId, String layer) {
 		for (Shape shape : findByUserIdAndLayer(userId, layer,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(shape);
@@ -1602,17 +1646,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * @param userId the user ID
 	 * @param layer the layer
 	 * @return the number of matching shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countByUserIdAndLayer(long userId, String layer)
-		throws SystemException {
+	public int countByUserIdAndLayer(long userId, String layer) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_USERIDANDLAYER;
 
 		Object[] finderArgs = new Object[] { userId, layer };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -1626,7 +1667,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			if (layer == null) {
 				query.append(_FINDER_COLUMN_USERIDANDLAYER_LAYER_1);
 			}
-			else if (layer.equals(StringPool.BLANK)) {
+			else if (layer.equals("")) {
 				query.append(_FINDER_COLUMN_USERIDANDLAYER_LAYER_3);
 			}
 			else {
@@ -1654,10 +1695,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1685,7 +1726,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 */
 	@Override
 	public void cacheResult(Shape shape) {
-		EntityCacheUtil.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
 			ShapeImpl.class, shape.getPrimaryKey(), shape);
 
 		shape.resetOriginalValues();
@@ -1699,7 +1740,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	@Override
 	public void cacheResult(List<Shape> shapes) {
 		for (Shape shape : shapes) {
-			if (EntityCacheUtil.getResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+			if (entityCache.getResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
 						ShapeImpl.class, shape.getPrimaryKey()) == null) {
 				cacheResult(shape);
 			}
@@ -1713,45 +1754,41 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Clears the cache for all shapes.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache() {
-		if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
-			CacheRegistryUtil.clear(ShapeImpl.class.getName());
-		}
+		entityCache.clearCache(ShapeImpl.class);
 
-		EntityCacheUtil.clearCache(ShapeImpl.class.getName());
-
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	/**
 	 * Clears the cache for the shape.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(Shape shape) {
-		EntityCacheUtil.removeResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.removeResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
 			ShapeImpl.class, shape.getPrimaryKey());
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	@Override
 	public void clearCache(List<Shape> shapes) {
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (Shape shape : shapes) {
-			EntityCacheUtil.removeResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+			entityCache.removeResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
 				ShapeImpl.class, shape.getPrimaryKey());
 		}
 	}
@@ -1769,6 +1806,8 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		shape.setNew(true);
 		shape.setPrimaryKey(shapeId);
 
+		shape.setCompanyId(companyProvider.getCompanyId());
+
 		return shape;
 	}
 
@@ -1777,12 +1816,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param shapeId the primary key of the shape
 	 * @return the shape that was removed
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
-	public Shape remove(long shapeId)
-		throws NoSuchShapeException, SystemException {
+	public Shape remove(long shapeId) throws NoSuchShapeException {
 		return remove((Serializable)shapeId);
 	}
 
@@ -1791,12 +1828,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param primaryKey the primary key of the shape
 	 * @return the shape that was removed
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
-	public Shape remove(Serializable primaryKey)
-		throws NoSuchShapeException, SystemException {
+	public Shape remove(Serializable primaryKey) throws NoSuchShapeException {
 		Session session = null;
 
 		try {
@@ -1805,8 +1840,8 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			Shape shape = (Shape)session.get(ShapeImpl.class, primaryKey);
 
 			if (shape == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+				if (_log.isDebugEnabled()) {
+					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
 				throw new NoSuchShapeException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
@@ -1827,9 +1862,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	}
 
 	@Override
-	protected Shape removeImpl(Shape shape) throws SystemException {
-		shape = toUnwrappedModel(shape);
-
+	protected Shape removeImpl(Shape shape) {
 		Session session = null;
 
 		try {
@@ -1859,13 +1892,48 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	}
 
 	@Override
-	public Shape updateImpl(org.politaktiv.map.model.Shape shape)
-		throws SystemException {
-		shape = toUnwrappedModel(shape);
-
+	public Shape updateImpl(Shape shape) {
 		boolean isNew = shape.isNew();
 
+		if (!(shape instanceof ShapeModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(shape.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(shape);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in shape proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom Shape implementation " +
+				shape.getClass());
+		}
+
 		ShapeModelImpl shapeModelImpl = (ShapeModelImpl)shape;
+
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (shape.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				shape.setCreateDate(now);
+			}
+			else {
+				shape.setCreateDate(serviceContext.getCreateDate(now));
+			}
+		}
+
+		if (!shapeModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				shape.setModifiedDate(now);
+			}
+			else {
+				shape.setModifiedDate(serviceContext.getModifiedDate(now));
+			}
+		}
 
 		Session session = null;
 
@@ -1878,7 +1946,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 				shape.setNew(false);
 			}
 			else {
-				session.merge(shape);
+				shape = (Shape)session.merge(shape);
 			}
 		}
 		catch (Exception e) {
@@ -1888,10 +1956,36 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
-		if (isNew || !ShapeModelImpl.COLUMN_BITMASK_ENABLED) {
-			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		if (!ShapeModelImpl.COLUMN_BITMASK_ENABLED) {
+			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		}
+		else
+		 if (isNew) {
+			Object[] args = new Object[] { shapeModelImpl.getUserId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
+				args);
+
+			args = new Object[] { shapeModelImpl.getLayer() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_LAYER, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LAYER,
+				args);
+
+			args = new Object[] {
+					shapeModelImpl.getUserId(), shapeModelImpl.getLayer()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYER, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYER,
+				args);
+
+			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
+				FINDER_ARGS_EMPTY);
 		}
 
 		else {
@@ -1899,14 +1993,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] { shapeModelImpl.getOriginalUserId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
 					args);
 
 				args = new Object[] { shapeModelImpl.getUserId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
 					args);
 			}
 
@@ -1914,14 +2008,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LAYER.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] { shapeModelImpl.getOriginalLayer() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LAYER, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LAYER,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_LAYER, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LAYER,
 					args);
 
 				args = new Object[] { shapeModelImpl.getLayer() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_LAYER, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LAYER,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_LAYER, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_LAYER,
 					args);
 			}
 
@@ -1932,71 +2026,45 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 						shapeModelImpl.getOriginalLayer()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYER,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYER,
 					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYER,
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYER,
 					args);
 
 				args = new Object[] {
 						shapeModelImpl.getUserId(), shapeModelImpl.getLayer()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYER,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_USERIDANDLAYER,
 					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYER,
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDANDLAYER,
 					args);
 			}
 		}
 
-		EntityCacheUtil.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
-			ShapeImpl.class, shape.getPrimaryKey(), shape);
+		entityCache.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+			ShapeImpl.class, shape.getPrimaryKey(), shape, false);
+
+		shape.resetOriginalValues();
 
 		return shape;
 	}
 
-	protected Shape toUnwrappedModel(Shape shape) {
-		if (shape instanceof ShapeImpl) {
-			return shape;
-		}
-
-		ShapeImpl shapeImpl = new ShapeImpl();
-
-		shapeImpl.setNew(shape.isNew());
-		shapeImpl.setPrimaryKey(shape.getPrimaryKey());
-
-		shapeImpl.setShapeId(shape.getShapeId());
-		shapeImpl.setGroupId(shape.getGroupId());
-		shapeImpl.setCompanyId(shape.getCompanyId());
-		shapeImpl.setUserId(shape.getUserId());
-		shapeImpl.setUserName(shape.getUserName());
-		shapeImpl.setCreateDate(shape.getCreateDate());
-		shapeImpl.setModifiedDate(shape.getModifiedDate());
-		shapeImpl.setTitle(shape.getTitle());
-		shapeImpl.setAbstractDescription(shape.getAbstractDescription());
-		shapeImpl.setUrl(shape.getUrl());
-		shapeImpl.setShapeType(shape.getShapeType());
-		shapeImpl.setRadius(shape.getRadius());
-		shapeImpl.setLayer(shape.getLayer());
-
-		return shapeImpl;
-	}
-
 	/**
-	 * Returns the shape with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the shape with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the shape
 	 * @return the shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
 	public Shape findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchShapeException, SystemException {
+		throws NoSuchShapeException {
 		Shape shape = fetchByPrimaryKey(primaryKey);
 
 		if (shape == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			if (_log.isDebugEnabled()) {
+				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
 			throw new NoSuchShapeException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
@@ -2007,16 +2075,14 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	}
 
 	/**
-	 * Returns the shape with the primary key or throws a {@link org.politaktiv.map.NoSuchShapeException} if it could not be found.
+	 * Returns the shape with the primary key or throws a {@link NoSuchShapeException} if it could not be found.
 	 *
 	 * @param shapeId the primary key of the shape
 	 * @return the shape
-	 * @throws org.politaktiv.map.NoSuchShapeException if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws NoSuchShapeException if a shape with the primary key could not be found
 	 */
 	@Override
-	public Shape findByPrimaryKey(long shapeId)
-		throws NoSuchShapeException, SystemException {
+	public Shape findByPrimaryKey(long shapeId) throws NoSuchShapeException {
 		return findByPrimaryKey((Serializable)shapeId);
 	}
 
@@ -2025,17 +2091,17 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param primaryKey the primary key of the shape
 	 * @return the shape, or <code>null</code> if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Shape fetchByPrimaryKey(Serializable primaryKey)
-		throws SystemException {
-		Shape shape = (Shape)EntityCacheUtil.getResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+	public Shape fetchByPrimaryKey(Serializable primaryKey) {
+		Serializable serializable = entityCache.getResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
 				ShapeImpl.class, primaryKey);
 
-		if (shape == _nullShape) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		Shape shape = (Shape)serializable;
 
 		if (shape == null) {
 			Session session = null;
@@ -2049,12 +2115,12 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 					cacheResult(shape);
 				}
 				else {
-					EntityCacheUtil.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
-						ShapeImpl.class, primaryKey, _nullShape);
+					entityCache.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+						ShapeImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
-				EntityCacheUtil.removeResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.removeResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
 					ShapeImpl.class, primaryKey);
 
 				throw processException(e);
@@ -2072,21 +2138,113 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 *
 	 * @param shapeId the primary key of the shape
 	 * @return the shape, or <code>null</code> if a shape with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Shape fetchByPrimaryKey(long shapeId) throws SystemException {
+	public Shape fetchByPrimaryKey(long shapeId) {
 		return fetchByPrimaryKey((Serializable)shapeId);
+	}
+
+	@Override
+	public Map<Serializable, Shape> fetchByPrimaryKeys(
+		Set<Serializable> primaryKeys) {
+		if (primaryKeys.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		Map<Serializable, Shape> map = new HashMap<Serializable, Shape>();
+
+		if (primaryKeys.size() == 1) {
+			Iterator<Serializable> iterator = primaryKeys.iterator();
+
+			Serializable primaryKey = iterator.next();
+
+			Shape shape = fetchByPrimaryKey(primaryKey);
+
+			if (shape != null) {
+				map.put(primaryKey, shape);
+			}
+
+			return map;
+		}
+
+		Set<Serializable> uncachedPrimaryKeys = null;
+
+		for (Serializable primaryKey : primaryKeys) {
+			Serializable serializable = entityCache.getResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+					ShapeImpl.class, primaryKey);
+
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
+
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (Shape)serializable);
+				}
+			}
+		}
+
+		if (uncachedPrimaryKeys == null) {
+			return map;
+		}
+
+		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
+				1);
+
+		query.append(_SQL_SELECT_SHAPE_WHERE_PKS_IN);
+
+		for (Serializable primaryKey : uncachedPrimaryKeys) {
+			query.append((long)primaryKey);
+
+			query.append(",");
+		}
+
+		query.setIndex(query.index() - 1);
+
+		query.append(")");
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = session.createQuery(sql);
+
+			for (Shape shape : (List<Shape>)q.list()) {
+				map.put(shape.getPrimaryKeyObj(), shape);
+
+				cacheResult(shape);
+
+				uncachedPrimaryKeys.remove(shape.getPrimaryKeyObj());
+			}
+
+			for (Serializable primaryKey : uncachedPrimaryKeys) {
+				entityCache.putResult(ShapeModelImpl.ENTITY_CACHE_ENABLED,
+					ShapeImpl.class, primaryKey, nullModel);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return map;
 	}
 
 	/**
 	 * Returns all the shapes.
 	 *
 	 * @return the shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findAll() throws SystemException {
+	public List<Shape> findAll() {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
@@ -2094,16 +2252,15 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns a range of all the shapes.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of shapes
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @return the range of shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Shape> findAll(int start, int end) throws SystemException {
+	public List<Shape> findAll(int start, int end) {
 		return findAll(start, end, null);
 	}
 
@@ -2111,18 +2268,36 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns an ordered range of all the shapes.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.politaktiv.map.model.impl.ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of shapes
 	 * @param end the upper bound of the range of shapes (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public List<Shape> findAll(int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<Shape> orderByComparator) {
+		return findAll(start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the shapes.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ShapeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param start the lower bound of the range of shapes
+	 * @param end the upper bound of the range of shapes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of shapes
+	 */
+	@Override
+	public List<Shape> findAll(int start, int end,
+		OrderByComparator<Shape> orderByComparator, boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -2138,8 +2313,12 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 			finderArgs = new Object[] { start, end, orderByComparator };
 		}
 
-		List<Shape> list = (List<Shape>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<Shape> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Shape>)finderCache.getResult(finderPath, finderArgs,
+					this);
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -2147,7 +2326,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_SHAPE);
 
@@ -2177,7 +2356,7 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 					Collections.sort(list);
 
-					list = new UnmodifiableList<Shape>(list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
 					list = (List<Shape>)QueryUtil.list(q, getDialect(), start,
@@ -2186,10 +2365,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2204,10 +2383,9 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	/**
 	 * Removes all the shapes from the database.
 	 *
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public void removeAll() throws SystemException {
+	public void removeAll() {
 		for (Shape shape : findAll()) {
 			remove(shape);
 		}
@@ -2217,11 +2395,10 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 	 * Returns the number of shapes.
 	 *
 	 * @return the number of shapes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int countAll() throws SystemException {
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
+	public int countAll() {
+		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -2234,11 +2411,11 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY, count);
+				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
+					count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY);
 
 				throw processException(e);
@@ -2251,64 +2428,35 @@ public class ShapePersistenceImpl extends BasePersistenceImpl<Shape>
 		return count.intValue();
 	}
 
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return ShapeModelImpl.TABLE_COLUMNS_MAP;
+	}
+
 	/**
 	 * Initializes the shape persistence.
 	 */
 	public void afterPropertiesSet() {
-		String[] listenerClassNames = StringUtil.split(GetterUtil.getString(
-					com.liferay.util.service.ServiceProps.get(
-						"value.object.listener.org.politaktiv.map.model.Shape")));
-
-		if (listenerClassNames.length > 0) {
-			try {
-				List<ModelListener<Shape>> listenersList = new ArrayList<ModelListener<Shape>>();
-
-				for (String listenerClassName : listenerClassNames) {
-					listenersList.add((ModelListener<Shape>)InstanceFactory.newInstance(
-							getClassLoader(), listenerClassName));
-				}
-
-				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
-			}
-			catch (Exception e) {
-				_log.error(e);
-			}
-		}
 	}
 
 	public void destroy() {
-		EntityCacheUtil.removeCache(ShapeImpl.class.getName());
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		entityCache.removeCache(ShapeImpl.class.getName());
+		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	@BeanReference(type = CompanyProviderWrapper.class)
+	protected CompanyProvider companyProvider;
+	protected EntityCache entityCache = EntityCacheUtil.getEntityCache();
+	protected FinderCache finderCache = FinderCacheUtil.getFinderCache();
 	private static final String _SQL_SELECT_SHAPE = "SELECT shape FROM Shape shape";
+	private static final String _SQL_SELECT_SHAPE_WHERE_PKS_IN = "SELECT shape FROM Shape shape WHERE shapeId IN (";
 	private static final String _SQL_SELECT_SHAPE_WHERE = "SELECT shape FROM Shape shape WHERE ";
 	private static final String _SQL_COUNT_SHAPE = "SELECT COUNT(shape) FROM Shape shape";
 	private static final String _SQL_COUNT_SHAPE_WHERE = "SELECT COUNT(shape) FROM Shape shape WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "shape.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Shape exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Shape exists with the key {";
-	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
-				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
-	private static Log _log = LogFactoryUtil.getLog(ShapePersistenceImpl.class);
-	private static Shape _nullShape = new ShapeImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<Shape> toCacheModel() {
-				return _nullShapeCacheModel;
-			}
-		};
-
-	private static CacheModel<Shape> _nullShapeCacheModel = new CacheModel<Shape>() {
-			@Override
-			public Shape toEntityModel() {
-				return _nullShape;
-			}
-		};
+	private static final Log _log = LogFactoryUtil.getLog(ShapePersistenceImpl.class);
 }

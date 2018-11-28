@@ -14,13 +14,13 @@
 
 package org.politaktiv.map.service.impl;
 
-import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.ac.AccessControlled;
-import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.access.control.AccessControlled;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import org.apache.log4j.Logger;
 import org.politaktiv.map.model.Shape;
 import org.politaktiv.map.service.CoordinateLocalServiceUtil;

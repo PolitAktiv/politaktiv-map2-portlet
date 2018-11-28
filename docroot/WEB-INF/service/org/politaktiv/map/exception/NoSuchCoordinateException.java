@@ -12,9 +12,9 @@
  * details.
  */
 
-package org.politaktiv.map;
+package org.politaktiv.map.exception;
 
-import com.liferay.portal.NoSuchModelException;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 
 /**
  * @author Paul Butenko
