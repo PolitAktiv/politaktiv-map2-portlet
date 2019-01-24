@@ -70,12 +70,15 @@ function createMap2 (prop) {
                     imageOptions = { opacity : opa };
                     L.imageOverlay(url, imageBounds, imageOptions).addTo(_Map2.map);
         			
-        			
+                    
         		}
         		
         	}
-        	
-        	
+        	//hack by aleksandar lukic
+        	//L.Icon.Default.imagePath = 'path-to-your-leaflet-images-folder';	
+        	// instruction from https://github.com/Leaflet/Leaflet/issues/766
+        	//L.Icon.Default.imagePath = '/o/politaktiv-map2-portlet/js/images/';	
+        	//L.Icon.Default.imagePath = './images';	
         	
         },
 
@@ -125,8 +128,9 @@ function createMap2 (prop) {
 
                iconUrl: '/o/politaktiv-map2-portlet/images/marker-icon-red.png',
                iconRetinaUrl: '/o/politaktiv-map2-portlet/images/marker-icon-red-2x.png',
-               shadowUrl: '/o/politaktiv-map2-portlet/images/marker-shadow.png',
-                
+              // shadowUrl: '/o/politaktiv-map2-portlet/images/marker-shadow.png',
+               shadowUrl: '/o/politaktiv-map2-portlet/images/marker-icon-red.png', 
+               
                 iconSize: [25, 41],
                 shadowSize: [41, 41],
                 iconAnchor: [12, 41],
@@ -155,6 +159,12 @@ function createMap2 (prop) {
             var shape;
             var points = [];
             var coordsFormatted = [];
+            
+            // nedded because of error raised by migration to Liferay 7
+            // after migration to Liferay 7 Leaflet framework kant automcaticaly find default icon images, and raise unhandled exceprion to set it manualy, so I set up it.
+            // L.Icon.Default.imagePath = './images';	
+            L.Icon.Default.imagePath = '/o/politaktiv-map2-portlet/js/images';
+            
             for (var i=0; i<shapeData.coordinates.length; i++) {
                 points.push([   Number(shapeData.coordinates[i].latitude).toString(),
                                 Number(shapeData.coordinates[i].longitude).toString()  ]);

@@ -8,11 +8,11 @@ Signed in User can add and update markers. User's markers colored with red and d
 Configuration:
 	Map center longtitude, latitude and zoom level can be configured from portlet's configuration page. After updating values page should be refreshed.
 
-###############################################
+###############################################$$$$$$$$$$$$$$$$$$$$$$
 # aleksandar.lukic@aslcom.net installation guide
 
 Step by step guide to start Liferay 6.2 Portlet development 
-###############################################
+###############################################$$$$$$$$$$$$$$$$$$$$$$
 1.
  Download Liferay 6.2 with tomcat and jre bundle. If you start your Liferay development it will be nice if you don't think about version of tomcat and java that is compatibile with your Liferay development version,
  so it would be nice if you can download everything bundled and just UNPACK it. This step is right that!

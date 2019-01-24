@@ -17,12 +17,16 @@ package org.politaktiv.map.model.impl;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.util.Validator;
+
+import org.jruby.ir.operands.Array;
 import org.politaktiv.map.MapValidator;
 import org.politaktiv.map.ShapeType;
 import org.politaktiv.map.model.Coordinate;
 import org.politaktiv.map.service.CoordinateLocalServiceUtil;
 
 import javax.portlet.ValidatorException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +38,7 @@ import java.util.List;
  *
  * @author Paul Butenko
  */
+@JSON(include = true)
 public class ShapeImpl extends ShapeBaseImpl {
     public static final int POINT_COORDINATE_SIZE = 1;
     public static final int RECTANGLE_COORDINATE_SIZE = 4;
@@ -49,7 +54,18 @@ public class ShapeImpl extends ShapeBaseImpl {
     @JSON
     @Override
     public List<Coordinate> getCoordinates() throws SystemException {
-        return CoordinateLocalServiceUtil.getAllCoordinatesByShapeId(getShapeId());
+       return CoordinateLocalServiceUtil.getAllCoordinatesByShapeId(getShapeId());
+/*    	List<Coordinate> list = new ArrayList<Coordinate> ();
+    	Coordinate coord1 = new CoordinateImpl();
+    	coord1.setLatitude("13.23");
+    	coord1.setLatitude("18.4");
+    	list.add(coord1);
+    	
+    	Coordinate coord2= new CoordinateImpl();
+    	coord1.setLatitude("19.23");
+    	coord1.setLatitude("11.4");
+    	list.add(coord2);
+    	return list;*/
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.politaktiv.map.model;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.annotation.ImplementationClassName;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.util.Accessor;
 
@@ -54,7 +55,7 @@ public interface Shape extends ShapeModel, PersistedModel {
 			}
 		};
 
-	@com.liferay.portal.kernel.json.JSON()
+	@JSON
 	public java.util.List<Coordinate> getCoordinates()
 		throws com.liferay.portal.kernel.exception.SystemException;
 

@@ -14,6 +14,7 @@
 
 package org.politaktiv.map.service.impl;
 
+
 import org.politaktiv.map.service.base.CoordinateServiceBaseImpl;
 
 /**
