@@ -10,6 +10,7 @@
 
 <div class="row-fluid" id="<portlet:namespace />configMapForm">
 	<div class="span3">
+		<liferay-ui:success key="config-stored" message="Configuration Saved Successfully" />
 		<aui:form action="<%= configurationURL %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
@@ -76,15 +77,20 @@
 			width="800" ></aui:input>				
 				
 		
+<%-- 			<aui:button-row>
+				<aui:button type="submit" />
+			</aui:button-row> --%>
 			<aui:button-row>
 				<aui:button type="submit" />
-			</aui:button-row>
+			</aui:button-row>	
 		</aui:form>
 	</div>
 	
+				
+<!-- 	
 	<div class="span9">
 		<div class="config-map"></div>
-	</div>
+	</div> -->
 
 </div>
 

@@ -75,6 +75,7 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         shape.setCompanyId(companyId);
 
         shape.setUserId(currentUserId);
+
         shape.setUserName(user.getFullName());
         shape.setCreateDate(currentDate);
         shape.setModifiedDate(currentDate);
@@ -103,9 +104,14 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
             throws SystemException, ValidatorException, PortalException {
 
         Shape shape = ShapeLocalServiceUtil.getShape(shapeId);
-
+        User user = getPermissionChecker().getUser();
+        long currentUserId = user.getUserId();
         ShapePermission.checkUpdate(getPermissionChecker(), shape.getGroupId(), portletId, primKey, shape.getUserId());
-
+     /*   if(!ShapePermission.canUpdateShape(getPermissionChecker(), shape, portletId, primKey)){
+        	throw new PrincipalException("User " + currentUserId + " has no permission to make action " + "updateShape");
+        }*/
+     
+        
         Date currentDate = new Date();
 
         shape.setModifiedDate(currentDate);
@@ -138,6 +144,8 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
 
             shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
             shape.setTitle(HtmlUtil.escape(shape.getTitle()));
+            // remove id because request for security 
+            //shape.setUserId(0);
         }
 
         return shapes;
@@ -150,6 +158,8 @@ public class ShapeServiceImpl extends ShapeServiceBaseImpl {
         for (Shape shape : shapes) {
             shape.setAbstractDescription(HtmlUtil.escape(shape.getAbstractDescription()));
             shape.setTitle(HtmlUtil.escape(shape.getTitle()));
+            // remove id because request for security 
+            shape.setUserId(0);
         }
 
         return shapes;

@@ -25,10 +25,13 @@ import javax.portlet.PortletConfig;
 import org.politaktiv.map.MapValidator;
 
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
+import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Validator;
+
 
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -36,15 +39,34 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 	public void processAction(PortletConfig portletConfig, ActionRequest actionRequest, ActionResponse actionResponse)
 			throws Exception {
 
+//		super.processAction(portletConfig, actionRequest, actionResponse);
+		
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		if (Validator.isNotNull(cmd)) {
 			validateMapPreferences(actionRequest);
 		}
-
+		
+		/*SessionMessages.add(actionRequest, "config-stored");*/
+	//	SessionMessages.add(actionRequest, "configuration-saved");
+		/**
+         * The below line will refresh the view page of the portlet
+         */
+		
+//		LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+//		String portletResource = ParamUtil.getString(actionRequest, "portletResource");
+//		SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_REFRESH_PORTLET, portletResource);
+//		SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_UPDATED_CONFIGURATION);
+		
+//		SessionMessages.add(actionRequest, portletConfig.getPortletName() + ".doConfigure");
+		
+	/*	String portletResource = ParamUtil.getString(actionRequest,"portletResource");
+		SessionMessages.add(actionRequest,portletConfig.getPortletName() + SessionMessages.KEY_SUFFIX_REFRESH_PORTLET,portletResource);
+		*/
 		super.processAction(portletConfig, actionRequest, actionResponse);
-	}
 
+	}
+	
 	protected void validateMapPreferences(ActionRequest actionRequest) throws Exception {
 
 		String centerLongtitude = getParameter(actionRequest, CENTER_LONGTITUDE);
